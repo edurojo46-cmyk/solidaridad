@@ -1,6 +1,6 @@
 // === SUPABASE CONFIG ===
-var SUPABASE_URL = 'https://spplofkotgvumfkeltsr.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcGxvZmtvdGd2dW1ma2VsdHNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDg3NDUsImV4cCI6MjA5MjM4NDc0NX0.GsPBPi0RbZBansH-9hBWW4iufUJBnXj89d-31nOmHM4';
+var SUPABASE_URL = 'https://sqimiuwnhecspmugmacu.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxaW1pdXduaGVjc3BtdWdtYWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzODg0NjMsImV4cCI6MjA5Mzk2NDQ2M30.Tq0VRRY7yfiubn6ZrInT_iAEogGr0e3R7oll0EPne_c';
 
 // Initialize Supabase client (named sbClient to avoid conflict with window.supabase CDN)
 var sbClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -593,14 +593,14 @@ var db = {
 // === LOCAL STORAGE FALLBACK ===
 function saveLocal(key, item) {
     try {
-        const items = JSON.parse(localStorage.getItem('redmaria_' + key) || '[]');
+        const items = JSON.parse(localStorage.getItem('solidaridad_' + key) || '[]');
         items.push(item);
-        localStorage.setItem('redmaria_' + key, JSON.stringify(items));
+        localStorage.setItem('solidaridad_' + key, JSON.stringify(items));
     } catch(e) {}
 }
 
 function getLocal(key) {
-    try { return JSON.parse(localStorage.getItem('redmaria_' + key) || '[]'); } catch(e) { return []; }
+    try { return JSON.parse(localStorage.getItem('solidaridad_' + key) || '[]'); } catch(e) { return []; }
 }
 
 // === CONNECTION STATUS ===
