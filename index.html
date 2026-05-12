@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=200">
+    <link rel="stylesheet" href="index.css?v=201">
     <script>
         // DEV FIX: Force unregister service workers on localhost
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -1000,42 +1000,199 @@
             <div style="height:40px"></div>
         </div>
     </section>
-
-
     <!-- SITUACIÓN EN CALLE -->
-    <section id="screen-situacion-calle" class="screen" style="background: var(--clr-bg); display:flex; flex-direction:column;">
-        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Situación en Calle</h2><div style="width:24px"></div></div>
-        <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px;">
-            <div style="background:linear-gradient(135deg,#e74c3c,#c0392b); border-radius:20px; padding:24px; color:white; text-align:center;">
-                <div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;"><i class="ri-alert-fill"></i></div>
-                <h2 style="margin:0 0 6px;font-size:1.4rem;font-weight:700;">Red de Alertas Solidarias</h2>
-                <p style="margin:0;opacity:0.9;font-size:0.9rem;">Reportá situaciones de calle para coordinar ayuda</p>
-            </div>
-            <button onclick="openPublicarAlertaModal()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:16px;font-size:1rem;font-weight:600;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;box-shadow:0 4px 16px rgba(231,76,60,0.3);">
-                <i class="ri-add-circle-fill" style="font-size:1.3rem;"></i> Publicar una Alerta
+    <section id="screen-situacion-calle" class="screen" style="background:#f4f6f8; display:flex; flex-direction:column; overflow:hidden;">
+
+        <!-- TOP BAR -->
+        <div class="top-bar glass" style="background:white; border-bottom:1px solid rgba(0,0,0,0.06); flex-shrink:0;">
+            <button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button>
+            <h2 style="font-size:1rem; font-weight:700; color:#1a1a2e;">Situación en Calle</h2>
+            <div style="width:32px;"></div>
+        </div>
+
+        <!-- BOTON PRINCIPAL -->
+        <div style="padding:16px; flex-shrink:0;">
+            <button onclick="scOpenForm()" id="sc-btn-alerta"
+                style="width:100%; padding:18px; border-radius:16px; border:none; cursor:pointer;
+                       background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);
+                       color:white; font-size:1.05rem; font-weight:700; letter-spacing:0.3px;
+                       display:flex; align-items:center; justify-content:center; gap:10px;
+                       box-shadow:0 6px 24px rgba(231,76,60,0.35); transition:transform 0.15s;">
+                <i class="ri-alarm-warning-fill" style="font-size:1.4rem;"></i>
+                ALERTA SOLIDARIA
+                <span style="font-size:0.75rem; font-weight:500; opacity:0.85; margin-left:4px;">Reportar situación</span>
             </button>
-            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
-                <button onclick="filterAlertas('todas')" class="buscar-chip active" id="alerta-chip-todas"><i class="ri-list-check"></i> Todas</button>
-                <button onclick="filterAlertas('activas')" class="buscar-chip" id="alerta-chip-activas"><i class="ri-pulse-fill"></i> Activas</button>
-                <button onclick="filterAlertas('atendidas')" class="buscar-chip" id="alerta-chip-atendidas"><i class="ri-check-fill"></i> Atendidas</button>
-            </div>
-            <div id="alertas-list" style="display:flex;flex-direction:column;gap:12px;">
-                <div style="text-align:center;padding:40px 20px;color:var(--clr-text-muted);"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;"></i><p style="margin-top:8px;">Cargando alertas...</p></div>
+        </div>
+
+        <!-- MAPA -->
+        <div style="padding:0 16px; flex-shrink:0;">
+            <div style="border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.1); position:relative;">
+                <div id="sc-map" style="height:260px; width:100%;"></div>
+                <div style="position:absolute; top:10px; right:10px; z-index:1000;">
+                    <button onclick="scCenterMyLocation()"
+                        style="background:white; border:none; border-radius:10px; width:36px; height:36px;
+                               cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center;">
+                        <i class="ri-focus-3-line" style="color:#e74c3c; font-size:1.1rem;"></i>
+                    </button>
+                </div>
+                <div style="position:absolute; bottom:8px; left:10px; background:rgba(255,255,255,0.9);
+                            border-radius:8px; padding:4px 10px; font-size:0.72rem; color:#555; backdrop-filter:blur(4px);">
+                    <i class="ri-map-pin-fill" style="color:#e74c3c;"></i> Alertas en tiempo real
+                </div>
             </div>
         </div>
-        <div id="publicar-alerta-overlay" onclick="closePublicarAlertaModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;"></div>
-        <div id="publicar-alerta-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:28px 20px;z-index:9999;max-height:85vh;overflow-y:auto;box-shadow:0 -8px 32px rgba(0,0,0,0.2);">
-            <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px;"></div>
-            <h3 style="margin:0 0 20px;font-size:1.2rem;font-weight:700;color:var(--clr-text-title);">Nueva Alerta Solidaria</h3>
-            <div style="display:flex;flex-direction:column;gap:14px;">
-                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-map-pin-line" style="color:#e74c3c;"></i> Dirección / Zona</label><input id="alerta-direccion" type="text" placeholder="Ej: Av. Rivadavia y Pueyrredón" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;"></div>
-                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-file-text-line" style="color:#e74c3c;"></i> Descripción</label><textarea id="alerta-descripcion" placeholder="Describí lo que observás: persona durmiendo, necesita ropa, etc." rows="3" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;resize:none;font-family:inherit;"></textarea></div>
-                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-phone-line" style="color:#e74c3c;"></i> Contacto (opcional)</label><input id="alerta-contacto" type="text" placeholder="WhatsApp o teléfono" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;"></div>
-                <button onclick="submitPublicarAlerta()" class="btn btn-primary" style="padding:14px;border-radius:12px;font-size:1rem;font-weight:600;margin-top:4px;"><i class="ri-send-plane-fill"></i> Publicar Alerta</button>
-                <button onclick="closePublicarAlertaModal()" style="background:none;border:none;color:var(--clr-text-muted);font-size:0.9rem;cursor:pointer;padding:8px;">Cancelar</button>
+
+        <!-- LISTA DE ALERTAS -->
+        <div style="flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px;">
+
+            <!-- Header lista -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <h3 style="margin:0; font-size:0.95rem; font-weight:700; color:#1a1a2e;">Alertas activas</h3>
+                <div style="display:flex; gap:6px;">
+                    <button onclick="scFilter('todas')" id="sc-chip-todas"
+                        class="buscar-chip active" style="font-size:0.78rem; padding:4px 12px;">Todas</button>
+                    <button onclick="scFilter('activa')" id="sc-chip-activa"
+                        class="buscar-chip" style="font-size:0.78rem; padding:4px 12px;">Activas</button>
+                    <button onclick="scFilter('atendida')" id="sc-chip-atendida"
+                        class="buscar-chip" style="font-size:0.78rem; padding:4px 12px;">Atendidas</button>
+                </div>
+            </div>
+
+            <div id="sc-alertas-list">
+                <div style="text-align:center; padding:40px; color:#999;">
+                    <i class="ri-loader-4-line ri-spin" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+                    Cargando alertas...
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL FORMULARIO (slide-up) -->
+        <div id="sc-overlay" onclick="scCloseForm()"
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9998; backdrop-filter:blur(2px);"></div>
+
+        <div id="sc-form-modal"
+            style="display:none; position:fixed; bottom:0; left:0; right:0; background:white;
+                   border-radius:28px 28px 0 0; padding:0; z-index:9999;
+                   max-height:92vh; overflow-y:auto;
+                   box-shadow:0 -8px 40px rgba(0,0,0,0.2);">
+
+            <!-- Handle -->
+            <div style="text-align:center; padding:14px 0 0;">
+                <div style="width:44px; height:4px; background:#e0e0e0; border-radius:2px; margin:0 auto;"></div>
+            </div>
+
+            <!-- Form Header -->
+            <div style="padding:20px 24px 0; display:flex; align-items:center; gap:14px;">
+                <div style="width:50px; height:50px; background:linear-gradient(135deg,#e74c3c,#c0392b);
+                            border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <i class="ri-alarm-warning-fill" style="font-size:1.5rem; color:white;"></i>
+                </div>
+                <div>
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:800; color:#1a1a2e;">Nueva Alerta Solidaria</h3>
+                    <p style="margin:3px 0 0; font-size:0.82rem; color:#888;">Tu reporte ayuda a coordinar ayuda inmediata</p>
+                </div>
+            </div>
+
+            <div style="padding:20px 24px 32px; display:flex; flex-direction:column; gap:18px;">
+
+                <!-- Dirección -->
+                <div>
+                    <label style="font-size:0.82rem; font-weight:700; color:#444; display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="ri-map-pin-2-fill" style="color:#e74c3c; margin-right:4px;"></i>Dirección
+                    </label>
+                    <div style="position:relative;">
+                        <input id="sc-direccion" type="text"
+                            placeholder="Ej: Av. Corrientes 1500, CABA"
+                            oninput="scGeocodeDebouncedForm()"
+                            style="width:100%; padding:13px 16px 13px 42px; border:1.5px solid #e8e8e8;
+                                   border-radius:12px; font-size:0.95rem; background:#fafafa;
+                                   box-sizing:border-box; outline:none; transition:border 0.2s;"
+                            onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='#e8e8e8'">
+                        <i class="ri-search-line" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#bbb; font-size:1rem;"></i>
+                        <i class="ri-loader-4-line ri-spin" id="sc-geo-loader"
+                            style="display:none; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#e74c3c;"></i>
+                    </div>
+                    <!-- Mini mapa de confirmación -->
+                    <div id="sc-mini-map-wrap" style="margin-top:10px; display:none; border-radius:12px; overflow:hidden; border:1.5px solid #e8e8e8;">
+                        <div id="sc-mini-map" style="height:130px; width:100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Necesidades -->
+                <div>
+                    <label style="font-size:0.82rem; font-weight:700; color:#444; display:block; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="ri-heart-3-fill" style="color:#e74c3c; margin-right:4px;"></i>Necesidades detectadas
+                    </label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="sc-necesidades-grid">
+                        <button type="button" onclick="scToggleNec(this,'ropa')" data-nec="ropa"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-t-shirt-line" style="font-size:1.2rem; color:#8e44ad;"></i> Ropa
+                        </button>
+                        <button type="button" onclick="scToggleNec(this,'abrigo')" data-nec="abrigo"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-windy-line" style="font-size:1.2rem; color:#2980b9;"></i> Abrigo
+                        </button>
+                        <button type="button" onclick="scToggleNec(this,'manta')" data-nec="manta"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-hotel-bed-line" style="font-size:1.2rem; color:#e67e22;"></i> Manta / Frazada
+                        </button>
+                        <button type="button" onclick="scToggleNec(this,'medica')" data-nec="medica"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-heart-pulse-line" style="font-size:1.2rem; color:#e74c3c;"></i> Atención médica
+                        </button>
+                        <button type="button" onclick="scToggleNec(this,'comida')" data-nec="comida"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-restaurant-line" style="font-size:1.2rem; color:#27ae60;"></i> Comida / Agua
+                        </button>
+                        <button type="button" onclick="scToggleNec(this,'otro')" data-nec="otro"
+                            style="padding:10px 12px; border:1.5px solid #e8e8e8; border-radius:12px; background:white;
+                                   cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.88rem;
+                                   color:#555; font-weight:600; transition:all 0.15s; text-align:left;">
+                            <i class="ri-more-line" style="font-size:1.2rem; color:#7f8c8d;"></i> Otra
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div>
+                    <label style="font-size:0.82rem; font-weight:700; color:#444; display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="ri-file-text-fill" style="color:#e74c3c; margin-right:4px;"></i>Observaciones
+                    </label>
+                    <textarea id="sc-observaciones" rows="3"
+                        placeholder="Describí lo que ves: estado de la persona, si está consciente, cuánto tiempo lleva ahí..."
+                        style="width:100%; padding:13px 16px; border:1.5px solid #e8e8e8; border-radius:12px;
+                               font-size:0.93rem; background:#fafafa; box-sizing:border-box; resize:none;
+                               font-family:inherit; outline:none; transition:border 0.2s; line-height:1.5;"
+                        onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='#e8e8e8'"></textarea>
+                </div>
+
+                <!-- Botones -->
+                <button onclick="scSubmitAlerta()" id="sc-submit-btn"
+                    style="width:100%; padding:16px; border-radius:14px; border:none; cursor:pointer;
+                           background:linear-gradient(135deg,#e74c3c,#c0392b); color:white;
+                           font-size:1rem; font-weight:700; letter-spacing:0.3px;
+                           box-shadow:0 4px 20px rgba(231,76,60,0.3); transition:transform 0.15s;">
+                    <i class="ri-send-plane-fill"></i> Publicar Alerta
+                </button>
+
+                <button onclick="scCloseForm()"
+                    style="background:none; border:none; color:#999; font-size:0.9rem; cursor:pointer; padding:4px; font-weight:500;">
+                    Cancelar
+                </button>
             </div>
         </div>
     </section>
+
     <!-- Comedores -->
     <section id="screen-Comedores" class="screen gradient-bg">
         <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Comedores</h2><div style="width:24px"></div></div>
@@ -1755,99 +1912,329 @@ function filterComedoresGrid(query) {
 
 // Add Comedor Modal Logic
 
-// ===== SITUACIÓN EN CALLE =====
-function openPublicarAlertaModal() {
-    if (!auth || !auth.isAuthenticated()) {
-        alert("Por favor iniciá sesión para publicar una alerta.");
-        app.navigate('screen-login');
-        return;
+// ============================================================
+// SITUACIÓN EN CALLE — Módulo completo
+// ============================================================
+var scMap = null;
+var scMarkers = {};
+var scMiniMap = null;
+var scMiniMarker = null;
+var scGeoLat = null;
+var scGeoLng = null;
+var scNecesidades = [];
+var scCurrentFilter = 'todas';
+var scGeoTimer = null;
+var scAllAlertas = [];
+
+// ------ Inicialización del mapa principal ------
+function scInitMap() {
+    if (scMap) { scMap.invalidateSize(); return; }
+    scMap = L.map('sc-map', { zoomControl: false }).setView([-34.6037, -58.3816], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(scMap);
+    L.control.zoom({ position: 'bottomright' }).addTo(scMap);
+    scLoadAlertas();
+    // Suscribir a cambios en tiempo real
+    if (typeof sbClient !== 'undefined' && sbClient) {
+        sbClient.channel('sc-alertas-realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'alertas_calle' },
+                function() { scLoadAlertas(); })
+            .subscribe();
     }
-    document.getElementById('publicar-alerta-modal').style.display = 'block';
-    document.getElementById('publicar-alerta-overlay').style.display = 'block';
 }
 
-function closePublicarAlertaModal() {
-    document.getElementById('publicar-alerta-modal').style.display = 'none';
-    document.getElementById('publicar-alerta-overlay').style.display = 'none';
-}
-
-async function submitPublicarAlerta() {
-    var dir = document.getElementById('alerta-direccion').value.trim();
-    var desc = document.getElementById('alerta-descripcion').value.trim();
-    var contacto = document.getElementById('alerta-contacto').value.trim();
-    if (!dir || !desc) { alert("Por favor completá la dirección y descripción."); return; }
-    var u = auth.getCurrentUser();
-    var alerta = { direccion: dir, descripcion: desc, contacto: contacto, estado: 'activa', created_by: u ? u.id : null, created_at: new Date().toISOString() };
-    try {
-        if (sbClient) {
-            await sbClient.from('alertas_calle').insert([alerta]);
-        }
-        closePublicarAlertaModal();
-        document.getElementById('alerta-direccion').value = '';
-        document.getElementById('alerta-descripcion').value = '';
-        document.getElementById('alerta-contacto').value = '';
-        loadAlertasCalle();
-        alert("¡Alerta publicada! La comunidad puede verla ahora.");
-    } catch(e) { alert("Error al publicar: " + e.message); }
-}
-
-async function loadAlertasCalle() {
-    var list = document.getElementById('alertas-list');
+// ------ Cargar alertas desde Supabase ------
+async function scLoadAlertas() {
+    var list = document.getElementById('sc-alertas-list');
     if (!list) return;
-    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--clr-text-muted);"><i class="ri-loader-4-line ri-spin" style="font-size:1.5rem;"></i></div>';
-    var alertas = [];
     try {
-        if (sbClient) {
-            var { data } = await sbClient.from('alertas_calle').select('*').order('created_at', { ascending: false }).limit(50);
-            alertas = data || [];
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            var { data, error } = await sbClient
+                .from('alertas_calle')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            scAllAlertas = (data && !error) ? data : [];
         }
-    } catch(e) { alertas = []; }
-    if (alertas.length === 0) {
-        list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--clr-text-muted);"><i class="ri-alert-line" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i><p>No hay alertas activas</p><p style="font-size:0.8rem;margin-top:6px;">Sé el primero en reportar una situación</p></div>';
+    } catch(e) { scAllAlertas = []; }
+    scRenderAlertas();
+    scRenderMapPins();
+}
+
+// ------ Renderizar tarjetas debajo del mapa ------
+function scRenderAlertas() {
+    var list = document.getElementById('sc-alertas-list');
+    if (!list) return;
+    var filtered = scCurrentFilter === 'todas'
+        ? scAllAlertas
+        : scAllAlertas.filter(function(a) { return a.estado === scCurrentFilter; });
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#aaa;">' +
+            '<i class="ri-map-pin-line" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i>' +
+            '<p style="font-weight:600;margin:0;">No hay alertas ' + (scCurrentFilter !== 'todas' ? scCurrentFilter + 's' : '') + '</p>' +
+            '<p style="font-size:0.82rem;margin-top:6px;">Sé el primero en reportar una situación</p></div>';
         return;
     }
-    list.innerHTML = alertas.map(function(a) {
-        var fecha = a.created_at ? new Date(a.created_at).toLocaleDateString('es-AR', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
-        var color = a.estado === 'atendida' ? '#27ae60' : '#e74c3c';
-        var icon = a.estado === 'atendida' ? 'ri-check-fill' : 'ri-alert-fill';
-        return '<div style="background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid '+color+';">' +
+
+    var necIcons = { ropa:'ri-t-shirt-line', abrigo:'ri-windy-line', manta:'ri-hotel-bed-line',
+                     medica:'ri-heart-pulse-line', comida:'ri-restaurant-line', otro:'ri-more-line' };
+    var necColors = { ropa:'#8e44ad', abrigo:'#2980b9', manta:'#e67e22',
+                      medica:'#e74c3c', comida:'#27ae60', otro:'#7f8c8d' };
+
+    list.innerHTML = filtered.map(function(a) {
+        var isActiva = a.estado === 'activa';
+        var fecha = a.created_at ? new Date(a.created_at).toLocaleDateString('es-AR',
+            {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) : '';
+        var necs = (a.necesidades || '').split(',').filter(Boolean);
+        var necsHtml = necs.map(function(n) {
+            return '<span style="display:inline-flex;align-items:center;gap:4px;background:' +
+                (necColors[n] || '#999') + '18;color:' + (necColors[n] || '#999') +
+                ';padding:3px 9px;border-radius:20px;font-size:0.75rem;font-weight:600;">' +
+                '<i class="' + (necIcons[n] || 'ri-checkbox-blank-circle-fill') + '"></i>' +
+                n.charAt(0).toUpperCase() + n.slice(1) + '</span>';
+        }).join('');
+
+        return '<div onclick="scFocusAlerta(' + (a.lat || 0) + ',' + (a.lng || 0) + ')"' +
+            ' style="background:white;border-radius:16px;padding:15px 16px;' +
+            'box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid ' +
+            (isActiva ? '#e74c3c' : '#27ae60') + ';cursor:pointer;transition:transform 0.1s;"' +
+            ' onmouseover="this.style.transform=\'translateX(3px)\'"' +
+            ' onmouseout="this.style.transform=\'none\'">' +
+
             '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-            '<div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;background:'+color+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;"><i class="'+icon+'"></i></div>' +
-            '<div><div style="font-weight:600;font-size:0.95rem;color:var(--clr-text-title);">'+escapeHtml(a.direccion)+'</div>' +
-            '<div style="font-size:0.75rem;color:var(--clr-text-muted);">'+fecha+'</div></div></div>' +
-            '<span style="font-size:0.7rem;font-weight:600;background:'+(a.estado==='atendida'?'rgba(39,174,96,0.1)':'rgba(231,76,60,0.1)')+';color:'+color+';padding:4px 10px;border-radius:20px;">'+(a.estado==='atendida'?'Atendida':'Activa')+'</span></div>' +
-            '<p style="margin:0 0 10px;font-size:0.9rem;color:var(--clr-text-body);line-height:1.5;">'+escapeHtml(a.descripcion)+'</p>' +
-            (a.contacto ? '<div style="font-size:0.8rem;color:var(--clr-text-muted);display:flex;align-items:center;gap:4px;"><i class="ri-phone-line"></i> '+escapeHtml(a.contacto)+'</div>' : '') +
-            (a.estado === 'activa' ? '<button onclick="marcarAtendida(\''+a.id+'\')" style="margin-top:10px;background:none;border:1px solid #27ae60;color:#27ae60;padding:6px 14px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;">✓ Marcar Atendida</button>' : '') +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="width:36px;height:36px;background:' + (isActiva ? 'linear-gradient(135deg,#e74c3c,#c0392b)' : 'linear-gradient(135deg,#27ae60,#229954)') + ';' +
+            'border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+            '<i class="' + (isActiva ? 'ri-alarm-warning-fill' : 'ri-check-fill') + '" style="color:white;font-size:1rem;"></i></div>' +
+            '<div><div style="font-weight:700;font-size:0.95rem;color:#1a1a2e;">' + scEscape(a.direccion) + '</div>' +
+            '<div style="font-size:0.75rem;color:#999;margin-top:2px;">' + fecha + '</div></div></div>' +
+            '<span style="font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:20px;flex-shrink:0;' +
+            'background:' + (isActiva ? 'rgba(231,76,60,0.1)' : 'rgba(39,174,96,0.1)') + ';' +
+            'color:' + (isActiva ? '#e74c3c' : '#27ae60') + ';">' +
+            (isActiva ? '● Activa' : '✓ Atendida') + '</span></div>' +
+
+            (necs.length > 0 ? '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">' + necsHtml + '</div>' : '') +
+
+            (a.observaciones ? '<p style="margin:0 0 10px;font-size:0.88rem;color:#555;line-height:1.5;background:#f8f8f8;' +
+            'border-radius:10px;padding:10px 12px;">' + scEscape(a.observaciones) + '</p>' : '') +
+
+            (isActiva ? '<div style="display:flex;gap:8px;margin-top:4px;">' +
+            '<button onclick="event.stopPropagation();scMarcarAtendida(\'' + a.id + '\')" ' +
+            'style="flex:1;padding:8px;border:1.5px solid #27ae60;border-radius:10px;background:none;' +
+            'color:#27ae60;font-size:0.82rem;cursor:pointer;font-weight:700;">' +
+            '<i class="ri-check-double-line"></i> Marcar Atendida</button>' +
+            '<button onclick="event.stopPropagation();scCompartir(\'' + scEscape(a.direccion) + '\',\'' + scEscape(a.necesidades||'') + '\')" ' +
+            'style="padding:8px 12px;border:1.5px solid #e8e8e8;border-radius:10px;background:none;' +
+            'color:#888;font-size:0.82rem;cursor:pointer;">' +
+            '<i class="ri-share-forward-line"></i></button>' +
+            '</div>' : '') +
             '</div>';
     }).join('');
 }
 
-async function marcarAtendida(id) {
+// ------ Pines en el mapa ------
+function scRenderMapPins() {
+    if (!scMap) return;
+    Object.values(scMarkers).forEach(function(m) { scMap.removeLayer(m); });
+    scMarkers = {};
+    scAllAlertas.forEach(function(a) {
+        if (!a.lat || !a.lng) return;
+        var isActiva = a.estado === 'activa';
+        var icon = L.divIcon({
+            html: '<div style="width:36px;height:36px;background:' +
+                (isActiva ? 'linear-gradient(135deg,#e74c3c,#c0392b)' : 'linear-gradient(135deg,#27ae60,#1e8449)') +
+                ';border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;' +
+                'justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,0.3);border:3px solid white;">' +
+                '<i class="' + (isActiva ? 'ri-alarm-warning-fill' : 'ri-check-fill') + '" ' +
+                'style="transform:rotate(45deg);color:white;font-size:0.8rem;"></i></div>',
+            iconSize: [36, 36], iconAnchor: [18, 36], className: ''
+        });
+        var necs = (a.necesidades || '').split(',').filter(Boolean).join(', ');
+        var m = L.marker([a.lat, a.lng], { icon: icon })
+            .bindPopup('<b>' + scEscape(a.direccion) + '</b>' +
+                (necs ? '<br><small style="color:#888;">' + necs + '</small>' : '') +
+                (a.observaciones ? '<br><small>' + scEscape(a.observaciones) + '</small>' : '') +
+                '<br><span style="color:' + (isActiva ? '#e74c3c' : '#27ae60') + ';font-weight:600;">' +
+                (isActiva ? '● Activa' : '✓ Atendida') + '</span>')
+            .addTo(scMap);
+        scMarkers[a.id] = m;
+    });
+}
+
+// ------ Enfocar alerta en mapa ------
+function scFocusAlerta(lat, lng) {
+    if (!scMap || !lat || !lng) return;
+    scMap.flyTo([lat, lng], 16, { duration: 0.8 });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ------ Filtros ------
+function scFilter(tipo) {
+    scCurrentFilter = tipo;
+    document.querySelectorAll('[id^="sc-chip-"]').forEach(function(b) { b.classList.remove('active'); });
+    var chip = document.getElementById('sc-chip-' + tipo);
+    if (chip) chip.classList.add('active');
+    scRenderAlertas();
+}
+
+// ------ Abrir / cerrar formulario ------
+function scOpenForm() {
+    if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
+        if (confirm('Necesitás iniciar sesión para publicar una alerta.\n¿Querés ir al login?')) {
+            app.navigate('screen-login');
+        }
+        return;
+    }
+    document.getElementById('sc-form-modal').style.display = 'block';
+    document.getElementById('sc-overlay').style.display = 'block';
+    document.getElementById('sc-form-modal').scrollTop = 0;
+    // Reset form
+    document.getElementById('sc-direccion').value = '';
+    document.getElementById('sc-observaciones').value = '';
+    document.querySelectorAll('#sc-necesidades-grid button').forEach(function(b) {
+        b.style.borderColor = '#e8e8e8';
+        b.style.background = 'white';
+        b.style.color = '#555';
+    });
+    scNecesidades = [];
+    scGeoLat = null; scGeoLng = null;
+    document.getElementById('sc-mini-map-wrap').style.display = 'none';
+    if (scMiniMap) { scMiniMap.remove(); scMiniMap = null; scMiniMarker = null; }
+}
+
+function scCloseForm() {
+    document.getElementById('sc-form-modal').style.display = 'none';
+    document.getElementById('sc-overlay').style.display = 'none';
+}
+
+// ------ Toggle necesidades ------
+function scToggleNec(btn, tipo) {
+    var idx = scNecesidades.indexOf(tipo);
+    if (idx > -1) {
+        scNecesidades.splice(idx, 1);
+        btn.style.borderColor = '#e8e8e8';
+        btn.style.background = 'white';
+        btn.style.color = '#555';
+    } else {
+        scNecesidades.push(tipo);
+        btn.style.borderColor = '#e74c3c';
+        btn.style.background = 'rgba(231,76,60,0.06)';
+        btn.style.color = '#e74c3c';
+    }
+}
+
+// ------ Geocodificación al escribir dirección ------
+function scGeocodeDebouncedForm() {
+    clearTimeout(scGeoTimer);
+    var loader = document.getElementById('sc-geo-loader');
+    if (loader) loader.style.display = 'inline-block';
+    scGeoTimer = setTimeout(async function() {
+        var q = document.getElementById('sc-direccion').value.trim();
+        if (q.length < 6) { if (loader) loader.style.display = 'none'; return; }
+        try {
+            var r = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' +
+                encodeURIComponent(q + ', Argentina') + '&limit=1');
+            var d = await r.json();
+            if (d && d.length > 0) {
+                scGeoLat = parseFloat(d[0].lat);
+                scGeoLng = parseFloat(d[0].lon);
+                scShowMiniMap(scGeoLat, scGeoLng);
+            }
+        } catch(e) {}
+        if (loader) loader.style.display = 'none';
+    }, 900);
+}
+
+function scShowMiniMap(lat, lng) {
+    var wrap = document.getElementById('sc-mini-map-wrap');
+    wrap.style.display = 'block';
+    if (!scMiniMap) {
+        scMiniMap = L.map('sc-mini-map', { zoomControl: false, attributionControl: false })
+            .setView([lat, lng], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(scMiniMap);
+        scMiniMarker = L.marker([lat, lng], { draggable: true }).addTo(scMiniMap);
+        scMiniMarker.on('dragend', function() {
+            var p = scMiniMarker.getLatLng();
+            scGeoLat = p.lat; scGeoLng = p.lng;
+        });
+    } else {
+        scMiniMap.setView([lat, lng], 16);
+        scMiniMarker.setLatLng([lat, lng]);
+    }
+}
+
+// ------ Mi ubicación ------
+function scCenterMyLocation() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        if (scMap) scMap.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
+    });
+}
+
+// ------ Guardar alerta ------
+async function scSubmitAlerta() {
+    var dir = document.getElementById('sc-direccion').value.trim();
+    var obs = document.getElementById('sc-observaciones').value.trim();
+    if (!dir) {
+        document.getElementById('sc-direccion').focus();
+        document.getElementById('sc-direccion').style.borderColor = '#e74c3c';
+        return;
+    }
+    var btn = document.getElementById('sc-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Publicando...';
+
+    var u = (typeof auth !== 'undefined' && auth) ? auth.getCurrentUser() : null;
+    var payload = {
+        direccion: dir,
+        necesidades: scNecesidades.join(','),
+        observaciones: obs,
+        estado: 'activa',
+        lat: scGeoLat,
+        lng: scGeoLng,
+        created_by: u ? u.id : null,
+        created_by_name: u ? (u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email) : 'Anónimo',
+        created_at: new Date().toISOString()
+    };
     try {
-        if (sbClient) await sbClient.from('alertas_calle').update({ estado: 'atendida' }).eq('id', id);
-        loadAlertasCalle();
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            await sbClient.from('alertas_calle').insert([payload]);
+        }
+        scCloseForm();
+        await scLoadAlertas();
+        // Enfocar el nuevo pin si tiene coords
+        if (scGeoLat && scGeoLng) scFocusAlerta(scGeoLat, scGeoLng);
+    } catch(e) {
+        alert('Error al publicar: ' + (e.message || e));
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ri-send-plane-fill"></i> Publicar Alerta';
+}
+
+// ------ Marcar atendida ------
+async function scMarcarAtendida(id) {
+    try {
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            await sbClient.from('alertas_calle').update({ estado: 'atendida' }).eq('id', id);
+        }
+        scLoadAlertas();
     } catch(e) {}
 }
 
-function filterAlertas(tipo) {
-    document.querySelectorAll('[id^=alerta-chip-]').forEach(function(b) { b.classList.remove('active'); });
-    document.getElementById('alerta-chip-' + tipo).classList.add('active');
+// ------ Compartir ------
+function scCompartir(dir, necs) {
+    var txt = '🚨 Alerta Solidaria en ' + dir + (necs ? ' — Necesidades: ' + necs : '') + '\nReportado en SOLIDARIDAD';
+    if (navigator.share) { navigator.share({ title: 'Alerta Solidaria', text: txt }).catch(function(){}); }
+    else { navigator.clipboard.writeText(txt).then(function() { alert('Copiado al portapapeles'); }).catch(function(){}); }
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ------ Escape HTML ------
+function scEscape(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// Load alertas when screen opens
-document.addEventListener('DOMContentLoaded', function() {
-    var origNavigate = app.navigate.bind(app);
-    app.navigate = function(screen) {
-        origNavigate(screen);
-        if (screen === 'screen-situacion-calle') setTimeout(loadAlertasCalle, 300);
-    };
-});
 
 function openAddComedorModal() {
     if (!auth || !auth.isAuthenticated()) {
@@ -2537,9 +2924,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=200"></script>
-<script src="supabase.js?v=200"></script>
-<script src="app.js?v=200"></script>
+<script src="auth.js?v=201"></script>
+<script src="supabase.js?v=201"></script>
+<script src="app.js?v=201"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">

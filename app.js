@@ -935,6 +935,7 @@
         }
         if (screenId === 'screen-live') this.renderContinuo();
         if (screenId === 'screen-como-rezar') this.highlightTodayMystery();
+        if (screenId === 'screen-situacion-calle') setTimeout(function() { if(typeof scInitMap === 'function') scInitMap(); }, 350);
         if (screenId === 'screen-cenaculo') setTimeout(function() { if (typeof initCenaculoMap === 'function') initCenaculoMap(); }, 400);
         if (screenId === 'screen-intenciones') { if (typeof loadCommunityIntenciones === 'function') loadCommunityIntenciones(); }
         if (screenId === 'screen-profile' || isDash) this.updateUserUI();
