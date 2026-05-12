@@ -1,0 +1,2 @@
+﻿ALTER TABLE iglesias_comunidad ADD COLUMN IF NOT EXISTS lat NUMERIC;
+ALTER TABLE iglesias_comunidad ADD COLUMN IF NOT EXISTS lng NUMERIC;

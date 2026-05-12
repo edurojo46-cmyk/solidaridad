@@ -1,6 +1,6 @@
 ﻿var app = {
     currentScreen: 'screen-splash',
-    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-chat','screen-apariciones','screen-cenaculo','screen-Comedores'],
+    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-chat','screen-apariciones','screen-cenaculo','screen-iglesias'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
     detailMap: null,
     buscarMap: null,
@@ -76,7 +76,7 @@
     initPickerMap() {
         if (this.pickerMap) { this.pickerMap.invalidateSize(); return; }
         this.pickerMap = L.map('picker-map', { zoomControl: false, attributionControl: false }).setView([-34.5955,-58.3739], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.pickerMap);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.pickerMap);
         L.control.zoom({ position: 'topright' }).addTo(this.pickerMap);
         this.pickerMap.on('click', e => this.setPickerLocation(e.latlng.lat, e.latlng.lng));
     },
@@ -84,7 +84,7 @@
     async initBuscarMap() {
         if (!this.buscarMap) {
             this.buscarMap = L.map('buscar-map', { zoomControl: false, attributionControl: false }).setView([-34.5955, -58.3739], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.buscarMap);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.buscarMap);
             L.control.zoom({ position: 'topright' }).addTo(this.buscarMap);
             this._buscarMarkers = [];
         } else {
@@ -900,7 +900,7 @@
         if (!this.screens.includes(screenId)) return;
         if (auth.isProtected(screenId) && !auth.isAuthenticated()) screenId = 'screen-login';
         const ac = document.getElementById('app-container');
-        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-chat','screen-apariciones','screen-cenaculo','screen-Comedores'];
+        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-chat','screen-apariciones','screen-cenaculo','screen-iglesias'];
         const isDash = !single.includes(screenId);
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         if (this.isDesktop() && isDash) {
@@ -955,7 +955,7 @@
         else if (s === 'screen-como-rezar') { dd[1]?.classList.add('active'); if(dt) dt.classList.add('active'); }
         else if (s === 'screen-porque-rezar') { dd[2]?.classList.add('active'); if(dt) dt.classList.add('active'); }
         else if (s === 'screen-apariciones') { dd[3]?.classList.add('active'); if(dt) dt.classList.add('active'); }
-        else if (s === 'screen-Comedores') h[5]?.classList.add('active');
+        else if (s === 'screen-iglesias') h[5]?.classList.add('active');
         else if (s === 'screen-cenaculo') h[6]?.classList.add('active');
         else if (s === 'screen-chat') h[7]?.classList.add('active');
         else if (s === 'screen-profile') h[8]?.classList.add('active');
@@ -969,7 +969,7 @@
         else if (s === 'screen-como-rezar') m[4]?.classList.add('active');
         else if (s === 'screen-porque-rezar') m[5]?.classList.add('active');
         else if (s === 'screen-apariciones') m[6]?.classList.add('active');
-        else if (s === 'screen-Comedores') m[7]?.classList.add('active');
+        else if (s === 'screen-iglesias') m[7]?.classList.add('active');
         else if (s === 'screen-cenaculo') m[8]?.classList.add('active');
         else if (s === 'screen-chat') m[9]?.classList.add('active');
         else if (s === 'screen-profile') m[10]?.classList.add('active');
@@ -1004,7 +1004,7 @@
                 'screen-create-rosary': 2,
                 'screen-rezo': 3,
                 'screen-live': 4,
-                'screen-Comedores': 5,
+                'screen-iglesias': 5,
                 'screen-cenaculo': 6,
                 'screen-chat': 7,
                 'screen-profile': 8,

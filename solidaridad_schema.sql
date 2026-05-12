@@ -1,8 +1,8 @@
 -- ============================================
 -- SOLIDARIDAD - SUPABASE DATABASE SCHEMA
 -- ============================================
--- Ejecutar esto en el SQL Editor de Supabase:
--- https://supabase.com/dashboard/project/sqimiuwnhecspmugmacu/sql/new
+-- Ejecutar esto en el SQL Editor de Supabase
+-- Este script es seguro para re-ejecutar (idempotente)
 -- ============================================
 
 -- 1. PROFILES (extends Supabase auth.users)
@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Profiles are viewable by everyone" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
 CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
@@ -41,6 +44,10 @@ CREATE TABLE IF NOT EXISTS rosaries (
 );
 
 ALTER TABLE rosaries ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Rosaries are viewable by everyone" ON rosaries;
+DROP POLICY IF EXISTS "Authenticated users can create rosaries" ON rosaries;
+DROP POLICY IF EXISTS "Creators can update own rosaries" ON rosaries;
+DROP POLICY IF EXISTS "Creators can delete own rosaries" ON rosaries;
 CREATE POLICY "Rosaries are viewable by everyone" ON rosaries FOR SELECT USING (true);
 CREATE POLICY "Authenticated users can create rosaries" ON rosaries FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Creators can update own rosaries" ON rosaries FOR UPDATE USING (auth.uid() = creator_id);
@@ -56,6 +63,9 @@ CREATE TABLE IF NOT EXISTS rosary_participants (
 );
 
 ALTER TABLE rosary_participants ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Participants viewable by everyone" ON rosary_participants;
+DROP POLICY IF EXISTS "Users can join rosaries" ON rosary_participants;
+DROP POLICY IF EXISTS "Users can leave rosaries" ON rosary_participants;
 CREATE POLICY "Participants viewable by everyone" ON rosary_participants FOR SELECT USING (true);
 CREATE POLICY "Users can join rosaries" ON rosary_participants FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can leave rosaries" ON rosary_participants FOR DELETE USING (auth.uid() = user_id);
@@ -74,6 +84,9 @@ CREATE TABLE IF NOT EXISTS cenaculos (
 );
 
 ALTER TABLE cenaculos ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Cenaculos viewable by members" ON cenaculos;
+DROP POLICY IF EXISTS "Authenticated users can create cenaculos" ON cenaculos;
+DROP POLICY IF EXISTS "Creators can update cenaculos" ON cenaculos;
 CREATE POLICY "Cenaculos viewable by members" ON cenaculos FOR SELECT USING (true);
 CREATE POLICY "Authenticated users can create cenaculos" ON cenaculos FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Creators can update cenaculos" ON cenaculos FOR UPDATE USING (auth.uid() = creator_id);
@@ -91,6 +104,9 @@ CREATE TABLE IF NOT EXISTS cenaculo_members (
 );
 
 ALTER TABLE cenaculo_members ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Members viewable by everyone" ON cenaculo_members;
+DROP POLICY IF EXISTS "Can add members" ON cenaculo_members;
+DROP POLICY IF EXISTS "Can remove self" ON cenaculo_members;
 CREATE POLICY "Members viewable by everyone" ON cenaculo_members FOR SELECT USING (true);
 CREATE POLICY "Can add members" ON cenaculo_members FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Can remove self" ON cenaculo_members FOR DELETE USING (auth.uid() = user_id);
@@ -107,6 +123,11 @@ CREATE TABLE IF NOT EXISTS intenciones (
 );
 
 ALTER TABLE intenciones ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public select intenciones" ON intenciones;
+DROP POLICY IF EXISTS "Public insert intenciones" ON intenciones;
+DROP POLICY IF EXISTS "Public update intenciones" ON intenciones;
+DROP POLICY IF EXISTS "Intenciones viewable by everyone" ON intenciones;
+DROP POLICY IF EXISTS "Users can create intenciones" ON intenciones;
 CREATE POLICY "Public select intenciones" ON intenciones FOR SELECT USING (true);
 CREATE POLICY "Public insert intenciones" ON intenciones FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public update intenciones" ON intenciones FOR UPDATE USING (true) WITH CHECK (true);
@@ -122,6 +143,9 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can see own messages" ON messages;
+DROP POLICY IF EXISTS "Users can send messages" ON messages;
+DROP POLICY IF EXISTS "Users can mark as read" ON messages;
 CREATE POLICY "Users can see own messages" ON messages FOR SELECT USING (auth.uid() = from_id OR auth.uid() = to_id);
 CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (auth.uid() = from_id);
 CREATE POLICY "Users can mark as read" ON messages FOR UPDATE USING (auth.uid() = to_id);
@@ -136,6 +160,9 @@ CREATE TABLE IF NOT EXISTS continuo_slots (
 );
 
 ALTER TABLE continuo_slots ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Slots viewable by everyone" ON continuo_slots;
+DROP POLICY IF EXISTS "Anyone can add slots" ON continuo_slots;
+DROP POLICY IF EXISTS "Anyone can remove slots" ON continuo_slots;
 CREATE POLICY "Slots viewable by everyone" ON continuo_slots FOR SELECT USING (true);
 CREATE POLICY "Anyone can add slots" ON continuo_slots FOR INSERT WITH CHECK (true);
 CREATE POLICY "Anyone can remove slots" ON continuo_slots FOR DELETE USING (true);
@@ -153,6 +180,10 @@ CREATE TABLE IF NOT EXISTS iglesias_comunidad (
 );
 
 ALTER TABLE iglesias_comunidad ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Iglesias viewable by everyone" ON iglesias_comunidad;
+DROP POLICY IF EXISTS "Anyone can add iglesias" ON iglesias_comunidad;
+DROP POLICY IF EXISTS "Public read access for iglesias_comunidad" ON iglesias_comunidad;
+DROP POLICY IF EXISTS "Users can insert iglesias_comunidad" ON iglesias_comunidad;
 CREATE POLICY "Iglesias viewable by everyone" ON iglesias_comunidad FOR SELECT USING (true);
 CREATE POLICY "Anyone can add iglesias" ON iglesias_comunidad FOR INSERT WITH CHECK (true);
 
@@ -187,8 +218,24 @@ CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
--- 12. ENABLE REALTIME
-ALTER PUBLICATION supabase_realtime ADD TABLE rosaries;
-ALTER PUBLICATION supabase_realtime ADD TABLE cenaculo_members;
-ALTER PUBLICATION supabase_realtime ADD TABLE messages;
-ALTER PUBLICATION supabase_realtime ADD TABLE intenciones;
+-- 12. ENABLE REALTIME (ignora si ya está agregado)
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE rosaries;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE cenaculo_members;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE messages;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE intenciones;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
