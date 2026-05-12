@@ -1,33 +1,23 @@
-﻿// SOLIDARIDAD sw.js — Clean dummy SW
-// This just bypasses itself and deletes caches, but does NOT force reload.
-
-self.addEventListener('install', function(event) {
-    console.log('[SW] SOLIDARIDAD install — cleaning caches');
-    event.waitUntil(
-        caches.keys().then(function(names) {
-            return Promise.all(names.map(function(n) {
-                return caches.delete(n);
-            }));
-        }).then(function() {
-            return self.skipWaiting();
-        })
+// SOLIDARIDAD sw.js - Sin cache, siempre red
+self.addEventListener('install', function(e) {
+    e.waitUntil(
+        caches.keys().then(function(keys) {
+            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+        }).then(function() { return self.skipWaiting(); })
     );
 });
 
-self.addEventListener('activate', function(event) {
-    console.log('[SW] SOLIDARIDAD activate');
-    event.waitUntil(
-        caches.keys().then(function(names) {
-            return Promise.all(names.map(function(n) { return caches.delete(n); }));
-        }).then(function() {
-            return Promise.resolve();
-        }).then(function() {
-            return Promise.resolve();
-        })
+self.addEventListener('activate', function(e) {
+    e.waitUntil(
+        caches.keys().then(function(keys) {
+            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+        }).then(function() { return self.clients.claim(); })
     );
 });
 
-self.addEventListener('fetch', function(event) {
-    // Pass-through everything to network
-    event.respondWith(fetch(event.request));
+self.addEventListener('fetch', function(e) {
+    // Siempre va a la red, nunca al cache
+    e.respondWith(fetch(e.request).catch(function() {
+        return new Response('Sin conexión', { status: 503 });
+    }));
 });

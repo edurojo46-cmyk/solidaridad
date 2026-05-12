@@ -50,7 +50,7 @@
                             id: r.id, place: r.place, address: r.address || '', date: r.date, time: r.time,
                             mystery: r.mystery, intention: r.intention, lat: r.lat, lng: r.lng,
                             participants: r.participants || 1, creatorId: r.creator_id,
-                            creatorName: r.creator_name || 'An├│nimo'
+                            creatorName: r.creator_name || 'Anónimo'
                         };
                     });
                     // Save to localStorage for offline
@@ -112,7 +112,7 @@
                             id: r.id, place: r.place, address: r.address || '', date: r.date, time: r.time,
                             mystery: r.mystery, intention: r.intention, lat: r.lat, lng: r.lng,
                             participants: r.participants || 1, creatorId: r.creator_id,
-                            creatorName: r.creator_name || 'An├│nimo'
+                            creatorName: r.creator_name || 'Anónimo'
                         };
                     });
                     localStorage.setItem('redmaria_rosaries', JSON.stringify(activeRosaries));
@@ -219,11 +219,11 @@
         modal.className = 'slot-signup-modal';
         modal.innerHTML = '<div class="slot-signup-card">' +
             '<h3><i class="ri-error-warning-fill" style="color:#e74c3c"></i> Cancelar Rosario</h3>' +
-            '<p style="font-size:0.9rem;color:#5A7D9A;margin:12px 0">┬┐Est├ís seguro de cancelar el rosario <strong>' + (placeName || '') + '</strong>?</p>' +
-            '<p style="font-size:0.8rem;color:#e74c3c;margin-bottom:16px">Esta acci├│n no se puede deshacer. Se eliminar├í para todos los participantes.</p>' +
+            '<p style="font-size:0.9rem;color:#5A7D9A;margin:12px 0">┬┐Estás seguro de cancelar el rosario <strong>' + (placeName || '') + '</strong>?</p>' +
+            '<p style="font-size:0.8rem;color:#e74c3c;margin-bottom:16px">Esta acción no se puede deshacer. Se eliminará para todos los participantes.</p>' +
             '<div class="slot-signup-actions">' +
                 '<button class="btn btn-secondary-outline" id="cancel-rosary-no">Volver</button>' +
-                '<button class="btn btn-primary" id="cancel-rosary-yes" style="background:linear-gradient(135deg,#e74c3c,#c0392b)"><i class="ri-delete-bin-line"></i> S├¡, Cancelar</button>' +
+                '<button class="btn btn-primary" id="cancel-rosary-yes" style="background:linear-gradient(135deg,#e74c3c,#c0392b)"><i class="ri-delete-bin-line"></i> Sá, Cancelar</button>' +
             '</div>' +
         '</div>';
         document.body.appendChild(modal);
@@ -258,7 +258,7 @@
             '<p style="font-size:0.9rem;color:#5A7D9A;margin:12px 0">┬┐Deseas salir del rosario <strong>' + (placeName || '') + '</strong>?</p>' +
             '<div class="slot-signup-actions">' +
                 '<button class="btn btn-secondary-outline" id="leave-rosary-no">Volver</button>' +
-                '<button class="btn btn-primary" id="leave-rosary-yes" style="background:linear-gradient(135deg,#f0a500,#e09600)"><i class="ri-logout-circle-r-line"></i> S├¡, Salir</button>' +
+                '<button class="btn btn-primary" id="leave-rosary-yes" style="background:linear-gradient(135deg,#f0a500,#e09600)"><i class="ri-logout-circle-r-line"></i> Sá, Salir</button>' +
             '</div>' +
         '</div>';
         document.body.appendChild(modal);
@@ -334,7 +334,7 @@
                                 id: r.id, place: r.place, address: r.address || '', date: r.date, time: r.time,
                                 mystery: r.mystery, intention: r.intention, lat: r.lat, lng: r.lng,
                                 participants: r.participants || 1, creatorId: r.creator_id,
-                                creatorName: r.creator_name || 'An├│nimo'
+                                creatorName: r.creator_name || 'Anónimo'
                             });
                         }
                     });
@@ -360,7 +360,7 @@
         });
 
         if (myRosaries.length === 0) {
-            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-add-circle-line"></i><p>A├║n no creaste ning├║n rosario</p><button class="btn btn-primary" onclick="app.navigate(\'screen-create-rosary\')"><i class="ri-add-line"></i> Crear Rosario</button></div>';
+            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-add-circle-line"></i><p>Aún no creaste ningún rosario</p><button class="btn btn-primary" onclick="app.navigate(\'screen-create-rosary\')"><i class="ri-add-line"></i> Crear Rosario</button></div>';
             return;
         }
         let html = '';
@@ -403,13 +403,13 @@
             try {
                 var remote = await db.getRosaries();
                 if (remote) remote.forEach(function(r) {
-                    fullRosaries[r.id] = { creatorId: r.creator_id, creatorName: r.creator_name || 'An├│nimo', place: r.place, date: r.date, time: r.time, mystery: r.mystery, intention: r.intention, participants: r.participants || 1 };
+                    fullRosaries[r.id] = { creatorId: r.creator_id, creatorName: r.creator_name || 'Anónimo', place: r.place, date: r.date, time: r.time, mystery: r.mystery, intention: r.intention, participants: r.participants || 1 };
                 });
             } catch(e) {}
         }
         // Also check local rosaries
         this.getActiveRosaries().forEach(function(r) {
-            if (!fullRosaries[r.id]) fullRosaries[r.id] = { creatorId: r.creatorId, creatorName: r.creatorName || 'An├│nimo', place: r.place, date: r.date, time: r.time, mystery: r.mystery, intention: r.intention, participants: r.participants || 1 };
+            if (!fullRosaries[r.id]) fullRosaries[r.id] = { creatorId: r.creatorId, creatorName: r.creatorName || 'Anónimo', place: r.place, date: r.date, time: r.time, mystery: r.mystery, intention: r.intention, participants: r.participants || 1 };
         });
 
         // Enrich joined rosaries with full data (fill missing fields)
@@ -446,13 +446,13 @@
         });
 
         if (joinedOnly.length === 0) {
-            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-map-pin-line"></i><p>A├║n no te uniste a ning├║n rosario</p><button class="btn btn-primary" onclick="app.navigate(\'screen-map\')"><i class="ri-search-line"></i> Buscar Rosario</button></div>';
+            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-map-pin-line"></i><p>Aún no te uniste a ningún rosario</p><button class="btn btn-primary" onclick="app.navigate(\'screen-map\')"><i class="ri-search-line"></i> Buscar Rosario</button></div>';
             return;
         }
         let html = '';
         joinedOnly.forEach(r => {
             var full = fullRosaries[r.id] || {};
-            var coordName = full.creatorName || 'An├│nimo';
+            var coordName = full.creatorName || 'Anónimo';
             var coordId = full.creatorId || '';
             html += '<div class="profile-rosary-card glass card">' +
                 '<div class="profile-rosary-header">' +
@@ -587,7 +587,7 @@
             // Try to enrich with creator info from allActive list
             var enriched = allActive.find(function(r) { return r.id === j.id; });
             var creatorId = (enriched && enriched.creatorId) ? enriched.creatorId : (j.creatorId || null);
-            var creatorName = (enriched && enriched.creatorName) ? enriched.creatorName : (j.creatorName || 'An├│nimo');
+            var creatorName = (enriched && enriched.creatorName) ? enriched.creatorName : (j.creatorName || 'Anónimo');
             return { id: j.id, place: j.name, time: j.time, mystery: j.mystery, intention: j.intention, date: j.date, participants: j.participants || 1, creatorId: creatorId, creatorName: creatorName };
         }
         
@@ -619,7 +619,7 @@
             var payload = {
                 place: r.place, address: r.address || '', date: r.date, time: r.time,
                 mystery: r.mystery, intention: r.intention, lat: r.lat, lng: r.lng,
-                creator_name: r.creatorName || 'An├│nimo', participants: r.participants || 1
+                creator_name: r.creatorName || 'Anónimo', participants: r.participants || 1
             };
             // Only include creator_id if we have a valid Supabase UUID (it's a FK to profiles.id)
             if (supabaseCreatorId) {
@@ -667,7 +667,7 @@
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
             if (!auth || !auth.isAuthenticated()) {
-                alert("Debes iniciar sesi├│n para unirte a un rosario.");
+                alert("Debes iniciar sesión para unirte a un rosario.");
                 app.navigate('screen-login');
                 return;
             }
@@ -703,11 +703,11 @@
 
     shareRosary(rosary) {
         var url = window.location.origin + window.location.pathname + '?rosary=' + rosary.id;
-        var text = '├Ünete al rosario en ' + rosary.place + ' el ' + this.formatDate(rosary.date) + ' a las ' + rosary.time + ' hs.';
+        var text = 'Ánete al rosario en ' + rosary.place + ' el ' + this.formatDate(rosary.date) + ' a las ' + rosary.time + ' hs.';
         
         if (navigator.share) {
             navigator.share({
-                title: 'Red Mar├¡a - Rosario',
+                title: 'Red Maráa - Rosario',
                 text: text,
                 url: url
             }).catch(function(error) {
@@ -716,7 +716,7 @@
         } else {
             // Fallback to copy clipboard
             navigator.clipboard.writeText(text + ' ' + url).then(function() {
-                alert("Enlace copiado al portapapeles. ┬íP├®galo donde quieras compartirlo!");
+                alert("Enlace copiado al portapapeles. ┬íPégalo donde quieras compartirlo!");
             }).catch(function(err) {
                 alert("No se pudo copiar: " + url);
             });
@@ -727,7 +727,7 @@
         if (!s) return '';
         const d = new Date(s + 'T00:00:00'), t = new Date(); t.setHours(0,0,0,0);
         if (d.getTime() === t.getTime()) return 'Hoy';
-        if (d.getTime() === t.getTime() + 86400000) return 'Ma├▒ana';
+        if (d.getTime() === t.getTime() + 86400000) return 'Mañana';
         return d.getDate() + ' ' + ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()];
     },
 
@@ -746,7 +746,7 @@
             
             let hasErr = false;
             [
-                {id:'rosary-country', v:country, m:'Selecciona un pa├¡s'},
+                {id:'rosary-country', v:country, m:'Selecciona un paás'},
                 {id:'rosary-ciudad', v:city, m:'Ingresa una ciudad'},
                 {id:'rosary-place', v:place, m:'Obligatorio'},
                 {id:'rosary-date', v:date, m:'Obligatoria'},
@@ -756,14 +756,14 @@
                 if (!f.v) { if (g) g.classList.add('has-error'); if (er) er.textContent = f.m; hasErr = true; }
                 else { if (g) { g.classList.remove('has-error'); g.classList.add('has-success'); } if (er) er.textContent = ''; }
             });
-            if (!this.pickerLocation) { const le = document.getElementById('rosary-location-error'); if (le) le.textContent = 'Marca una ubicaci├│n'; hasErr = true; }
+            if (!this.pickerLocation) { const le = document.getElementById('rosary-location-error'); if (le) le.textContent = 'Marca una ubicación'; hasErr = true; }
             if (hasErr) { form.classList.add('shake'); setTimeout(() => form.classList.remove('shake'), 500); return; }
             const btn = form.querySelector('.btn-auth-submit'); btn.classList.add('loading'); btn.disabled = true;
             await new Promise(r => setTimeout(r, 800));
             const user = auth.getCurrentUser();
             const address = document.getElementById('rosary-address') ? document.getElementById('rosary-address').value.trim() : '';
             const countryName = document.getElementById('rosary-country') ? document.getElementById('rosary-country').options[document.getElementById('rosary-country').selectedIndex].text : '';
-            const rosary = { id: Date.now().toString(36)+Math.random().toString(36).substr(2), place: auth.sanitize(place), address: auth.sanitize(address), country: country, countryName: countryName, city: city, date, time, mystery: '', intention: '', lat: this.pickerLocation.lat, lng: this.pickerLocation.lng, creatorId: user?.id||'anon', creatorName: user?.name||'An├│nimo', createdAt: new Date().toISOString(), participants: 1 };
+            const rosary = { id: Date.now().toString(36)+Math.random().toString(36).substr(2), place: auth.sanitize(place), address: auth.sanitize(address), country: country, countryName: countryName, city: city, date, time, mystery: '', intention: '', lat: this.pickerLocation.lat, lng: this.pickerLocation.lng, creatorId: user?.id||'anon', creatorName: user?.name||'Anónimo', createdAt: new Date().toISOString(), participants: 1 };
             this.saveRosary(rosary); this.addRosaryCard(rosary);
             btn.classList.remove('loading'); btn.disabled = false;
             form.reset(); this.pickerLocation = null;
@@ -785,7 +785,7 @@
             '<div class="success-detail-row"><i class="ri-calendar-fill"></i> ' + ds + ' ' + rosary.time + ' hs</div>' +
             '<div class="success-detail-row"><i class="ri-sparkling-fill"></i> Misterios ' + rosary.mystery + '</div>' +
             '<div class="success-detail-row"><i class="ri-candle-fill"></i> ' + rosary.intention + '</div>' +
-            '<div class="success-detail-row"><i class="ri-user-fill"></i> Organizado por: ' + (user?.name || 'T├║') + '</div>';
+            '<div class="success-detail-row"><i class="ri-user-fill"></i> Organizado por: ' + (user?.name || 'Tú') + '</div>';
         document.getElementById('create-rosary-form-wrapper').style.display = 'none';
         document.getElementById('create-success-banner').style.display = '';
     },
@@ -796,7 +796,7 @@
         const form = document.getElementById('create-rosary-form');
         if (form) form.reset();
         const citySelect = document.getElementById('rosary-city');
-        if (citySelect) { citySelect.innerHTML = '<option value="">Primero selecciona un pa├¡s...</option>'; citySelect.disabled = true; }
+        if (citySelect) { citySelect.innerHTML = '<option value="">Primero selecciona un paás...</option>'; citySelect.disabled = true; }
         this.pickerLocation = null;
         if (this.pickerMarker && this.pickerMap) { this.pickerMap.removeLayer(this.pickerMarker); this.pickerMarker = null; }
         const ov = document.getElementById('picker-overlay'); if (ov) ov.style.display = '';
@@ -812,7 +812,7 @@
             const group = document.getElementById('forgot-email').closest('.auth-field');
             const errEl = group.querySelector('.field-error');
             if (!email || !auth.validators.email(email)) {
-                group.classList.add('has-error'); errEl.textContent = 'Ingresa un email v├ílido';
+                group.classList.add('has-error'); errEl.textContent = 'Ingresa un email válido';
                 return;
             }
             group.classList.remove('has-error'); group.classList.add('has-success'); errEl.textContent = '';
@@ -847,19 +847,19 @@
             const codeGroup = document.getElementById('reset-code').closest('.auth-field');
             const codeErr = codeGroup.querySelector('.field-error');
             if (code !== this.recoveryCode) {
-                codeGroup.classList.add('has-error'); codeErr.textContent = 'C├│digo incorrecto'; hasErr = true;
+                codeGroup.classList.add('has-error'); codeErr.textContent = 'Código incorrecto'; hasErr = true;
             } else { codeGroup.classList.remove('has-error'); codeGroup.classList.add('has-success'); codeErr.textContent = ''; }
             // Validate password
             const pwGroup = document.getElementById('reset-password').closest('.auth-field');
             const pwErr = pwGroup.querySelector('.field-error');
             if (!auth.validators.password(password)) {
-                pwGroup.classList.add('has-error'); pwErr.textContent = 'Min 8 chars, may├║scula, min├║scula, n├║mero y especial'; hasErr = true;
+                pwGroup.classList.add('has-error'); pwErr.textContent = 'Min 8 chars, mayúscula, minúscula, número y especial'; hasErr = true;
             } else { pwGroup.classList.remove('has-error'); pwGroup.classList.add('has-success'); pwErr.textContent = ''; }
             // Validate confirm
             const cfGroup = document.getElementById('reset-confirm').closest('.auth-field');
             const cfErr = cfGroup.querySelector('.field-error');
             if (password !== confirm) {
-                cfGroup.classList.add('has-error'); cfErr.textContent = 'Las contrase├▒as no coinciden'; hasErr = true;
+                cfGroup.classList.add('has-error'); cfErr.textContent = 'Las contraseñas no coinciden'; hasErr = true;
             } else { cfGroup.classList.remove('has-error'); cfGroup.classList.add('has-success'); cfErr.textContent = ''; }
             if (hasErr) { form.classList.add('shake'); setTimeout(() => form.classList.remove('shake'), 500); return; }
             const btn = form.querySelector('.btn-auth-submit'); btn.classList.add('loading'); btn.disabled = true;
@@ -869,7 +869,7 @@
             if (result.success) {
                 let sb = form.querySelector('.form-success-banner');
                 if (!sb) { sb = document.createElement('div'); sb.className = 'form-success-banner'; form.prepend(sb); }
-                sb.innerHTML = '<i class="ri-checkbox-circle-fill"></i> ┬íContrase├▒a actualizada!'; sb.classList.add('visible');
+                sb.innerHTML = '<i class="ri-checkbox-circle-fill"></i> ┬íContraseña actualizada!'; sb.classList.add('visible');
                 this.recoveryCode = null; this.recoveryEmail = null;
                 setTimeout(() => { sb.classList.remove('visible'); this.navigate('screen-login'); }, 2000);
             } else {
@@ -1069,7 +1069,7 @@
                 bioText.style.fontStyle = 'normal';
                 bioText.style.color = 'var(--clr-text-title)';
             } else {
-                bioText.textContent = '"Toca aqu├¡ para agregar una frase que te represente..."';
+                bioText.textContent = '"Toca aquá para agregar una frase que te represente..."';
                 bioText.style.fontStyle = 'italic';
                 bioText.style.color = 'var(--clr-text-muted)';
             }
@@ -1122,7 +1122,7 @@
         if (!session) return;
         const userName = session.name;
         const all = JSON.parse(localStorage.getItem(this.CONTINUO_KEY) || '{}');
-        const days = ['Domingo','Lunes','Martes','Mi├®rcoles','Jueves','Viernes','S├íbado'];
+        const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
         const mySlots = [];
 
@@ -1138,7 +1138,7 @@
                     const tomorrow = new Date(today.getTime() + 86400000);
                     let dayLabel;
                     if (d.getTime() === today.getTime()) dayLabel = 'Hoy';
-                    else if (d.getTime() === tomorrow.getTime()) dayLabel = 'Ma├▒ana';
+                    else if (d.getTime() === tomorrow.getTime()) dayLabel = 'Mañana';
                     else dayLabel = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
                     const hour = parseInt(h);
                     const hourStr = hour.toString().padStart(2, '0') + ':00';
@@ -1152,7 +1152,7 @@
         mySlots.sort((a, b) => a.date - b.date || a.hour - b.hour);
 
         if (mySlots.length === 0) {
-            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-calendar-line"></i><p>A├║n no te anotaste a ning├║n turno</p><button class="btn btn-primary" onclick="app.navigate(\'screen-live\')"><i class="ri-add-line"></i> Anotarme</button></div>';
+            container.innerHTML = '<div class="profile-no-slots glass card"><i class="ri-calendar-line"></i><p>Aún no te anotaste a ningún turno</p><button class="btn btn-primary" onclick="app.navigate(\'screen-live\')"><i class="ri-add-line"></i> Anotarme</button></div>';
             return;
         }
 
@@ -1249,11 +1249,11 @@
         const today = new Date();
         const isToday = d.toDateString() === today.toDateString();
         const isTomorrow = new Date(today.getTime() + 86400000).toDateString() === d.toDateString();
-        const days = ['Domingo','Lunes','Martes','Mi├®rcoles','Jueves','Viernes','S├íbado'];
+        const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
         const titleEl = document.getElementById('continuo-date-title');
         const subEl = document.getElementById('continuo-date-sub');
-        if (titleEl) titleEl.textContent = isToday ? 'Hoy' : (isTomorrow ? 'Ma├▒ana' : days[d.getDay()]);
+        if (titleEl) titleEl.textContent = isToday ? 'Hoy' : (isTomorrow ? 'Mañana' : days[d.getDay()]);
         if (subEl) subEl.textContent = d.getDate() + ' de ' + months[d.getMonth()] + ', ' + d.getFullYear();
 
         const dateKey = this.localDateKey(d);
@@ -1277,7 +1277,7 @@
 
             if (count > 0) {
                 card.className = 'slot-card ' + (isMine ? 'mine' : 'taken');
-                card.innerHTML = '<div class="slot-hour">' + hour + '</div><div class="slot-count">' + count + '</div><div class="slot-status">' + (isMine ? '­ƒÖÅ T├║ + ' + (count - 1) : count + ' persona' + (count > 1 ? 's' : '')) + '</div>';
+                card.innerHTML = '<div class="slot-hour">' + hour + '</div><div class="slot-count">' + count + '</div><div class="slot-status">' + (isMine ? '­ƒÖÅ Tú + ' + (count - 1) : count + ' persona' + (count > 1 ? 's' : '')) + '</div>';
                 card.onclick = () => this.showSlotSignup(dateKey, h, hour, nextHour);
             } else {
                 card.className = 'slot-card free';
@@ -1331,7 +1331,7 @@
         const modal = document.createElement('div');
         modal.className = 'slot-signup-modal';
         if (alreadyIn) {
-            modal.innerHTML = '<div class="slot-signup-card"><h3>Cancelar Turno</h3><div class="slot-signup-time">' + hourStr + ' - ' + nextHourStr + '</div><div class="slot-signup-date">' + dateStr + '</div><p style="font-size:0.85rem;color:#5A7D9A;margin-bottom:12px">Ya est├ís anotado en este horario. ┬┐Deseas cancelar?</p><div class="slot-signup-actions"><button class="btn btn-secondary-outline" onclick="this.closest(\'.slot-signup-modal\').remove()">Volver</button><button class="btn btn-primary" id="confirm-slot-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">Cancelar Turno</button></div></div>';
+            modal.innerHTML = '<div class="slot-signup-card"><h3>Cancelar Turno</h3><div class="slot-signup-time">' + hourStr + ' - ' + nextHourStr + '</div><div class="slot-signup-date">' + dateStr + '</div><p style="font-size:0.85rem;color:#5A7D9A;margin-bottom:12px">Ya estás anotado en este horario. ┬┐Deseas cancelar?</p><div class="slot-signup-actions"><button class="btn btn-secondary-outline" onclick="this.closest(\'.slot-signup-modal\').remove()">Volver</button><button class="btn btn-primary" id="confirm-slot-btn" style="background:linear-gradient(135deg,#e74c3c,#c0392b)">Cancelar Turno</button></div></div>';
             document.body.appendChild(modal);
             modal.querySelector('#confirm-slot-btn').onclick = () => { this.cancelSlot(dateKey, hour); modal.remove(); };
         } else {
@@ -1388,7 +1388,7 @@
         if (!el) return;
         const day = new Date().getDay(); // 0=Dom, 1=Lun...
         const dayMap = { 0: 'Gloriosos', 1: 'Gozosos', 2: 'Dolorosos', 3: 'Gloriosos', 4: 'Luminosos', 5: 'Dolorosos', 6: 'Gozosos' };
-        const dayNames = ['Domingo','Lunes','Martes','Mi├®rcoles','Jueves','Viernes','S├íbado'];
+        const dayNames = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         const mystery = dayMap[day];
         const colorMap = { 'Gozosos': '#56d992', 'Dolorosos': '#e74c3c', 'Gloriosos': '#f0a500', 'Luminosos': '#3DA3D4' };
         el.innerHTML = '<i class="ri-calendar-check-fill"></i> Hoy es <strong>' + dayNames[day] + '</strong> ÔÇö rezamos los <strong>Misterios ' + mystery + '</strong>';
@@ -1401,7 +1401,7 @@
         if (!text) { ta?.focus(); return; }
         const user = auth.isAuthenticated() ? auth.getCurrentUser() : null;
         if (!user) { this.navigate('screen-login'); return; }
-        const name = user.name || 'An├│nimo';
+        const name = user.name || 'Anónimo';
         const initial = name.charAt(0).toUpperCase();
         const colors = ['#A8C4DE','#F4D35E','#B5D6A7','#E8A0BF','#C4B5FD','#8FACC5','#FFB4A2','#89CFF0','#FFC6FF','#CAFFBF'];
         const color = colors[Math.floor(Math.random() * colors.length)];
@@ -1515,7 +1515,7 @@ function saveProfileBio() {
     var words = bio.match(/\S+/g);
     var wordCount = words ? words.length : 0;
     if (wordCount > 80) {
-        if (typeof showMsgToast === 'function') showMsgToast('La frase no puede tener m├ís de 80 palabras.');
+        if (typeof showMsgToast === 'function') showMsgToast('La frase no puede tener más de 80 palabras.');
         return;
     }
     
@@ -1528,7 +1528,7 @@ function saveProfileBio() {
             bioText.style.fontStyle = 'normal';
             bioText.style.color = 'var(--clr-text-title)';
         } else {
-            bioText.textContent = '"Toca aqu├¡ para agregar una frase que te represente..."';
+            bioText.textContent = '"Toca aquá para agregar una frase que te represente..."';
             bioText.style.fontStyle = 'italic';
             bioText.style.color = 'var(--clr-text-muted)';
         }
@@ -1571,7 +1571,7 @@ function saveProfileIntention() {
     var words = intention.match(/\S+/g);
     var wordCount = words ? words.length : 0;
     if (wordCount > 80) {
-        if (typeof showMsgToast === 'function') showMsgToast('La intenci├│n no puede tener m├ís de 80 palabras.');
+        if (typeof showMsgToast === 'function') showMsgToast('La intención no puede tener más de 80 palabras.');
         return;
     }
     
@@ -1584,7 +1584,7 @@ function saveProfileIntention() {
             textEl.style.fontStyle = 'normal';
             textEl.style.color = 'var(--clr-text-title)';
         } else {
-            textEl.textContent = '"Toca aqu├¡ para escribir una intenci├│n por la cual quieres que la comunidad rece..."';
+            textEl.textContent = '"Toca aquá para escribir una intención por la cual quieres que la comunidad rece..."';
             textEl.style.fontStyle = 'italic';
             textEl.style.color = 'var(--clr-text-muted)';
         }
@@ -1592,8 +1592,8 @@ function saveProfileIntention() {
     
     // Broadcast instantly if active
     if (typeof _myRezandoId !== 'undefined' && _myRezandoId && typeof broadcastRezando === 'function') {
-        var userName = 'T├║';
-        try { userName = auth.getCurrentUser().name || 'T├║'; } catch(e){}
+        var userName = 'Tú';
+        try { userName = auth.getCurrentUser().name || 'Tú'; } catch(e){}
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(pos) {
                 broadcastRezando(_myRezandoId, userName, pos.coords.latitude, pos.coords.longitude, '', intention);
