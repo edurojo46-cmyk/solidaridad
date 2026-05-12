@@ -82,7 +82,7 @@
             <a href="#" onclick="app.mobileNav('screen-como-rezar')"><i class="ri-book-open-line"></i> Cómo Rezar</a>
             <a href="#" onclick="app.mobileNav('screen-porque-rezar')"><i class="ri-question-line"></i> Por qué Rezar</a>
             <a href="#" onclick="app.mobileNav('screen-apariciones')"><i class="ri-eye-line"></i> Apariciones</a>
-            <a href="#" onclick="app.mobileNav('screen-Comedores')"><i class="ri-building-4-line"></i> Comedores</a>
+            <a href="#" onclick="app.mobileNav('screen-situacion-calle')"><i class="ri-alert-line"></i> Situación Calle</a><a href="#" onclick="app.mobileNav('screen-Comedores')"><i class="ri-building-4-line"></i> Comedores</a>
             <a href="#" onclick="app.mobileNav('screen-cenaculo')"><i class="ri-team-line"></i> Cenaculo</a>
             <a href="#" onclick="app.mobileNav('screen-chat')" class="nav-chat-link"><i class="ri-chat-3-line"></i> Mensajes<span class="nav-msg-badge" id="sidebar-msg-badge" style="display:none">0</span></a>
             <a href="#" onclick="app.mobileNav('screen-profile')"><i class="ri-user-line"></i> Perfil</a>
@@ -91,10 +91,10 @@
 
     <!-- DESKTOP HEADER -->
     <header class="desktop-header glass">
-        <div class="header-logo"><div class="header-avatar" style="background: white; border-radius: 8px; display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; margin-right: 8px;"><i class="ri-heart-pulse-fill" style="color: #e74c3c; font-size: 1.2rem;"></i></div><span>SOLIDARIDAD</span></div>
+        <div class="header-logo"><div class="header-avatar" style="background: white; border-radius: 8px; display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; margin-right: 8px;"><i class="ri-heart-pulse-fill" style="color: #e74c3c; font-size: 1.2rem;"></i><div style="font-size:0.7rem;color:var(--clr-text-muted);margin-top:2px">Red Comunitaria</div></div><span>Solidaridad</span></div>
         <nav class="header-nav">
             <a href="#" class="active" onclick="app.navigate('screen-splash')">Inicio</a>
-            <a href="#" onclick="app.navigate('screen-map')">Buscar Rosarios</a>
+            <a href="#" onclick="app.navigate('screen-situacion-calle')" style="color:#e74c3c;font-weight:600">Situación Calle</a><a href="#" onclick="app.navigate('screen-map')">Buscar Rosarios</a>
             <a href="#" onclick="app.navigate('screen-create-rosary')">Crear Rosario</a>
             <a href="#" onclick="app.navigate('screen-live')">Rosario Continuo</a>
             <a href="#" onclick="app.navigate('screen-rezo')">Rezar</a>
@@ -993,6 +993,41 @@
         </div>
     </section>
 
+
+    <!-- SITUACIÓN EN CALLE -->
+    <section id="screen-situacion-calle" class="screen" style="background: var(--clr-bg); display:flex; flex-direction:column;">
+        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Situación en Calle</h2><div style="width:24px"></div></div>
+        <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px;">
+            <div style="background:linear-gradient(135deg,#e74c3c,#c0392b); border-radius:20px; padding:24px; color:white; text-align:center;">
+                <div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;"><i class="ri-alert-fill"></i></div>
+                <h2 style="margin:0 0 6px;font-size:1.4rem;font-weight:700;">Red de Alertas Solidarias</h2>
+                <p style="margin:0;opacity:0.9;font-size:0.9rem;">Reportá situaciones de calle para coordinar ayuda</p>
+            </div>
+            <button onclick="openPublicarAlertaModal()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:16px;font-size:1rem;font-weight:600;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;box-shadow:0 4px 16px rgba(231,76,60,0.3);">
+                <i class="ri-add-circle-fill" style="font-size:1.3rem;"></i> Publicar una Alerta
+            </button>
+            <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+                <button onclick="filterAlertas('todas')" class="buscar-chip active" id="alerta-chip-todas"><i class="ri-list-check"></i> Todas</button>
+                <button onclick="filterAlertas('activas')" class="buscar-chip" id="alerta-chip-activas"><i class="ri-pulse-fill"></i> Activas</button>
+                <button onclick="filterAlertas('atendidas')" class="buscar-chip" id="alerta-chip-atendidas"><i class="ri-check-fill"></i> Atendidas</button>
+            </div>
+            <div id="alertas-list" style="display:flex;flex-direction:column;gap:12px;">
+                <div style="text-align:center;padding:40px 20px;color:var(--clr-text-muted);"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;"></i><p style="margin-top:8px;">Cargando alertas...</p></div>
+            </div>
+        </div>
+        <div id="publicar-alerta-overlay" onclick="closePublicarAlertaModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;"></div>
+        <div id="publicar-alerta-modal" style="display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:28px 20px;z-index:9999;max-height:85vh;overflow-y:auto;box-shadow:0 -8px 32px rgba(0,0,0,0.2);">
+            <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 20px;"></div>
+            <h3 style="margin:0 0 20px;font-size:1.2rem;font-weight:700;color:var(--clr-text-title);">Nueva Alerta Solidaria</h3>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-map-pin-line" style="color:#e74c3c;"></i> Dirección / Zona</label><input id="alerta-direccion" type="text" placeholder="Ej: Av. Rivadavia y Pueyrredón" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;"></div>
+                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-file-text-line" style="color:#e74c3c;"></i> Descripción</label><textarea id="alerta-descripcion" placeholder="Describí lo que observás: persona durmiendo, necesita ropa, etc." rows="3" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;resize:none;font-family:inherit;"></textarea></div>
+                <div><label style="font-size:0.85rem;font-weight:600;color:#444;display:block;margin-bottom:6px;"><i class="ri-phone-line" style="color:#e74c3c;"></i> Contacto (opcional)</label><input id="alerta-contacto" type="text" placeholder="WhatsApp o teléfono" style="width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.95rem;background:#fcfcfc;box-sizing:border-box;"></div>
+                <button onclick="submitPublicarAlerta()" class="btn btn-primary" style="padding:14px;border-radius:12px;font-size:1rem;font-weight:600;margin-top:4px;"><i class="ri-send-plane-fill"></i> Publicar Alerta</button>
+                <button onclick="closePublicarAlertaModal()" style="background:none;border:none;color:var(--clr-text-muted);font-size:0.9rem;cursor:pointer;padding:8px;">Cancelar</button>
+            </div>
+        </div>
+    </section>
     <!-- Comedores -->
     <section id="screen-Comedores" class="screen gradient-bg">
         <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Comedores</h2><div style="width:24px"></div></div>
@@ -1711,6 +1746,101 @@ function filterComedoresGrid(query) {
 }
 
 // Add Comedor Modal Logic
+
+// ===== SITUACIÓN EN CALLE =====
+function openPublicarAlertaModal() {
+    if (!auth || !auth.isAuthenticated()) {
+        alert("Por favor iniciá sesión para publicar una alerta.");
+        app.navigate('screen-login');
+        return;
+    }
+    document.getElementById('publicar-alerta-modal').style.display = 'block';
+    document.getElementById('publicar-alerta-overlay').style.display = 'block';
+}
+
+function closePublicarAlertaModal() {
+    document.getElementById('publicar-alerta-modal').style.display = 'none';
+    document.getElementById('publicar-alerta-overlay').style.display = 'none';
+}
+
+async function submitPublicarAlerta() {
+    var dir = document.getElementById('alerta-direccion').value.trim();
+    var desc = document.getElementById('alerta-descripcion').value.trim();
+    var contacto = document.getElementById('alerta-contacto').value.trim();
+    if (!dir || !desc) { alert("Por favor completá la dirección y descripción."); return; }
+    var u = auth.getCurrentUser();
+    var alerta = { direccion: dir, descripcion: desc, contacto: contacto, estado: 'activa', created_by: u ? u.id : null, created_at: new Date().toISOString() };
+    try {
+        if (sbClient) {
+            await sbClient.from('alertas_calle').insert([alerta]);
+        }
+        closePublicarAlertaModal();
+        document.getElementById('alerta-direccion').value = '';
+        document.getElementById('alerta-descripcion').value = '';
+        document.getElementById('alerta-contacto').value = '';
+        loadAlertasCalle();
+        alert("¡Alerta publicada! La comunidad puede verla ahora.");
+    } catch(e) { alert("Error al publicar: " + e.message); }
+}
+
+async function loadAlertasCalle() {
+    var list = document.getElementById('alertas-list');
+    if (!list) return;
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--clr-text-muted);"><i class="ri-loader-4-line ri-spin" style="font-size:1.5rem;"></i></div>';
+    var alertas = [];
+    try {
+        if (sbClient) {
+            var { data } = await sbClient.from('alertas_calle').select('*').order('created_at', { ascending: false }).limit(50);
+            alertas = data || [];
+        }
+    } catch(e) { alertas = []; }
+    if (alertas.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--clr-text-muted);"><i class="ri-alert-line" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i><p>No hay alertas activas</p><p style="font-size:0.8rem;margin-top:6px;">Sé el primero en reportar una situación</p></div>';
+        return;
+    }
+    list.innerHTML = alertas.map(function(a) {
+        var fecha = a.created_at ? new Date(a.created_at).toLocaleDateString('es-AR', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+        var color = a.estado === 'atendida' ? '#27ae60' : '#e74c3c';
+        var icon = a.estado === 'atendida' ? 'ri-check-fill' : 'ri-alert-fill';
+        return '<div style="background:white;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid '+color+';">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+            '<div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;background:'+color+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:0.9rem;"><i class="'+icon+'"></i></div>' +
+            '<div><div style="font-weight:600;font-size:0.95rem;color:var(--clr-text-title);">'+escapeHtml(a.direccion)+'</div>' +
+            '<div style="font-size:0.75rem;color:var(--clr-text-muted);">'+fecha+'</div></div></div>' +
+            '<span style="font-size:0.7rem;font-weight:600;background:'+(a.estado==='atendida'?'rgba(39,174,96,0.1)':'rgba(231,76,60,0.1)')+';color:'+color+';padding:4px 10px;border-radius:20px;">'+(a.estado==='atendida'?'Atendida':'Activa')+'</span></div>' +
+            '<p style="margin:0 0 10px;font-size:0.9rem;color:var(--clr-text-body);line-height:1.5;">'+escapeHtml(a.descripcion)+'</p>' +
+            (a.contacto ? '<div style="font-size:0.8rem;color:var(--clr-text-muted);display:flex;align-items:center;gap:4px;"><i class="ri-phone-line"></i> '+escapeHtml(a.contacto)+'</div>' : '') +
+            (a.estado === 'activa' ? '<button onclick="marcarAtendida(\''+a.id+'\')" style="margin-top:10px;background:none;border:1px solid #27ae60;color:#27ae60;padding:6px 14px;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;">✓ Marcar Atendida</button>' : '') +
+            '</div>';
+    }).join('');
+}
+
+async function marcarAtendida(id) {
+    try {
+        if (sbClient) await sbClient.from('alertas_calle').update({ estado: 'atendida' }).eq('id', id);
+        loadAlertasCalle();
+    } catch(e) {}
+}
+
+function filterAlertas(tipo) {
+    document.querySelectorAll('[id^=alerta-chip-]').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('alerta-chip-' + tipo).classList.add('active');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Load alertas when screen opens
+document.addEventListener('DOMContentLoaded', function() {
+    var origNavigate = app.navigate.bind(app);
+    app.navigate = function(screen) {
+        origNavigate(screen);
+        if (screen === 'screen-situacion-calle') setTimeout(loadAlertasCalle, 300);
+    };
+});
+
 function openAddComedorModal() {
     if (!auth || !auth.isAuthenticated()) {
         alert("Por favor iniciá Sesión para agregar Comedores.");
