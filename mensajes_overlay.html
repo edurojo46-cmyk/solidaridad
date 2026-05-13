@@ -1,0 +1,103 @@
+
+<!-- MENSAJES PANEL (overlay independiente, z-index 9000) -->
+<div id="mensajes-panel" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#f8fafc;z-index:9000;flex-direction:column;font-family:'Inter',sans-serif;">
+  <style>
+    #mensajes-panel .mp-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;background:white;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10;}
+    #mensajes-panel .mp-header h2{margin:0;font-size:1.4rem;font-weight:900;color:#1a1a2e;}
+    #mensajes-panel .mp-search{padding:12px 16px 4px;}
+    #mensajes-panel .mp-search input{width:100%;padding:10px 16px;border-radius:24px;border:1.5px solid #e2e8f0;background:white;font-size:0.9rem;color:#1a1a2e;font-family:inherit;outline:none;box-sizing:border-box;}
+    #mensajes-panel .mp-list{flex:1;overflow-y:auto;padding:8px 0 100px;}
+    #mensajes-panel .mp-item{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;border-bottom:1px solid #f1f5f9;}
+    #mensajes-panel .mp-avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:white;flex-shrink:0;}
+    #mensajes-panel .mp-info{flex:1;min-width:0;}
+    #mensajes-panel .mp-name{font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0 0 3px;}
+    #mensajes-panel .mp-preview{font-size:0.82rem;color:#64748b;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #mensajes-panel .mp-meta{text-align:right;flex-shrink:0;}
+    #mensajes-panel .mp-time{font-size:0.72rem;color:#94a3b8;font-weight:600;display:block;margin-bottom:4px;}
+    #mensajes-panel .mp-badge{background:#e74c3c;color:white;border-radius:50%;width:20px;height:20px;font-size:0.7rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;}
+    #mp-conv{display:none;flex-direction:column;position:absolute;top:0;left:0;right:0;bottom:0;background:#f8fafc;z-index:11;}
+    #mp-conv .mp-conv-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:white;border-bottom:1px solid #e2e8f0;}
+    #mp-conv .mp-conv-header h4{margin:0;font-size:1rem;font-weight:800;color:#1a1a2e;flex:1;}
+    #mp-conv-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;padding-bottom:80px;}
+    .mp-bubble{max-width:80%;padding:10px 14px;border-radius:18px;font-size:0.9rem;line-height:1.4;}
+    .mp-bubble.sent{background:#e74c3c;color:white;border-bottom-right-radius:4px;align-self:flex-end;}
+    .mp-bubble.recv{background:white;color:#1a1a2e;border-bottom-left-radius:4px;align-self:flex-start;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+    .mp-bubble-time{font-size:0.68rem;opacity:0.7;margin-top:3px;display:block;text-align:right;}
+    #mp-input-bar{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:12px 16px;background:white;border-top:1px solid #e2e8f0;}
+    #mp-input-bar input{flex:1;padding:10px 16px;border-radius:24px;border:1.5px solid #e2e8f0;font-size:0.9rem;font-family:inherit;outline:none;background:#f8fafc;}
+    #mp-input-bar button{width:44px;height:44px;border-radius:50%;background:#e74c3c;border:none;color:white;font-size:1.2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  </style>
+  <div id="mp-list-view" style="display:flex;flex-direction:column;height:100%;position:relative;">
+    <div class="mp-header">
+      <h2><i class="ri-chat-3-fill" style="color:#e74c3c;margin-right:6px;"></i>Mensajes</h2>
+      <button onclick="closeMensajesPanel()" style="background:none;border:none;font-size:1.6rem;color:#64748b;cursor:pointer;"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="mp-search"><input type="text" id="mp-search-input" placeholder="Buscar conversacion..." oninput="filterMpList(this.value)"></div>
+    <div class="mp-list" id="mp-list-container">
+      <div style="text-align:center;padding:50px 20px;">
+        <i class="ri-loader-4-line" style="font-size:2rem;color:#e74c3c;animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i>
+        <p style="color:#94a3b8;font-size:0.9rem;margin:0;">Cargando...</p>
+      </div>
+    </div>
+  </div>
+  <div id="mp-conv">
+    <div class="mp-conv-header">
+      <button onclick="closeMpConv()" style="background:none;border:none;font-size:1.3rem;color:#1a1a2e;cursor:pointer;"><i class="ri-arrow-left-line"></i></button>
+      <div id="mp-conv-avatar" class="mp-avatar" style="width:36px;height:36px;font-size:0.9rem;margin:0;"></div>
+      <h4 id="mp-conv-name"></h4>
+    </div>
+    <div id="mp-conv-messages"></div>
+    <div id="mp-input-bar">
+      <input type="text" id="mp-text-input" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter')sendMpMsg()">
+      <button onclick="sendMpMsg()"><i class="ri-send-plane-2-fill"></i></button>
+    </div>
+  </div>
+</div>
+<script>
+function openMensajesPanel(){
+  var p=document.getElementById('mensajes-panel');
+  p.style.display='flex';
+  document.getElementById('mp-conv').style.display='none';
+  document.getElementById('mp-list-view').style.display='flex';
+  mpLoadContacts();
+}
+function closeMensajesPanel(){document.getElementById('mensajes-panel').style.display='none';}
+function mpLoadContacts(){
+  var u=typeof auth!=='undefined'?auth.getCurrentUser():null;
+  var cont=document.getElementById('mp-list-container');
+  if(!u){cont.innerHTML='<div style="text-align:center;padding:60px 20px;"><i class="ri-lock-line" style="font-size:2.5rem;color:#cbd5e1;display:block;margin-bottom:12px;"></i><p style="color:#94a3b8;">Inicia sesion para chatear.</p></div>';return;}
+  var contacts=[
+    {id:'c1',name:'Comedor Los Angelitos',preview:'Muchas gracias por la ayuda!',time:'10:32',unread:2,color:'#3498db'},
+    {id:'c2',name:'Maria Gomez',preview:'Confirmo el envio de ropa para el sabado',time:'Ayer',unread:0,color:'#9b59b6'},
+    {id:'c3',name:'Juan Perez',preview:'Podemos hablar del operativo?',time:'Lun',unread:1,color:'#27ae60'}
+  ];
+  cont.innerHTML=contacts.map(function(c){
+    var ini=(c.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    var badge=c.unread>0?'<span class="mp-badge">'+c.unread+'</span>':'';
+    return '<div class="mp-item" onclick=\'openMpConv('+JSON.stringify(c)+')\'>'+'<div class="mp-avatar" style="background:'+c.color+'">'+ini+'</div>'+'<div class="mp-info"><p class="mp-name">'+c.name+'</p><p class="mp-preview">'+c.preview+'</p></div>'+'<div class="mp-meta"><span class="mp-time">'+c.time+'</span>'+badge+'</div>'+'</div>';
+  }).join('');
+}
+function filterMpList(q){document.querySelectorAll('#mp-list-container .mp-item').forEach(function(el){el.style.display=(!q||el.textContent.toLowerCase().includes(q.toLowerCase()))?'':'none';});}
+function openMpConv(c){
+  if(typeof c==='string')c=JSON.parse(c);
+  document.getElementById('mp-list-view').style.display='none';
+  var cv=document.getElementById('mp-conv');
+  cv.style.display='flex';
+  var av=document.getElementById('mp-conv-avatar');
+  av.textContent=(c.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  av.style.background=c.color||'#e74c3c';
+  document.getElementById('mp-conv-name').textContent=c.name;
+  var msgs=[{t:'Hola! Como estas?',s:false,h:'10:20'},{t:'Todo bien! Necesito coordinar el operativo del sabado.',s:true,h:'10:22'},{t:'Perfecto. Cuantas personas van a ir?',s:false,h:'10:25'},{t:'Somos 5. Llevamos ropa y alimentos.',s:true,h:'10:28'},{t:'Muchas gracias por la ayuda!',s:false,h:'10:32'}];
+  document.getElementById('mp-conv-messages').innerHTML=msgs.map(function(m){return '<div class="mp-bubble '+(m.s?'sent':'recv')+'">'+m.t+'<span class="mp-bubble-time">'+m.h+'</span></div>';}).join('');
+  setTimeout(function(){var el=document.getElementById('mp-conv-messages');el.scrollTop=el.scrollHeight;},100);
+}
+function closeMpConv(){document.getElementById('mp-conv').style.display='none';document.getElementById('mp-list-view').style.display='flex';}
+function sendMpMsg(){
+  var inp=document.getElementById('mp-text-input');
+  var t=inp.value.trim();if(!t)return;
+  var now=new Date();var h=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  document.getElementById('mp-conv-messages').innerHTML+='<div class="mp-bubble sent">'+t+'<span class="mp-bubble-time">'+h+'</span></div>';
+  inp.value='';
+  var el=document.getElementById('mp-conv-messages');el.scrollTop=el.scrollHeight;
+}
+</script>
