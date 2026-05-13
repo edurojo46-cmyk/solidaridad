@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=202">
+    <link rel="stylesheet" href="index.css?v=203">
     <script>
         // DEV FIX: Force unregister service workers on localhost
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -3505,9 +3505,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=202"></script>
-<script src="supabase.js?v=202"></script>
-<script src="app.js?v=202"></script>
+<script src="auth.js?v=203"></script>
+<script src="supabase.js?v=203"></script>
+<script src="app.js?v=203"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8282,24 +8282,89 @@ function openMensajesPanel(){
   mpLoadContacts();
 }
 function closeMensajesPanel(){document.getElementById('mensajes-panel').style.display='none';}
-function mpLoadContacts(){
-  var u=typeof auth!=='undefined'?auth.getCurrentUser():null;
+async function mpLoadContacts(){
   var cont=document.getElementById('mp-list-container');
-  if(!u){cont.innerHTML='<div style="text-align:center;padding:60px 20px;"><i class="ri-lock-line" style="font-size:2.5rem;color:#cbd5e1;display:block;margin-bottom:12px;"></i><p style="color:#94a3b8;">Inicia sesion para chatear.</p></div>';return;}
-  var contacts=[
-    {id:'c1',name:'Comedor Los Angelitos',preview:'Muchas gracias por la ayuda!',time:'10:32',unread:2,color:'#3498db'},
-    {id:'c2',name:'Maria Gomez',preview:'Confirmo el envio de ropa para el sabado',time:'Ayer',unread:0,color:'#9b59b6'},
-    {id:'c3',name:'Juan Perez',preview:'Podemos hablar del operativo?',time:'Lun',unread:1,color:'#27ae60'}
-  ];
+  // 1. Auth gate - ONLY the logged in user sees their messages
+  var u=typeof auth!=='undefined'?auth.getCurrentUser():null;
+  if(!u){
+    cont.innerHTML='<div style="text-align:center;padding:60px 20px;"><i class="ri-lock-line" style="font-size:2.5rem;color:#cbd5e1;display:block;margin-bottom:12px;"></i><p style="color:#94a3b8;font-size:0.9rem;font-weight:600;">Inicia sesion para ver tus mensajes.</p></div>';
+    return;
+  }
+  // 2. Show loading state
+  cont.innerHTML='<div style="text-align:center;padding:50px 20px;"><i class="ri-loader-4-line" style="font-size:2rem;color:#e74c3c;animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i><p style="color:#94a3b8;font-size:0.9rem;margin:0;">Cargando tus mensajes...</p></div>';
+  // 3. Try to load real conversations from Supabase for this user
+  var userId = u.id || u.uid;
+  var contacts = [];
+  try {
+    if(typeof sbClient !== 'undefined' && sbClient && userId) {
+      // Query messages table: get unique conversations where user is sender or receiver
+      var res = await sbClient.from('messages')
+        .select('*')
+        .or('from_id.eq.'+userId+',to_id.eq.'+userId)
+        .order('created_at', {ascending:false})
+        .limit(50);
+      if(res.data && res.data.length > 0) {
+        // Group by conversation partner
+        var seen = {};
+        res.data.forEach(function(msg) {
+          var partnerId = msg.from_id === userId ? msg.to_id : msg.from_id;
+          var partnerName = msg.from_id === userId ? (msg.to_name||'Usuario') : (msg.from_name||'Usuario');
+          if(!seen[partnerId]) {
+            seen[partnerId] = {
+              id: partnerId,
+              name: partnerName,
+              preview: msg.content || msg.text || '...',
+              time: _mpFmtTime(msg.created_at),
+              unread: (!msg.read && msg.to_id === userId) ? 1 : 0,
+              color: _mpAvatarColor(partnerName)
+            };
+          } else if(!msg.read && msg.to_id === userId) {
+            seen[partnerId].unread++;
+          }
+        });
+        contacts = Object.values(seen);
+      }
+    }
+  } catch(e) { console.warn('[Mensajes] Supabase query error:', e); }
+  // 4. Show empty state if no conversations (no fake data!)
+  if(contacts.length === 0){
+    cont.innerHTML='<div style="text-align:center;padding:60px 20px;">'+
+      '<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#e74c3c22,#e74c3c11);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">'+
+        '<i class="ri-chat-3-line" style="font-size:2rem;color:#e74c3c;"></i>'+
+      '</div>'+
+      '<p style="color:#1a1a2e;font-size:1rem;font-weight:700;margin:0 0 6px;">Sin mensajes aun</p>'+
+      '<p style="color:#94a3b8;font-size:0.85rem;margin:0 0 20px;">Conectate con otros miembros<br>de la red Solidaridad</p>'+
+      '<p style="color:#cbd5e1;font-size:0.75rem;background:#f8fafc;padding:8px 16px;border-radius:20px;display:inline-block;">'+
+        '<i class="ri-user-line"></i> Sesion: <b style="color:#64748b;">'+(u.name||u.email||'')+'</b>'+
+      '</p>'+
+    '</div>';
+    return;
+  }
+  // 5. Render real conversations
   cont.innerHTML=contacts.map(function(c){
     var ini=(c.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     var badge=c.unread>0?'<span class="mp-badge">'+c.unread+'</span>':'';
     return '<div class="mp-item" onclick=\'openMpConv('+JSON.stringify(c)+')\'>'+'<div class="mp-avatar" style="background:'+c.color+'">'+ini+'</div>'+'<div class="mp-info"><p class="mp-name">'+c.name+'</p><p class="mp-preview">'+c.preview+'</p></div>'+'<div class="mp-meta"><span class="mp-time">'+c.time+'</span>'+badge+'</div>'+'</div>';
   }).join('');
 }
+function _mpFmtTime(ts){
+  if(!ts)return'';
+  var d=Math.floor((Date.now()-new Date(ts).getTime())/1000);
+  if(d<3600)return Math.floor(d/60)+'m';
+  if(d<86400)return Math.floor(d/3600)+'h';
+  if(d<604800)return Math.floor(d/86400)+'d';
+  return new Date(ts).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+}
+function _mpAvatarColor(name){
+  var c=['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#e67e22'];
+  return c[(name.charCodeAt(0)||65)%c.length];
+}
+
 function filterMpList(q){document.querySelectorAll('#mp-list-container .mp-item').forEach(function(el){el.style.display=(!q||el.textContent.toLowerCase().includes(q.toLowerCase()))?'':'none';});}
-function openMpConv(c){
+var _mpCurrentContact = null;
+async function openMpConv(c){
   if(typeof c==='string')c=JSON.parse(c);
+  _mpCurrentContact = c;
   document.getElementById('mp-list-view').style.display='none';
   var cv=document.getElementById('mp-conv');
   cv.style.display='flex';
@@ -8307,23 +8372,82 @@ function openMpConv(c){
   av.textContent=(c.name||'?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
   av.style.background=c.color||'#e74c3c';
   document.getElementById('mp-conv-name').textContent=c.name;
-  var msgs=[{t:'Hola! Como estas?',s:false,h:'10:20'},{t:'Todo bien! Necesito coordinar el operativo del sabado.',s:true,h:'10:22'},{t:'Perfecto. Cuantas personas van a ir?',s:false,h:'10:25'},{t:'Somos 5. Llevamos ropa y alimentos.',s:true,h:'10:28'},{t:'Muchas gracias por la ayuda!',s:false,h:'10:32'}];
-  document.getElementById('mp-conv-messages').innerHTML=msgs.map(function(m){return '<div class="mp-bubble '+(m.s?'sent':'recv')+'">'+m.t+'<span class="mp-bubble-time">'+m.h+'</span></div>';}).join('');
-  setTimeout(function(){var el=document.getElementById('mp-conv-messages');el.scrollTop=el.scrollHeight;},100);
+  
+  var msgsContainer = document.getElementById('mp-conv-messages');
+  msgsContainer.innerHTML = '<div style="text-align:center;padding:20px;"><i class="ri-loader-4-line" style="font-size:1.5rem;color:#e74c3c;animation:spin 1s linear infinite;"></i></div>';
+  
+  var u=typeof auth!=='undefined'?auth.getCurrentUser():null;
+  var userId = u ? (u.id || u.uid) : null;
+  if(typeof sbClient !== 'undefined' && sbClient && userId) {
+    try {
+      var res = await sbClient.from('messages')
+        .select('*')
+        .or('and(from_id.eq.'+userId+',to_id.eq.'+c.id+'),and(from_id.eq.'+c.id+',to_id.eq.'+userId+')')
+        .order('created_at', {ascending:true});
+        
+      if(res.data) {
+        if(res.data.length === 0) {
+           msgsContainer.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:0.85rem;">Inicia la conversacion con ' + c.name + '</div>';
+        } else {
+           msgsContainer.innerHTML=res.data.map(function(msg){
+             var isSent = msg.from_id === userId;
+             var time = _mpFmtTime(msg.created_at);
+             return '<div class="mp-bubble '+(isSent?'sent':'recv')+'">'+(msg.content||msg.text||'')+'<span class="mp-bubble-time">'+time+'</span></div>';
+           }).join('');
+           setTimeout(function(){msgsContainer.scrollTop=msgsContainer.scrollHeight;},100);
+           
+           // Mark as read
+           var unreadIds = res.data.filter(function(m){ return !m.read && m.to_id === userId; }).map(function(m){ return m.id; });
+           if(unreadIds.length > 0) {
+             sbClient.from('messages').update({read:true}).in('id', unreadIds).then(function(){});
+           }
+        }
+      }
+    } catch(e) {
+      msgsContainer.innerHTML = '<div style="text-align:center;padding:20px;color:#e74c3c;font-size:0.85rem;">Error cargando mensajes</div>';
+    }
+  }
 }
-function closeMpConv(){document.getElementById('mp-conv').style.display='none';document.getElementById('mp-list-view').style.display='flex';}
-function sendMpMsg(){
+function closeMpConv(){
+  document.getElementById('mp-conv').style.display='none';
+  document.getElementById('mp-list-view').style.display='flex';
+  _mpCurrentContact = null;
+  mpLoadContacts(); // reload to update unread badges
+}
+async function sendMpMsg(){
   var inp=document.getElementById('mp-text-input');
   var t=inp.value.trim();if(!t)return;
+  var u=typeof auth!=='undefined'?auth.getCurrentUser():null;
+  var userId = u ? (u.id || u.uid) : null;
+  if(!userId || !_mpCurrentContact) return;
+  
   var now=new Date();var h=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-  document.getElementById('mp-conv-messages').innerHTML+='<div class="mp-bubble sent">'+t+'<span class="mp-bubble-time">'+h+'</span></div>';
+  var msgsContainer = document.getElementById('mp-conv-messages');
+  // Remove empty state message if it's there
+  if(msgsContainer.innerHTML.includes('Inicia la conversacion')) msgsContainer.innerHTML = '';
+  
+  msgsContainer.innerHTML+='<div class="mp-bubble sent">'+t+'<span class="mp-bubble-time">'+h+'</span></div>';
   inp.value='';
-  var el=document.getElementById('mp-conv-messages');el.scrollTop=el.scrollHeight;
+  msgsContainer.scrollTop=msgsContainer.scrollHeight;
+  
+  if(typeof sbClient !== 'undefined' && sbClient) {
+    try {
+      await sbClient.from('messages').insert({
+        from_id: userId,
+        from_name: u.name || 'Usuario',
+        to_id: _mpCurrentContact.id,
+        to_name: _mpCurrentContact.name,
+        content: t,
+        read: false
+      });
+    } catch(e) { console.error('Error enviando mensaje:', e); }
+  }
 }
 </script>
 
 </body>
 </html>
+
 
 
 
