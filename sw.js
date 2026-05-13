@@ -1,5 +1,5 @@
-// SOLIDARIDAD sw.js - Version 6.0 (Network First)
-var CACHE_NAME = 'solidaridad-cache-v6';
+// SOLIDARIDAD sw.js - Version 7.0 (Network First)
+var CACHE_NAME = 'solidaridad-cache-v7';
 
 self.addEventListener('install', function(e) {
     self.skipWaiting(); // Force the waiting service worker to become the active service worker.
