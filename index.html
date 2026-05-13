@@ -1204,6 +1204,57 @@
         .sc-custom-popup .leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border: none; padding: 4px; }
         .sc-custom-popup .leaflet-popup-content { margin: 12px 14px; line-height: 1.5; }
         .sc-custom-popup .leaflet-popup-tip { box-shadow: none; }
+/* Profile Tags */
+.prof-tag {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.prof-tag.empty {
+    border: 1px dashed #cbd5e1;
+    background: transparent;
+    cursor: pointer;
+}
+.prof-tag.active {
+    background: rgba(231,76,60,0.1);
+    color: #e74c3c;
+    border-color: rgba(231,76,60,0.3);
+}
+
+.tag-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.tag-checkbox input {
+    display: none;
+}
+.tag-checkbox span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #475569;
+    transition: all 0.2s;
+}
+.tag-checkbox input:checked + span {
+    background: rgba(231,76,60,0.1);
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
     </style>
 
 
@@ -3048,153 +3099,85 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
     <!-- 5. PROFILE -->
     <section id="screen-profile" class="screen gradient-bg">
-        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-live')"><i class="ri-arrow-left-line"></i></button><h2>Mi Perfil</h2><div style="width:24px"></div></div>
-        <div class="profile-scrollarea">
-            <div class="profile-header glass card" style="position:relative;">
-                <!-- Profile Like Button -->
-                <div class="profile-likes" style="position:absolute; top:16px; right:20px; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer;" onclick="toggleProfileLike(this)">
-                    <div class="profile-like-icon" style="font-size:1.6rem; transition:all 0.3s; line-height:1; filter:grayscale(80%); opacity:0.5;">Ã‚Â­Ã†â€™Ãƒâ€“Ãƒâ€¦</div>
-                    <span class="profile-like-count" style="font-size:0.8rem; color:var(--clr-text-muted); font-weight:600;">0</span>
-                </div>
-                
-                <div class="profile-avatar-wrapper" onclick="document.getElementById('avatar-upload').click()">
-                    <div class="profile-avatar-placeholder" id="profile-avatar-placeholder">S</div>
-                    <img class="profile-avatar-img" id="profile-avatar-img" style="display:none" alt="Avatar">
-                    <div class="profile-avatar-overlay"><i class="ri-camera-fill"></i></div>
-                    <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
-                </div>
-                <div class="profile-info">
-                    <h3 id="profile-user-name">Santiago</h3>
-                    <p id="profile-user-city">Buenos Aires</p>
-                    <div class="profile-bio-container" style="margin-top:8px;">
-                        <p id="profile-bio-text" class="profile-bio-text" onclick="editProfileBio()" style="font-size:0.85rem;color:var(--clr-text-muted);font-style:italic;cursor:pointer;line-height:1.3;margin:0;word-break:break-word;">
-                            "Toca aquá para agregar una frase que te represente..."
-                        </p>
-                        <div id="profile-bio-editor" style="display:none;flex-direction:column;gap:8px;margin-top:5px;">
-                            <textarea id="profile-bio-input" class="profile-bio-input" placeholder="Escribe tu frase (máx 80 palabras)..." style="width:100%;border-radius:12px;padding:8px;border:2px solid #ffb74d;outline:none;font-size:0.85rem;font-family:inherit;resize:none;background:rgba(255,255,255,0.7);" rows="3"></textarea>
-                            <div style="display:flex;justify-content:flex-end;gap:6px;">
-                                <button class="btn btn-sm" onclick="cancelEditBio()" style="padding:4px 10px;font-size:0.8rem;background:transparent;color:var(--clr-text-muted);border:1px solid var(--clr-text-muted);">Cancelar</button>
-                                <button class="btn btn-sm" onclick="saveProfileBio()" style="padding:4px 10px;font-size:0.8rem;">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="glass card devotion-card"><div class="card-title-row"><span>Devoción: Ntra. Sra. de Luján</span><i class="ri-heart-fill heart-icon"></i></div><img src="assets/basilica.png" id="img-devotion" alt="Lujan" class="devotion-img"/></div>
-
-            <!-- Welcome Prayer Network Card -->
-            <div class="red-welcome-card">
-                <div class="red-welcome-glow"></div>
-                <div class="red-welcome-icon"><i class="ri-hand-heart-fill"></i></div>
-                <h3>Bienvenidos/as a la Red de Oración</h3>
-                <p>Para pedir y rezar por todos/as. Pulsa el botón blanco y aparecerás en la red para participar de esta cadena de oración.</p>
-                <div class="red-welcome-dots">
-                    <span></span><span></span><span></span><span></span><span></span>
-                </div>
-                <!-- Arrow pointing to Reza x má button -->
-                <div style="text-align:center;margin-top:12px;animation:bounceArrow 1.5s ease-in-out infinite;">
-                    <i class="ri-arrow-down-circle-fill" style="font-size:2rem;color:#F4D35E;filter:drop-shadow(0 2px 6px rgba(244,211,94,0.5));"></i>
-                    <div style="font-size:0.75rem;font-weight:600;color:#9aabb8;margin-top:2px;letter-spacing:0.5px;">click</div>
-                </div>
-            </div>
-            <style>@keyframes bounceArrow{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}</style>
-
-            <!-- Reza x má Button -->
-            <div class="rezando-section" id="rezando-section">
-                <button class="rezando-btn" id="rezando-btn" onclick="toggleRezando()">
-                    <span class="rezando-emoji">Ã‚Â­Ã†â€™Ãƒâ€“Ãƒâ€¦</span>
-                    <span id="rezando-btn-text">Reza x má</span>
-                </button>
-                <div class="rezando-counter" id="rezando-counter">
-                    <span class="pulse-dot small"></span>
-                    <span id="rezando-count">0</span> personas rezando ahora
-                </div>
-                
-                <div class="profile-intention-container" style="margin-top:20px; padding:0 16px; margin-bottom:16px;">
-                    <div style="background:rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.6); border-radius:16px; padding:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05); position:relative; overflow:hidden;">
-                        <div style="position:absolute; top:-10px; left:-5px; font-size:5rem; color:rgba(243,156,18,0.1); pointer-events:none;"><i class="ri-double-quotes-l"></i></div>
-                        
-                        <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:10px;">
-                            <i class="ri-candle-fill" style="color:#e67e22; font-size:1.1rem; filter:drop-shadow(0 0 4px rgba(230,126,34,0.4));"></i>
-                            <span style="font-size:0.8rem; font-weight:700; color:var(--clr-text-title); text-transform:uppercase; letter-spacing:0.5px;">Mi Intención de Oración</span>
-                        </div>
-
-                        <p id="profile-intention-text" class="profile-intention-text" onclick="editProfileIntention()" style="font-size:0.95rem; color:var(--clr-text-body); font-style:italic; cursor:pointer; line-height:1.5; margin:0; word-break:break-word; text-align:center; font-weight:500; transition:all 0.2s; position:relative; z-index:1;">
-                            "Toca aquá para escribir una intención por la cual quieres que la comunidad rece..."
-                        </p>
-                        
-                        <div id="profile-intention-editor" style="display:none;flex-direction:column;gap:12px;margin-top:12px; position:relative; z-index:1;">
-                            <textarea id="profile-intention-input" class="profile-intention-input" placeholder="Escribe tu intención aquá (máx 80 palabras)..." style="width:100%; border-radius:12px; padding:12px; border:2px solid rgba(243,156,18,0.4); outline:none; font-size:0.9rem; font-family:inherit; resize:none; background:rgba(255,255,255,0.8); box-shadow:inset 0 2px 4px rgba(0,0,0,0.02); transition:all 0.2s; box-sizing:border-box;" rows="3" onfocus="this.style.borderColor='#f39c12'; this.style.boxShadow='0 0 0 3px rgba(243,156,18,0.1)';" onblur="this.style.borderColor='rgba(243,156,18,0.4)'; this.style.boxShadow='none';"></textarea>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.7rem; color:var(--clr-text-muted); display:flex; align-items:center; gap:4px;"><i class="ri-global-line"></i> Visible en el mapa</span>
-                                <div style="display:flex; gap:8px;">
-                                    <button class="btn btn-sm" onclick="cancelEditIntention()" style="padding:6px 14px; font-size:0.8rem; background:var(--clr-bg-alt); color:var(--clr-text-title); border:1px solid var(--clr-border); border-radius:20px; font-weight:600;">Cancelar</button>
-                                    <button class="btn btn-sm" onclick="saveProfileIntention()" style="padding:6px 16px; font-size:0.8rem; background:linear-gradient(135deg,#f39c12,#d35400); color:#fff; border:none; border-radius:20px; box-shadow:0 4px 10px rgba(243,156,18,0.3); font-weight:600; display:flex; align-items:center; gap:4px;"><i class="ri-check-line"></i> Guardar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="rezando-map-wrapper" id="rezando-map-wrapper">
-                    <div id="rezando-map" style="width:100%;height:100%;border-radius:16px;"></div>
-                </div>
-            </div>
-
-
-            <!-- Santo del Dáa -->
-            <div class="santo-card glass card" id="santo-card">
-                <div class="santo-header">
-                    <div class="santo-icon"><i class="ri-user-star-fill"></i></div>
-                    <div>
-                        <h4>Santo del Dia</h4>
-                        <span class="santo-date" id="santo-date">Lunes 21 de Abril</span>
-                    </div>
-                </div>
-                <div class="santo-content" id="santo-content">
-                    <div class="santo-main">
-                        <div class="santo-img-placeholder" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f0a500,#e67e22);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">&#9962;</div>
-                        <div class="santo-info">
-                            <h3>San Anselmo de Canterbury</h3>
-                            <div class="santo-subtitle">Arzobispo y Doctor de la Comedor</div>
-                        </div>
-                    </div>
-                    <div class="santo-bio" id="santo-bio" style="display:block;max-height:none">
-                        <p>San Anselmo fue un monje benedictino y arzobispo de Canterbury que nacio en Aosta y vivio en el siglo XI entre Francia e Inglaterra. Fundador de la teologia escolastica, tambien poseyo el carisma de un gran pastor de almas. En 1720, fue proclamado Doctor de la Comedor. Se celebra el 21 de abril.</p>
-                    </div>
-                    <a href="https://www.vaticannews.va/es/santos/04/21.html" target="_blank" class="santo-toggle" style="text-decoration:none"><i class="ri-external-link-line"></i> Ver en Vatican News</a>
-                </div>
-            </div>
-
-
-            <h4 class="section-heading"><i class="ri-notification-3-line"></i> Notificaciones</h4>
-            <div id="profile-notifications" class="profile-notifications-container">
-                <div class="notif-card glass card">
-                    <div class="notif-icon" style="background:linear-gradient(135deg,#56d992,#27ae60)"><i class="ri-check-double-fill"></i></div>
-                    <div class="notif-content">
-                        <h5>Ã¢â€Â¬íBienvenido a SOLIDARIDAD!</h5>
-                        <p>Tu cuenta fue creada exitosamente. Explora la app y únete a un rosario.</p>
-                    </div>
-                    <span class="notif-time">ahora</span>
-                </div>
-            </div>
-            <h4 class="section-heading"><i class="ri-calendar-check-line"></i> Mis Turnos de Oración</h4>
-            <div id="profile-my-slots" class="profile-slots-container">
-                <div class="profile-no-slots glass card"><i class="ri-calendar-line"></i><p>Aún no te anotaste a ningún turno</p><button class="btn btn-primary" onclick="app.navigate('screen-live')"><i class="ri-add-line"></i> Anotarme</button></div>
-            </div>
-
-            <h4 class="section-heading"><i class="ri-shield-star-line"></i> Rosarios que Coordino</h4>
-            <div id="profile-my-rosaries" class="profile-slots-container">
-                <div class="profile-no-slots glass card"><i class="ri-add-circle-line"></i><p>Aún no creaste ningún rosario</p><button class="btn btn-primary" onclick="app.navigate('screen-create-rosary')"><i class="ri-add-line"></i> Crear Rosario</button></div>
-            </div>
-
-            <h4 class="section-heading"><i class="ri-map-pin-line"></i> Rosarios Unidos</h4>
-            <div id="profile-joined-rosaries" class="profile-slots-container">
-                <div class="profile-no-slots glass card"><i class="ri-map-pin-line"></i><p>Aún no te uniste a ningún rosario</p><button class="btn btn-primary" onclick="app.navigate('screen-map')"><i class="ri-search-line"></i> Buscar Rosario</button></div>
-            </div>
-
-            <button class="btn btn-logout" onclick="app.handleLogout()"><i class="ri-logout-box-r-line"></i> Cerrar Sesión</button>
+    <section id="screen-profile" class="screen gradient-bg">
+        <div class="screen-header">
+            <h2 style="font-weight:900;letter-spacing:-0.5px;color:#1a1a2e;font-size:1.8rem;">Mi Perfil</h2>
+            <p style="color:var(--clr-text-muted);font-size:0.9rem;margin-top:2px;">Tu impacto solidario</p>
         </div>
-        <div style="height:80px" class="mobile-nav-spacer"></div>
+
+        <div class="scroll-content" style="padding-bottom:120px; padding-top:10px;">
+            <!-- User Identity & Level -->
+            <div class="card glass" style="text-align:center; padding:24px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));opacity:0.8;"></div>
+                
+                <div style="position:relative;margin-top:20px;margin-bottom:12px;">
+                    <div id="profile-avatar-container" style="width:90px;height:90px;border-radius:50%;background:#fff;padding:4px;box-shadow:0 8px 20px rgba(0,0,0,0.1);margin:0 auto;cursor:pointer;" onclick="document.getElementById('profile-avatar-input').click()">
+                        <img src="" id="profile-avatar-img-main" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:none;">
+                        <div id="profile-avatar-placeholder-main" style="width:100%;height:100%;border-radius:50%;background:var(--clr-bg-alt);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--clr-primary);">
+                            <i class="ri-user-smile-fill"></i>
+                        </div>
+                        <div style="position:absolute;bottom:0;right:0;background:var(--clr-primary);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+                            <i class="ri-camera-fill" style="font-size:0.8rem;"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="profile-avatar-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+                </div>
+
+                <h3 id="profile-name-main" style="font-size:1.4rem;font-weight:800;color:#1a1a2e;margin-bottom:4px;">Tu Nombre</h3>
+                <p style="color:var(--clr-text-muted);font-size:0.85rem;margin-bottom:16px;"><i class="ri-mail-line"></i> <span id="profile-email-main">Cargando...</span></p>
+
+                <div style="display:inline-block;padding:6px 16px;background:rgba(231,76,60,0.1);color:#e74c3c;border-radius:20px;font-weight:700;font-size:0.85rem;border:1px solid rgba(231,76,60,0.2);">
+                    <i class="ri-medal-fill"></i> Voluntario Activo
+                </div>
+            </div>
+
+            <!-- Impact Dashboard -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div class="card glass" style="padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
+                    <i class="ri-heart-pulse-fill" style="font-size:2rem;color:#e74c3c;margin-bottom:8px;"></i>
+                    <span style="font-size:1.8rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-alertas">0</span>
+                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Alertas<br>Atendidas</span>
+                </div>
+                <div class="card glass" style="padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
+                    <i class="ri-building-4-fill" style="font-size:2rem;color:#f39c12;margin-bottom:8px;"></i>
+                    <span style="font-size:1.8rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-comedores">0</span>
+                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Comedores<br>Apoyados</span>
+                </div>
+            </div>
+
+            <!-- Resource Tags (What I can offer) -->
+            <div class="card glass">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h4 style="font-size:1.1rem;font-weight:800;color:#1a1a2e;"><i class="ri-price-tag-3-fill" style="color:var(--clr-primary);"></i> Mis Recursos</h4>
+                    <button onclick="document.getElementById('prof-tags-modal').classList.add('active')" style="background:none;border:none;color:var(--clr-primary);font-weight:600;font-size:0.85rem;cursor:pointer;"><i class="ri-edit-box-line"></i> Editar</button>
+                </div>
+                
+                <p style="font-size:0.85rem;color:var(--clr-text-muted);margin-bottom:12px;line-height:1.4;">Etiqueta lo que puedes ofrecer para ayudar en emergencias.</p>
+                
+                <div id="profile-tags-container" style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <span class="prof-tag empty" onclick="document.getElementById('prof-tags-modal').classList.add('active')"><i class="ri-add-line"></i> Agregar recursos</span>
+                </div>
+            </div>
+
+            <!-- Timeline / Bitácora -->
+            <div class="card glass">
+                <h4 style="font-size:1.1rem;font-weight:800;color:#1a1a2e;margin-bottom:16px;"><i class="ri-history-fill" style="color:#27ae60;"></i> Mi Bitácora</h4>
+                
+                <div class="prof-timeline" id="profile-timeline">
+                    <div class="prof-timeline-item" style="display:flex;gap:12px;margin-bottom:0;position:relative;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#e8f5e9;color:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;">
+                            <i class="ri-user-add-fill"></i>
+                        </div>
+                        <div style="padding-top:6px;">
+                            <p style="font-size:0.9rem;font-weight:600;color:#1a1a2e;margin:0;">Te uniste a Solidaridad</p>
+                            <span style="font-size:0.75rem;color:var(--clr-text-muted);">¡Bienvenido a la red!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-logout" onclick="app.handleLogout()" style="margin-top:20px;margin-bottom:40px;"><i class="ri-logout-box-r-line"></i> Cerrar Sesión</button>
+        </div>
     </section>
 
     <!-- BOTTOM NAV -->
@@ -7855,6 +7838,100 @@ setInterval(function() {
         }
     }
 }, 5000);
+// New Profile Logic
+function loadSolidaridadProfile() {
+    if (typeof u === 'undefined' || !u) return;
+
+    // Set Name & Email
+    var pName = document.getElementById('profile-name-main');
+    if (pName) pName.textContent = u.identidad || u.email.split('@')[0] || 'Voluntario';
+    
+    var pEmail = document.getElementById('profile-email-main');
+    if (pEmail) pEmail.textContent = u.email || '';
+
+    // Count Alertas Atendidas (where user_id matches or user commented)
+    var alertasAtendidas = 0;
+    if (typeof scAlertas !== 'undefined') {
+        scAlertas.forEach(function(a) {
+            if (a.user_id === u.id) alertasAtendidas++;
+            else if (typeof scMensajes !== 'undefined' && scMensajes[a.id]) {
+                var commented = scMensajes[a.id].some(function(m) { return m.user_id === u.id; });
+                if (commented) alertasAtendidas++;
+            }
+        });
+    }
+    var pAlertas = document.getElementById('prof-metric-alertas');
+    if (pAlertas) pAlertas.textContent = alertasAtendidas;
+
+    // Count Comedores (where user_id matches)
+    var comedoresApoyados = 0;
+    if (typeof window._activeZonasData !== 'undefined') {
+        // Approximate for now or if we add user_id to comedores later
+        // Let's just pull from local localStorage count for demo purposes if not tied to DB
+    }
+    var pComedores = document.getElementById('prof-metric-comedores');
+    if (pComedores) pComedores.textContent = comedoresApoyados;
+
+    // Load Tags
+    renderProfileTags();
+}
+
+function renderProfileTags() {
+    var container = document.getElementById('profile-tags-container');
+    if (!container) return;
+    
+    var savedTags = [];
+    try {
+        var str = localStorage.getItem('solidaridad_user_tags');
+        if (str) savedTags = JSON.parse(str);
+    } catch(e) {}
+
+    var html = '';
+    if (savedTags.length > 0) {
+        savedTags.forEach(function(t) {
+            var icon = 'ri-price-tag-3-fill';
+            if (t.includes('Vehículo')) icon = 'ri-car-fill';
+            if (t.includes('Ropa')) icon = 'ri-t-shirt-fill';
+            if (t.includes('Cocinar')) icon = 'ri-restaurant-fill';
+            if (t.includes('Tiempo')) icon = 'ri-calendar-event-fill';
+            if (t.includes('Escolar')) icon = 'ri-book-open-fill';
+            if (t.includes('Legal')) icon = 'ri-stethoscope-fill';
+            
+            html += '<span class="prof-tag active"><i class="' + icon + '"></i> ' + t + '</span>';
+        });
+    }
+    html += '<span class="prof-tag empty" onclick="document.getElementById(\'prof-tags-modal\').classList.add(\'active\')"><i class="ri-add-line"></i> Editar recursos</span>';
+    container.innerHTML = html;
+    
+    // Sync checkboxes in modal
+    var checkboxes = document.querySelectorAll('#prof-tags-modal .tag-checkbox input');
+    checkboxes.forEach(function(cb) {
+        cb.checked = savedTags.includes(cb.value);
+    });
+}
+
+function closeProfileTagsModal() {
+    document.getElementById('prof-tags-modal').classList.remove('active');
+}
+
+function saveProfileTags() {
+    var checkboxes = document.querySelectorAll('#prof-tags-modal .tag-checkbox input:checked');
+    var selected = [];
+    checkboxes.forEach(function(cb) { selected.push(cb.value); });
+    
+    localStorage.setItem('solidaridad_user_tags', JSON.stringify(selected));
+    renderProfileTags();
+    closeProfileTagsModal();
+}
+
+// Hook into app navigation to load profile data
+var originalNavigate = app.navigate;
+app.navigate = function(targetId) {
+    originalNavigate.call(app, targetId);
+    if (targetId === 'screen-profile') {
+        setTimeout(loadSolidaridadProfile, 100);
+    }
+};
 </script>
 </body>
 </html>
