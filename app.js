@@ -1,6 +1,6 @@
 ﻿var app = {
     currentScreen: 'screen-splash',
-    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'],
+    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
     detailMap: null,
     buscarMap: null,
@@ -900,7 +900,7 @@
         if (!this.screens.includes(screenId)) return;
         if (auth.isProtected(screenId) && !auth.isAuthenticated()) screenId = 'screen-login';
         const ac = document.getElementById('app-container');
-        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'];
+        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'];
         const isDash = !single.includes(screenId);
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         if (this.isDesktop() && isDash) {
@@ -1644,3 +1644,4 @@ function toggleProfileLike(el) {
         db.updateProfileLikes(u.email, increment).catch(function(e) { console.error('Error syncing likes:', e); });
     }
 }
+
