@@ -3102,6 +3102,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
         #screen-profile { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
         #screen-profile .screen-header { position: sticky; top: 0; background: rgba(245, 243, 240, 0.95); backdrop-filter: blur(10px); z-index: 50; padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         #screen-profile .scroll-content { padding-bottom: 120px; padding-top: 10px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     </style>
     <section id="screen-profile" class="screen gradient-bg">
         <div class="screen-header">
@@ -3148,6 +3151,33 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                         <i class="ri-notification-3-fill" style="font-size:1.2rem;"></i> Avisos
                         <span style="position:absolute;top:-6px;right:-6px;background:#e74c3c;color:white;border-radius:50%;width:22px;height:22px;font-size:0.75rem;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.1);">3</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Colecta Personal -->
+            <div class="card glass" style="margin-bottom:16px;background:linear-gradient(135deg, #1a1a2e, #16213e);color:white;position:relative;overflow:hidden;">
+                <div style="position:absolute;right:-20px;top:-20px;opacity:0.05;font-size:120px;line-height:1;"><i class="ri-heart-3-fill"></i></div>
+                <div style="position:relative;z-index:1;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                        <div>
+                            <h4 style="margin:0;font-size:1.1rem;font-weight:800;color:white;display:flex;align-items:center;gap:6px;"><i class="ri-flag-2-fill" style="color:#e74c3c;"></i> Mi Causa Actual</h4>
+                            <p style="margin:4px 0 0;font-size:0.85rem;color:#94a3b8;">Juntando frazadas para el invierno</p>
+                        </div>
+                        <button onclick="alert('Función de editar meta en desarrollo')" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ri-pencil-fill"></i></button>
+                    </div>
+                    
+                    <div style="margin-top:16px;">
+                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;margin-bottom:6px;">
+                            <span style="color:#2ecc71;">30 donadas</span>
+                            <span style="color:#94a3b8;">Meta: 50</span>
+                        </div>
+                        <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;margin-bottom:16px;">
+                            <div style="width:60%;height:100%;background:#2ecc71;border-radius:4px;position:relative;">
+                                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);animation:shimmer 2s infinite;"></div>
+                            </div>
+                        </div>
+                        <button class="btn" style="width:100%;background:white;color:#1a1a2e;font-weight:800;border-radius:12px;padding:10px;" onclick="alert('Integración con pagos/donaciones en desarrollo')"><i class="ri-hand-heart-fill" style="color:#e74c3c;margin-right:6px;"></i> ¡Yo aporto!</button>
+                    </div>
                 </div>
             </div>
 
@@ -3207,6 +3237,39 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     </div>
                 </div>
             </div>
+
+            <!-- Muro de Agradecimientos -->
+            <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                    <h4 style="font-size:1.15rem;font-weight:800;color:#1a1a2e;margin:0;"><i class="ri-mail-star-fill" style="color:#f1c40f;margin-right:4px;"></i> Agradecimientos</h4>
+                    <span style="font-size:0.8rem;color:var(--clr-primary);font-weight:700;cursor:pointer;">Ver Todos</span>
+                </div>
+                
+                <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:0 -20px;padding:0 20px;" class="hide-scrollbar">
+                    
+                    <!-- Testimonio 1 -->
+                    <div style="min-width:240px;background:#fffde7;border:1px solid #fef08a;border-radius:12px;padding:16px;position:relative;">
+                        <i class="ri-double-quotes-l" style="position:absolute;top:10px;right:12px;font-size:2rem;color:rgba(241,196,15,0.2);"></i>
+                        <p style="font-size:0.9rem;color:#1a1a2e;font-weight:500;margin:0 0 12px;line-height:1.4;position:relative;z-index:1;">"Increíble la ayuda del sábado. Nos salvó con el traslado de la mercadería. ¡Un genio!"</p>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:24px;height:24px;border-radius:50%;background:#3498db;color:white;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;">CA</div>
+                            <span style="font-size:0.75rem;font-weight:700;color:#64748b;">Comedor Los Angelitos</span>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 2 -->
+                    <div style="min-width:240px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;position:relative;">
+                        <i class="ri-double-quotes-l" style="position:absolute;top:10px;right:12px;font-size:2rem;color:rgba(46,204,113,0.2);"></i>
+                        <p style="font-size:0.9rem;color:#1a1a2e;font-weight:500;margin:0 0 12px;line-height:1.4;position:relative;z-index:1;">"Trajo un montón de ropa en impecable estado para los chicos. ¡Gracias de corazón por sumar siempre!"</p>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:24px;height:24px;border-radius:50%;background:#9b59b6;color:white;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;">MG</div>
+                            <span style="font-size:0.75rem;font-weight:700;color:#64748b;">María Gómez</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <button class="btn btn-logout" onclick="app.handleLogout()" style="margin-top:20px;margin-bottom:40px;"><i class="ri-logout-box-r-line"></i> Cerrar Sesión</button>
         </div>
     </section>
