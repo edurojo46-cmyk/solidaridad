@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=233">
+    <link rel="stylesheet" href="index.css?v=234">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3499,35 +3499,25 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
 
 
-            <!-- Muro de Agradecimientos -->
-            <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                    <h4 style="font-size:1.15rem;font-weight:800;color:#1a1a2e;margin:0;"><i class="ri-mail-star-fill" style="color:#f1c40f;margin-right:4px;"></i> Agradecimientos</h4>
-                    <span style="font-size:0.8rem;color:var(--clr-primary);font-weight:700;cursor:pointer;">Ver Todos</span>
-                </div>
-                
-                <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:0 -20px;padding:0 20px;" class="hide-scrollbar">
-                    
-                    <!-- Testimonio 1 -->
-                    <div style="min-width:240px;background:#fffde7;border:1px solid #fef08a;border-radius:12px;padding:16px;position:relative;">
-                        <i class="ri-double-quotes-l" style="position:absolute;top:10px;right:12px;font-size:2rem;color:rgba(241,196,15,0.2);"></i>
-                        <p style="font-size:0.9rem;color:#1a1a2e;font-weight:500;margin:0 0 12px;line-height:1.4;position:relative;z-index:1;">"Increíble la ayuda del sábado. Nos salvó con el traslado de la mercadería. ¡Un genio!"</p>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <div style="width:24px;height:24px;border-radius:50%;background:#3498db;color:white;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;">CA</div>
-                            <span style="font-size:0.75rem;font-weight:700;color:#64748b;">Comedor Los Angelitos</span>
+            <!-- Reconocimientos / Agradecimientos (Estilo FB) -->
+            <div class="card" style="padding:16px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;cursor:pointer;" onclick="alert('Historial de agradecimientos en desarrollo')">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <!-- Iconos apilados tipo Facebook -->
+                        <div style="display:flex;align-items:center;">
+                            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #3498db, #2980b9);border:2px solid white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.15);z-index:3;">
+                                <i class="ri-thumb-up-fill" style="color:white;font-size:0.9rem;"></i>
+                            </div>
+                            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #e74c3c, #c0392b);border:2px solid white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.15);margin-left:-12px;z-index:2;">
+                                <i class="ri-heart-3-fill" style="color:white;font-size:0.9rem;"></i>
+                            </div>
+                            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #f1c40f, #f39c12);border:2px solid white;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.15);margin-left:-12px;z-index:1;">
+                                <i class="ri-user-smile-fill" style="color:white;font-size:0.9rem;"></i>
+                            </div>
                         </div>
+                        <span style="font-size:1.05rem;font-weight:800;color:#1a1a2e;" id="profile-agradecimientos-count">0 Agradecimientos</span>
                     </div>
-
-                    <!-- Testimonio 2 -->
-                    <div style="min-width:240px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;position:relative;">
-                        <i class="ri-double-quotes-l" style="position:absolute;top:10px;right:12px;font-size:2rem;color:rgba(46,204,113,0.2);"></i>
-                        <p style="font-size:0.9rem;color:#1a1a2e;font-weight:500;margin:0 0 12px;line-height:1.4;position:relative;z-index:1;">"Trajo un montón de ropa en impecable estado para los chicos. ¡Gracias de corazón por sumar siempre!"</p>
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <div style="width:24px;height:24px;border-radius:50%;background:#9b59b6;color:white;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;">MG</div>
-                            <span style="font-size:0.75rem;font-weight:700;color:#64748b;">María Gómez</span>
-                        </div>
-                    </div>
-
+                    <i class="ri-arrow-right-s-line" style="color:#94a3b8;font-size:1.5rem;"></i>
                 </div>
             </div>
 
@@ -3535,7 +3525,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-top:16px;margin-bottom:16px;">
                 <!-- Card Situación de Calle -->
                 <div class="card" style="border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-situacion-calle')">
-                    <img src="img-calle.png?v=233" alt="Mapa Situación de Calle" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-calle.png?v=234" alt="Mapa Situación de Calle" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:20px;">
                         <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0 0 8px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:6px;"></i> Situación de Calle</h4>
                         <p style="font-size:0.9rem;color:#64748b;margin:0;line-height:1.5;">Un mapa interactivo en tiempo real donde la comunidad reporta y atiende alertas para personas sin hogar. Cada pin es una oportunidad para ayudar.</p>
@@ -3544,7 +3534,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
                 <!-- Card Comedores -->
                 <div class="card" style="border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-Comedores')">
-                    <img src="img-comedores.png?v=233" alt="Red de Comedores" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-comedores.png?v=234" alt="Red de Comedores" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:20px;">
                         <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0 0 8px;"><i class="ri-building-4-fill" style="color:#f39c12;margin-right:6px;"></i> Red de Comedores</h4>
                         <p style="font-size:0.9rem;color:#64748b;margin:0;line-height:1.5;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. Descubrí dónde y cómo sumar tu aporte.</p>
@@ -3567,9 +3557,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=233"></script>
-<script src="supabase.js?v=233"></script>
-<script src="app.js?v=233"></script>
+<script src="auth.js?v=234"></script>
+<script src="supabase.js?v=234"></script>
+<script src="app.js?v=234"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -8534,6 +8524,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
