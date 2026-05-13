@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=234">
+    <link rel="stylesheet" href="index.css?v=235">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3500,7 +3500,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
 
             <!-- Reconocimientos / Agradecimientos (Estilo FB) -->
-            <div class="card" style="padding:16px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;cursor:pointer;" onclick="alert('Historial de agradecimientos en desarrollo')">
+            <div class="card" style="padding:16px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;cursor:pointer;" onclick="document.getElementById('modal-agradecimientos').style.display='flex'">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div style="display:flex;align-items:center;gap:12px;">
                         <!-- Iconos apilados tipo Facebook -->
@@ -3515,9 +3515,44 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                                 <i class="ri-user-smile-fill" style="color:white;font-size:0.9rem;"></i>
                             </div>
                         </div>
-                        <span style="font-size:1.05rem;font-weight:800;color:#1a1a2e;" id="profile-agradecimientos-count">0 Agradecimientos</span>
+                        <span style="font-size:1.05rem;font-weight:800;color:#1a1a2e;" id="profile-agradecimientos-count">2 Agradecimientos</span>
                     </div>
                     <i class="ri-arrow-right-s-line" style="color:#94a3b8;font-size:1.5rem;"></i>
+                </div>
+            </div>
+
+            <!-- Modal de Agradecimientos -->
+            <div id="modal-agradecimientos" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);">
+                <div class="card" style="background:white;width:100%;max-width:400px;border-radius:24px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.2);animation:slideUp 0.3s ease-out;">
+                    <div style="padding:20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to right, #f8fafc, #ffffff);">
+                        <h3 style="margin:0;font-size:1.2rem;font-weight:900;color:#1a1a2e;display:flex;align-items:center;gap:8px;"><i class="ri-heart-3-fill" style="color:#e74c3c;"></i> Tus Agradecimientos</h3>
+                        <button onclick="document.getElementById('modal-agradecimientos').style.display='none'" style="background:none;border:none;font-size:1.5rem;color:#94a3b8;cursor:pointer;"><i class="ri-close-line"></i></button>
+                    </div>
+                    <div style="padding:0;max-height:60vh;overflow-y:auto;" class="hide-scrollbar">
+                        <!-- Item 1 -->
+                        <div style="padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;gap:12px;align-items:center;">
+                            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg, #3498db, #2980b9);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">
+                                ML
+                            </div>
+                            <div style="flex:1;">
+                                <p style="margin:0;font-size:0.95rem;color:#1a1a2e;font-weight:700;">María López <span style="font-weight:500;color:#64748b;">te agradeció.</span></p>
+                                <span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-thumb-up-fill" style="color:#3498db;"></i> Hace 2 días</span>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div style="padding:16px 20px;display:flex;gap:12px;align-items:center;">
+                            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg, #f39c12, #e67e22);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;flex-shrink:0;">
+                                CC
+                            </div>
+                            <div style="flex:1;">
+                                <p style="margin:0;font-size:0.95rem;color:#1a1a2e;font-weight:700;">Comedor Corazones <span style="font-weight:500;color:#64748b;">te agradeció.</span></p>
+                                <span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-heart-3-fill" style="color:#e74c3c;"></i> La semana pasada</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:16px;background:#f8fafc;text-align:center;border-top:1px solid #f1f5f9;">
+                        <p style="margin:0;font-size:0.85rem;color:#64748b;font-weight:600;"><i class="ri-information-fill"></i> Pronto podrás recibir más de la red.</p>
+                    </div>
                 </div>
             </div>
 
@@ -3525,7 +3560,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-top:16px;margin-bottom:16px;">
                 <!-- Card Situación de Calle -->
                 <div class="card" style="border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-situacion-calle')">
-                    <img src="img-calle.png?v=234" alt="Mapa Situación de Calle" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-calle.png?v=235" alt="Mapa Situación de Calle" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:20px;">
                         <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0 0 8px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:6px;"></i> Situación de Calle</h4>
                         <p style="font-size:0.9rem;color:#64748b;margin:0;line-height:1.5;">Un mapa interactivo en tiempo real donde la comunidad reporta y atiende alertas para personas sin hogar. Cada pin es una oportunidad para ayudar.</p>
@@ -3534,7 +3569,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
                 <!-- Card Comedores -->
                 <div class="card" style="border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-Comedores')">
-                    <img src="img-comedores.png?v=234" alt="Red de Comedores" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-comedores.png?v=235" alt="Red de Comedores" style="width:100%;height:160px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:20px;">
                         <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0 0 8px;"><i class="ri-building-4-fill" style="color:#f39c12;margin-right:6px;"></i> Red de Comedores</h4>
                         <p style="font-size:0.9rem;color:#64748b;margin:0;line-height:1.5;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. Descubrí dónde y cómo sumar tu aporte.</p>
@@ -3557,9 +3592,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=234"></script>
-<script src="supabase.js?v=234"></script>
-<script src="app.js?v=234"></script>
+<script src="auth.js?v=235"></script>
+<script src="supabase.js?v=235"></script>
+<script src="app.js?v=235"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -8524,6 +8559,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
