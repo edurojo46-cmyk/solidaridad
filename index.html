@@ -2602,29 +2602,55 @@ async function loadAndRenderComedores() {
     if (typeof db !== 'undefined' && db.getComedoresComunidad) {
         var communityComedores = await db.getComedoresComunidad();
         
-        // Group community churches by Pais -> Ciudad
-        var groups = {};
+        var idCounter = 1000;
         communityComedores.forEach(function(ig) {
-            var key = ig.pais + " - " + ig.ciudad;
-            if (!groups[key]) groups[key] = [];
-            groups[key].push({ n: ig.nombre, d: ig.direccion, h: ig.horarios });
+            var c = ig.ciudad ? ig.ciudad.trim() : 'Desconocida';
+            var p = ig.pais ? ig.pais.trim() : 'Desconocido';
+            var n = c.toLowerCase();
+            
+            // Unify CABA variations
+            if (n === 'caba' || n === 'capital federal' || n === 'ciudad de buenos aires' || n === 'ciudad autonoma de buenos aires' || n === 'ciudad autónoma de buenos aires') {
+                c = 'CABA';
+            }
+            
+            var targetRegion = null;
+            // 1. Try to find an existing region in zonasData that matches the city exactly
+            for (var i = 0; i < renderData.length; i++) {
+                if (renderData[i].nombre.toLowerCase() === c.toLowerCase()) {
+                    targetRegion = renderData[i];
+                    break;
+                }
+            }
+            
+            var newComedor = { n: ig.nombre, d: ig.direccion, h: ig.horarios, tel: '', red: '', lat: ig.lat, lng: ig.lng };
+            
+            if (targetRegion) {
+                targetRegion.Comedores.push(newComedor);
+            } else {
+                // 2. Try to find a newly created community region
+                var newName = c + ', ' + p;
+                for (var j = 0; j < renderData.length; j++) {
+                    if (renderData[j].nombre === newName) {
+                        targetRegion = renderData[j];
+                        break;
+                    }
+                }
+                
+                if (targetRegion) {
+                    targetRegion.Comedores.push(newComedor);
+                } else {
+                    renderData.push({
+                        id: idCounter++,
+                        nombre: newName,
+                        sub: 'Agregado por la comunidad',
+                        icon: 'ri-building-4-fill',
+                        color: '#f39c12',
+                        grad: 'linear-gradient(135deg,#f39c12,#d35400)',
+                        Comedores: [newComedor]
+                    });
+                }
+            }
         });
-
-        var idCounter = 1000; // avoid colliding with existing IDs
-        for (var k in groups) {
-            var splitK = k.split(" - ");
-            var pais = splitK[0];
-            var ciudad = splitK[1];
-            renderData.push({
-                id: idCounter++,
-                nombre: ciudad + ', ' + pais,
-                sub: 'Agregado por la comunidad',
-                icon: 'ri-building-4-fill',
-                color: '#f39c12',
-                grad: 'linear-gradient(135deg,#f39c12,#d35400)',
-                Comedores: groups[k]
-            });
-        }
     }
     
     // Temporarily overwrite global zonasData so search/detail works
