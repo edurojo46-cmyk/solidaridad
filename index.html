@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=208">
+    <link rel="stylesheet" href="index.css?v=209">
     <script>
         // DEV FIX: Force unregister service workers on localhost
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -3039,7 +3039,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
         .notif-section-label { font-size:0.75rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:1.2px; margin: 12px 4px 4px; }
         .notif-card { background:white; border-radius:20px; padding:16px; display:flex; gap:16px; align-items:center; box-shadow:0 4px 15px rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.02); position:relative; overflow:hidden; cursor:pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         .notif-card:active { transform: scale(0.97); box-shadow:0 2px 8px rgba(0,0,0,0.02); }
-        .notif-card.unread { background: white; border-top: 3px solid var(--clr-primary); border-top-left-radius: 18px; border-top-right-radius: 18px; }
+        .notif-card.unread { background: white; border: 1px solid var(--clr-primary); }
         .notif-card .notif-dot { position:absolute; top:50%; right:16px; transform:translateY(-50%); width:10px; height:10px; border-radius:50%; background:var(--clr-primary); box-shadow:0 0 10px rgba(231,76,60,0.4); }
         .notif-icon-wrap { width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; box-shadow:inset 0 2px 4px rgba(255,255,255,0.5); }
         .notif-icon-wrap.alert-type { background:linear-gradient(135deg,#ff9a9e,#fecfef); color:#e74c3c; }
@@ -3550,9 +3550,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=208"></script>
-<script src="supabase.js?v=208"></script>
-<script src="app.js?v=208"></script>
+<script src="auth.js?v=209"></script>
+<script src="supabase.js?v=209"></script>
+<script src="app.js?v=209"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8492,6 +8492,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
