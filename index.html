@@ -3148,7 +3148,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <div class="card glass">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
                     <h4 style="font-size:1.1rem;font-weight:800;color:#1a1a2e;"><i class="ri-price-tag-3-fill" style="color:var(--clr-primary);"></i> Mis Recursos</h4>
-                    <button onclick="document.getElementById('prof-tags-modal').classList.add('active')" style="background:none;border:none;color:var(--clr-primary);font-weight:600;font-size:0.85rem;cursor:pointer;"><i class="ri-edit-box-line"></i> Editar</button>
+                    <button onclick="document.getElementById('prof-tags-modal').style.display='flex'" style="background:none;border:none;color:var(--clr-primary);font-weight:600;font-size:0.85rem;cursor:pointer;"><i class="ri-edit-box-line"></i> Editar</button>
                 </div>
                 
                 <p style="font-size:0.85rem;color:var(--clr-text-muted);margin-bottom:12px;line-height:1.4;">Etiqueta lo que puedes ofrecer para ayudar en emergencias.</p>
@@ -4737,6 +4737,45 @@ function loadAvatar() {
 document.addEventListener('DOMContentLoaded', function() { loadAvatar(); });
 </script>
 
+<!-- Profile Tags Modal -->
+<div class="gsearch-overlay" id="prof-tags-modal" style="display:none;" onclick="if(event.target===this)closeProfileTagsModal()">
+    <div class="gsearch-modal" style="top:auto;bottom:0;border-radius:24px 24px 0 0;max-height:80vh;display:flex;flex-direction:column;">
+        <div class="gsearch-header" style="justify-content:space-between;border-bottom:1px solid #e2e8f0;">
+            <h3 style="margin:0;font-size:1.2rem;font-weight:800;color:#1a1a2e;">Mis Recursos</h3>
+            <button class="gsearch-close" onclick="closeProfileTagsModal()"><i class="ri-close-line"></i></button>
+        </div>
+        <div style="padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+            <p style="margin:0 0 10px;color:#64748b;font-size:0.9rem;">Selecciona cómo puedes ayudar en la red de Solidaridad.</p>
+            
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Tengo Vehículo">
+                <span><i class="ri-car-fill" style="color:#e74c3c;"></i> Tengo Vehículo</span>
+            </label>
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Dono Ropa">
+                <span><i class="ri-t-shirt-fill" style="color:#3498db;"></i> Dono Ropa</span>
+            </label>
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Ayudo a Cocinar">
+                <span><i class="ri-restaurant-fill" style="color:#f1c40f;"></i> Ayudo a Cocinar</span>
+            </label>
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Tiempo Libre">
+                <span><i class="ri-calendar-event-fill" style="color:#2ecc71;"></i> Tiempo Libre</span>
+            </label>
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Apoyo Escolar">
+                <span><i class="ri-book-open-fill" style="color:#9b59b6;"></i> Apoyo Escolar</span>
+            </label>
+            <label class="tag-checkbox">
+                <input type="checkbox" value="Asesoría Legal">
+                <span><i class="ri-scales-3-fill" style="color:#34495e;"></i> Asesoría Legal</span>
+            </label>
+            
+            <button class="btn btn-primary" onclick="saveProfileTags()" style="margin-top:10px;width:100%;"><i class="ri-save-3-line"></i> Guardar Mis Recursos</button>
+        </div>
+    </div>
+</div>
 <!-- Global Search Overlay -->
 <div class="gsearch-overlay" id="gsearch-overlay" style="display:none" onclick="if(event.target===this)closeGlobalSearch()">
     <div class="gsearch-modal">
@@ -7817,12 +7856,12 @@ function renderProfileTags() {
             if (t.includes('Cocinar')) icon = 'ri-restaurant-fill';
             if (t.includes('Tiempo')) icon = 'ri-calendar-event-fill';
             if (t.includes('Escolar')) icon = 'ri-book-open-fill';
-            if (t.includes('Legal')) icon = 'ri-stethoscope-fill';
+            if (t.includes('Legal')) icon = 'ri-scales-3-fill';
             
             html += '<span class="prof-tag active"><i class="' + icon + '"></i> ' + t + '</span>';
         });
     }
-    html += '<span class="prof-tag empty" onclick="document.getElementById(\'prof-tags-modal\').classList.add(\'active\')"><i class="ri-add-line"></i> Editar recursos</span>';
+    html += '<span class="prof-tag empty" onclick="document.getElementById(\'prof-tags-modal\').style.display=\'flex\'"><i class="ri-add-line"></i> Editar recursos</span>';
     container.innerHTML = html;
     
     // Sync checkboxes in modal
@@ -7833,7 +7872,7 @@ function renderProfileTags() {
 }
 
 function closeProfileTagsModal() {
-    document.getElementById('prof-tags-modal').classList.remove('active');
+    document.getElementById('prof-tags-modal').style.display = 'none';
 }
 
 function saveProfileTags() {
