@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=223">
+    <link rel="stylesheet" href="index.css?v=224">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -73,9 +73,14 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <!-- MOBILE HEADER NAV -->
     <div class="mobile-header" id="mobile-header">
         <div class="mobile-header-top" style="justify-content: space-between;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div class="mobile-header-avatar" style="background: white; border-radius: 8px; display: inline-flex; justify-content: center; align-items: center; width: 36px; height: 36px; flex-shrink: 0;"><i class="ri-heart-pulse-fill" style="color: #e74c3c; font-size: 1.3rem;"></i></div>
-                <span class="mobile-header-title">SOLIDARIDAD</span>
+            <div class="mobile-header-logo">
+                <div class="mobile-header-avatar" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; box-shadow: 0 4px 10px rgba(231,76,60,0.3); border-radius: 8px; display: inline-flex; justify-content: center; align-items: center; width: 36px; height: 36px; flex-shrink: 0;">
+                    <i class="ri-hand-heart-fill" style="font-size:1.4rem;"></i>
+                </div>
+                <div style="display:flex; flex-direction:column; justify-content:center;">
+                    <span class="mobile-header-title" style="line-height:1;">SOLIDARIDAD</span>
+                    <span style="font-size:0.6rem; color:#64748b; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-top:2px;">Red Comunitaria</span>
+                </div>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
                 <button class="hamburger-btn" onclick="openGlobalSearch()"><i class="ri-search-line"></i></button>
@@ -94,7 +99,15 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
 
     <!-- DESKTOP HEADER -->
     <header class="desktop-header glass">
-        <div class="header-logo"><div class="header-avatar" style="background: white; border-radius: 8px; display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; margin-right: 8px;"><i class="ri-heart-pulse-fill" style="color: #e74c3c; font-size: 1.2rem;"></i><div style="font-size:0.7rem;color:var(--clr-text-muted);margin-top:2px">Red Comunitaria</div></div><span>Solidaridad</span></div>
+        <div class="header-logo">
+            <div class="header-avatar" style="background: linear-gradient(135deg, #e74c3c, #c0392b); border-radius: 10px; display: inline-flex; justify-content: center; align-items: center; width: 36px; height: 36px; margin-right: 12px; box-shadow: 0 4px 10px rgba(231,76,60,0.3);">
+                <i class="ri-hand-heart-fill" style="color: white; font-size: 1.5rem;"></i>
+            </div>
+            <div style="display:flex; flex-direction:column;">
+                <span style="font-weight:900; font-size:1.3rem; letter-spacing:-0.5px; color:#1a1a2e; line-height:1;">Solidaridad</span>
+                <span style="font-size:0.65rem; color:#64748b; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-top:2px;">Red Comunitaria</span>
+            </div>
+        </div>
         <nav class="header-nav">
             <a href="#" class="active" onclick="app.navigate('screen-splash')">Inicio</a>
             <a href="#" onclick="app.navigate('screen-situacion-calle')" style="color:#e74c3c;font-weight:600">Situación Calle</a>
@@ -3530,9 +3543,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=223"></script>
-<script src="supabase.js?v=223"></script>
-<script src="app.js?v=223"></script>
+<script src="auth.js?v=224"></script>
+<script src="supabase.js?v=224"></script>
+<script src="app.js?v=224"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8474,6 +8487,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
