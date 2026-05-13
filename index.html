@@ -3024,6 +3024,89 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </section>
 
 
+    <!-- NOTIFICACIONES -->
+    <style>
+        #screen-notificaciones { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+        .notif-header-bar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; background: rgba(245,243,240,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .notif-header-bar h2 { margin:0; font-size:1.8rem; font-weight:900; color:#1a1a2e; letter-spacing:-0.5px; }
+        .notif-mark-all { font-size:0.8rem; font-weight:700; color:var(--clr-primary); cursor:pointer; padding:6px 12px; background:rgba(231,76,60,0.08); border-radius:20px; border:none; }
+        .notif-body { padding: 12px 16px 100px; display:flex; flex-direction:column; gap:10px; }
+        .notif-section-label { font-size:0.72rem; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin: 8px 4px 4px; }
+        .notif-card { background:white; border-radius:16px; padding:14px 16px; display:flex; gap:14px; align-items:flex-start; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #f1f5f9; position:relative; overflow:hidden; cursor:pointer; transition: transform 0.15s, box-shadow 0.15s; }
+        .notif-card:active { transform: scale(0.98); }
+        .notif-card.unread { border-left:4px solid var(--clr-primary); background:linear-gradient(135deg, #fff9f9, #ffffff); }
+        .notif-card .notif-dot { position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:var(--clr-primary); }
+        .notif-icon-wrap { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+        .notif-icon-wrap.alert-type { background:rgba(231,76,60,0.12); color:#e74c3c; }
+        .notif-icon-wrap.thanks-type { background:rgba(241,196,15,0.12); color:#d4a017; }
+        .notif-icon-wrap.info-type { background:rgba(52,152,219,0.12); color:#3498db; }
+        .notif-icon-wrap.success-type { background:rgba(46,204,113,0.12); color:#27ae60; }
+        .notif-card-content { flex:1; min-width:0; }
+        .notif-card-title { font-size:0.92rem; font-weight:700; color:#1a1a2e; margin:0 0 3px; line-height:1.3; }
+        .notif-card-text { font-size:0.82rem; color:#64748b; margin:0; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .notif-card-time { font-size:0.72rem; color:#94a3b8; font-weight:600; margin-top:5px; display:block; }
+        .notif-empty { text-align:center; padding:60px 20px; }
+        .notif-empty i { font-size:3rem; color:#cbd5e1; display:block; margin-bottom:12px; }
+        .notif-empty p { color:#94a3b8; font-size:0.9rem; font-weight:500; margin:0; }
+    </style>
+    <section id="screen-notificaciones" class="screen gradient-bg">
+        <div class="notif-header-bar">
+            <h2><i class="ri-notification-3-fill" style="font-size:1.5rem;color:var(--clr-primary);vertical-align:middle;margin-right:6px;"></i>Notificaciones</h2>
+            <button class="notif-mark-all" onclick="markAllNotifsRead()">Marcar leidas</button>
+        </div>
+        <div class="notif-body" id="notif-body">
+            <div id="notif-loading-state" style="text-align:center;padding:60px 20px;">
+                <i class="ri-loader-4-line" style="font-size:2rem;color:var(--clr-primary);animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i>
+                <p style="color:#94a3b8;font-size:0.9rem;font-weight:500;margin:0;">Cargando tus notificaciones...</p>
+            </div>
+        </div>
+    </section>
+    <script>
+    var _notifLoaded = false;
+    function loadNotificaciones() {
+        var u = typeof auth !== 'undefined' ? auth.getCurrentUser() : null;
+        var body = document.getElementById('notif-body');
+        if (!u) { body.innerHTML = '<div class="notif-empty"><i class="ri-lock-line"></i><p>Inicia sesion para ver tus notificaciones.</p></div>'; return; }
+        var notifs = _buildUserNotifications(u);
+        if (!notifs.length) { body.innerHTML = '<div class="notif-empty"><i class="ri-notification-off-line"></i><p>No tenes notificaciones por ahora.</p></div>'; return; }
+        var now = Date.now(), html = '', today = [], earlier = [];
+        notifs.forEach(function(n){ if(now-n.ts<86400000) today.push(n); else earlier.push(n); });
+        if(today.length){ html+='<div class="notif-section-label">Hoy</div>'; today.forEach(function(n){html+=_renderNotifCard(n);}); }
+        if(earlier.length){ html+='<div class="notif-section-label">Anteriores</div>'; earlier.forEach(function(n){html+=_renderNotifCard(n);}); }
+        body.innerHTML = html;
+        _notifLoaded = true;
+    }
+    function _buildUserNotifications(u) {
+        var now = Date.now();
+        return [
+            {id:'welcome',type:'success',icon:'ri-hand-heart-fill',title:'Bienvenido a Solidaridad!',text:'Tu cuenta esta activa. Explora la red solidaria.',ts:now-86400000*3,read:true},
+            {id:'alert-red',type:'alert',icon:'ri-alarm-warning-fill',title:'Nueva alerta en tu zona',text:'Alguien necesita ayuda urgente cerca de vos.',ts:now-1000*60*45,read:false},
+            {id:'thanks-1',type:'thanks',icon:'ri-heart-3-fill',title:'Recibiste un agradecimiento!',text:'Comedor Los Angelitos te agradecio tu ayuda del sabado.',ts:now-1000*60*120,read:false},
+            {id:'info-1',type:'info',icon:'ri-information-fill',title:'Actualiza tus Recursos',text:'Completar tu perfil ayuda a la red a encontrarte.',ts:now-86400000,read:true}
+        ];
+    }
+    function _renderNotifCard(n) {
+        var t=_fmtTime(n.ts), ic=n.type+'-type', uc=n.read?'':' unread', dot=n.read?'':`<div class="notif-dot"></div>`;
+        return `<div class="notif-card${uc}" onclick="onNotifClick('${n.id}')">${dot}<div class="notif-icon-wrap ${ic}"><i class="${n.icon}"></i></div><div class="notif-card-content"><p class="notif-card-title">${n.title}</p><p class="notif-card-text">${n.text}</p><span class="notif-card-time"><i class="ri-time-line"></i> ${t}</span></div></div>`;
+    }
+    function _fmtTime(ts) {
+        var d=Math.floor((Date.now()-ts)/1000);
+        if(d<60)return'Hace un momento';if(d<3600)return'Hace '+Math.floor(d/60)+' min';if(d<86400)return'Hace '+Math.floor(d/3600)+' h';return'Hace '+Math.floor(d/86400)+' dias';
+    }
+    function onNotifClick(id) {
+        if(id==='alert-red') app.navigate('screen-map');
+        document.querySelectorAll('#notif-body .notif-card').forEach(function(c){ c.classList.remove('unread'); var d=c.querySelector('.notif-dot'); if(d)d.remove(); });
+    }
+    function markAllNotifsRead() {
+        document.querySelectorAll('#notif-body .notif-card').forEach(function(c){ c.classList.remove('unread'); var d=c.querySelector('.notif-dot'); if(d)d.remove(); });
+        var b=document.getElementById('bottom-msg-badge'); if(b)b.style.display='none';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var s=document.getElementById('screen-notificaciones');
+        if(s) new MutationObserver(function(){ if(s.classList.contains('active')&&!_notifLoaded)loadNotificaciones(); }).observe(s,{attributes:true});
+    });
+    </script>
+
     <!-- MENSAJES (Bandeja 1 a 1) -->
     <style>
         #screen-mensajes { overflow-y:auto!important; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; }
@@ -3224,88 +3307,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
         }).observe(s, {attributes:true});
     });
     </script>
-    <!-- NOTIFICACIONES -->
-    <style>
-        #screen-notificaciones { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
-        .notif-header-bar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; background: rgba(245,243,240,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); }
-        .notif-header-bar h2 { margin:0; font-size:1.8rem; font-weight:900; color:#1a1a2e; letter-spacing:-0.5px; }
-        .notif-mark-all { font-size:0.8rem; font-weight:700; color:var(--clr-primary); cursor:pointer; padding:6px 12px; background:rgba(231,76,60,0.08); border-radius:20px; border:none; }
-        .notif-body { padding: 12px 16px 100px; display:flex; flex-direction:column; gap:10px; }
-        .notif-section-label { font-size:0.72rem; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin: 8px 4px 4px; }
-        .notif-card { background:white; border-radius:16px; padding:14px 16px; display:flex; gap:14px; align-items:flex-start; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid #f1f5f9; position:relative; overflow:hidden; cursor:pointer; transition: transform 0.15s, box-shadow 0.15s; }
-        .notif-card:active { transform: scale(0.98); }
-        .notif-card.unread { border-left:4px solid var(--clr-primary); background:linear-gradient(135deg, #fff9f9, #ffffff); }
-        .notif-card .notif-dot { position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%; background:var(--clr-primary); }
-        .notif-icon-wrap { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
-        .notif-icon-wrap.alert-type { background:rgba(231,76,60,0.12); color:#e74c3c; }
-        .notif-icon-wrap.thanks-type { background:rgba(241,196,15,0.12); color:#d4a017; }
-        .notif-icon-wrap.info-type { background:rgba(52,152,219,0.12); color:#3498db; }
-        .notif-icon-wrap.success-type { background:rgba(46,204,113,0.12); color:#27ae60; }
-        .notif-card-content { flex:1; min-width:0; }
-        .notif-card-title { font-size:0.92rem; font-weight:700; color:#1a1a2e; margin:0 0 3px; line-height:1.3; }
-        .notif-card-text { font-size:0.82rem; color:#64748b; margin:0; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .notif-card-time { font-size:0.72rem; color:#94a3b8; font-weight:600; margin-top:5px; display:block; }
-        .notif-empty { text-align:center; padding:60px 20px; }
-        .notif-empty i { font-size:3rem; color:#cbd5e1; display:block; margin-bottom:12px; }
-        .notif-empty p { color:#94a3b8; font-size:0.9rem; font-weight:500; margin:0; }
-    </style>
-    <section id="screen-notificaciones" class="screen gradient-bg">
-        <div class="notif-header-bar">
-            <h2><i class="ri-notification-3-fill" style="font-size:1.5rem;color:var(--clr-primary);vertical-align:middle;margin-right:6px;"></i>Notificaciones</h2>
-            <button class="notif-mark-all" onclick="markAllNotifsRead()">Marcar leidas</button>
-        </div>
-        <div class="notif-body" id="notif-body">
-            <div id="notif-loading-state" style="text-align:center;padding:60px 20px;">
-                <i class="ri-loader-4-line" style="font-size:2rem;color:var(--clr-primary);animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i>
-                <p style="color:#94a3b8;font-size:0.9rem;font-weight:500;margin:0;">Cargando tus notificaciones...</p>
-            </div>
-        </div>
-    </section>
-    <script>
-    var _notifLoaded = false;
-    function loadNotificaciones() {
-        var u = typeof auth !== 'undefined' ? auth.getCurrentUser() : null;
-        var body = document.getElementById('notif-body');
-        if (!u) { body.innerHTML = '<div class="notif-empty"><i class="ri-lock-line"></i><p>Inicia sesion para ver tus notificaciones.</p></div>'; return; }
-        var notifs = _buildUserNotifications(u);
-        if (!notifs.length) { body.innerHTML = '<div class="notif-empty"><i class="ri-notification-off-line"></i><p>No tenes notificaciones por ahora.</p></div>'; return; }
-        var now = Date.now(), html = '', today = [], earlier = [];
-        notifs.forEach(function(n){ if(now-n.ts<86400000) today.push(n); else earlier.push(n); });
-        if(today.length){ html+='<div class="notif-section-label">Hoy</div>'; today.forEach(function(n){html+=_renderNotifCard(n);}); }
-        if(earlier.length){ html+='<div class="notif-section-label">Anteriores</div>'; earlier.forEach(function(n){html+=_renderNotifCard(n);}); }
-        body.innerHTML = html;
-        _notifLoaded = true;
-    }
-    function _buildUserNotifications(u) {
-        var now = Date.now();
-        return [
-            {id:'welcome',type:'success',icon:'ri-hand-heart-fill',title:'Bienvenido a Solidaridad!',text:'Tu cuenta esta activa. Explora la red solidaria.',ts:now-86400000*3,read:true},
-            {id:'alert-red',type:'alert',icon:'ri-alarm-warning-fill',title:'Nueva alerta en tu zona',text:'Alguien necesita ayuda urgente cerca de vos.',ts:now-1000*60*45,read:false},
-            {id:'thanks-1',type:'thanks',icon:'ri-heart-3-fill',title:'Recibiste un agradecimiento!',text:'Comedor Los Angelitos te agradecio tu ayuda del sabado.',ts:now-1000*60*120,read:false},
-            {id:'info-1',type:'info',icon:'ri-information-fill',title:'Actualiza tus Recursos',text:'Completar tu perfil ayuda a la red a encontrarte.',ts:now-86400000,read:true}
-        ];
-    }
-    function _renderNotifCard(n) {
-        var t=_fmtTime(n.ts), ic=n.type+'-type', uc=n.read?'':' unread', dot=n.read?'':`<div class="notif-dot"></div>`;
-        return `<div class="notif-card${uc}" onclick="onNotifClick('${n.id}')">${dot}<div class="notif-icon-wrap ${ic}"><i class="${n.icon}"></i></div><div class="notif-card-content"><p class="notif-card-title">${n.title}</p><p class="notif-card-text">${n.text}</p><span class="notif-card-time"><i class="ri-time-line"></i> ${t}</span></div></div>`;
-    }
-    function _fmtTime(ts) {
-        var d=Math.floor((Date.now()-ts)/1000);
-        if(d<60)return'Hace un momento';if(d<3600)return'Hace '+Math.floor(d/60)+' min';if(d<86400)return'Hace '+Math.floor(d/3600)+' h';return'Hace '+Math.floor(d/86400)+' dias';
-    }
-    function onNotifClick(id) {
-        if(id==='alert-red') app.navigate('screen-map');
-        document.querySelectorAll('#notif-body .notif-card').forEach(function(c){ c.classList.remove('unread'); var d=c.querySelector('.notif-dot'); if(d)d.remove(); });
-    }
-    function markAllNotifsRead() {
-        document.querySelectorAll('#notif-body .notif-card').forEach(function(c){ c.classList.remove('unread'); var d=c.querySelector('.notif-dot'); if(d)d.remove(); });
-        var b=document.getElementById('bottom-msg-badge'); if(b)b.style.display='none';
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        var s=document.getElementById('screen-notificaciones');
-        if(s) new MutationObserver(function(){ if(s.classList.contains('active')&&!_notifLoaded)loadNotificaciones(); }).observe(s,{attributes:true});
-    });
-    </script>
+
 
     <!-- 5. PROFILE -->
     <style>
@@ -8214,6 +8216,7 @@ app.navigate = function(targetId) {
 </script>
 </body>
 </html>
+
 
 
 
