@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=259">
+    <link rel="stylesheet" href="index.css?v=260">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3522,7 +3522,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-top:16px;margin-bottom:16px;">
                 <!-- Card Situación de Calle -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-situacion-calle')">
-                    <img src="img-calle.png?v=259" alt="Mapa Situación de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-calle.png?v=260" alt="Mapa Situación de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
                         <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:8px;"></i> Situación de Calle</h4>
                         <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un mapa interactivo en tiempo real donde la comunidad reporta y atiende alertas para personas sin hogar. Cada pin es una oportunidad para ayudar.</p>
@@ -3531,7 +3531,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
                 <!-- Card Comedores -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-Comedores')">
-                    <img src="img-comedores.png?v=259" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-comedores.png?v=260" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
                         <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-building-4-fill" style="color:#f39c12;margin-right:8px;"></i> Red de Comedores</h4>
                         <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. Descubrí dónde y cómo sumar tu aporte.</p>
@@ -3932,16 +3932,29 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                             localStorage.setItem('tablon_anuncios', JSON.stringify(anuncios));
                         } catch(e) {
                             console.error("Storage full, truncating...", e);
-                            // If still full, aggressively cut half the announcements
                             anuncios = anuncios.slice(0, Math.max(1, Math.floor(anuncios.length / 2)));
-                            try {
-                                localStorage.setItem('tablon_anuncios', JSON.stringify(anuncios));
-                                alert("Nota: Se borraron anuncios locales antiguos porque el almacenamiento de tu dispositivo estaba lleno.");
-                            } catch(e2) {
-                                alert("Error: No hay espacio en tu dispositivo. Por favor borra fotos de tu galería o libera memoria caché.");
-                                btn.innerHTML = origText;
-                                btn.disabled = false;
-                                return;
+                            try { localStorage.setItem('tablon_anuncios', JSON.stringify(anuncios)); } catch(e2) {}
+                        }
+                        
+                        // Sync to Supabase Bucket as JSON
+                        if(typeof sbClient !== 'undefined' && sbClient) {
+                            var u = auth.getCurrentUser();
+                            if (u) {
+                                var uid = u.id || u.uid;
+                                var blob = new Blob([JSON.stringify(anuncios)], {type: 'application/json'});
+                                sbClient.storage.from('chat-images').upload('tablon/' + uid + '.json', blob, { upsert: true, contentType: 'application/json' }).then(() => {
+                                    closeTablonModal();
+                                    renderTablon();
+                                    btn.innerHTML = origText;
+                                    btn.disabled = false;
+                                }).catch((err) => {
+                                    console.error('Error syncing tablon to Supabase', err);
+                                    closeTablonModal();
+                                    renderTablon();
+                                    btn.innerHTML = origText;
+                                    btn.disabled = false;
+                                });
+                                return; // wait for promise
                             }
                         }
                         
@@ -3972,9 +3985,14 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 }
                 
                 container.innerHTML = '';
-                var anuncios = JSON.parse(localStorage.getItem('tablon_anuncios') || '[]');
                 
-                anuncios.forEach(function(a) {
+                async function drawAnuncios(anunciosList) {
+                    container.innerHTML = '';
+                    if (!anunciosList || anunciosList.length === 0) {
+                        container.innerHTML = '<div style="padding:20px;text-align:center;color:#64748b;font-weight:700;">No hay actividades publicadas aún.</div>';
+                        return;
+                    }
+                    anunciosList.forEach(function(a) {
                     var div = document.createElement('div');
                     div.style.cssText = 'border-radius:20px;background:linear-gradient(135deg, #1a1a2e, #16213e);color:white;position:relative;box-shadow:0 12px 30px rgba(26,26,46,0.25);display:flex;flex-direction:row;align-items:stretch;overflow:hidden;';
                     
@@ -4055,6 +4073,34 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     
                     container.appendChild(div);
                 });
+                } // End drawAnuncios function
+
+                // Load from Supabase if connected
+                if(typeof sbClient !== 'undefined' && sbClient) {
+                    sbClient.storage.from('chat-images').download('tablon/' + targetUserId + '.json').then(function(res) {
+                        if(res.error) {
+                            console.log('No Supabase tablon found, falling back to local', res.error);
+                            if (currentUserId === targetUserId) {
+                                drawAnuncios(JSON.parse(localStorage.getItem('tablon_anuncios') || '[]'));
+                            } else {
+                                drawAnuncios([]);
+                            }
+                        } else {
+                            res.data.text().then(function(text) {
+                                try {
+                                    var remoteAnuncios = JSON.parse(text);
+                                    drawAnuncios(remoteAnuncios);
+                                } catch(e) { drawAnuncios([]); }
+                            });
+                        }
+                    });
+                } else {
+                    if (currentUserId === targetUserId) {
+                        drawAnuncios(JSON.parse(localStorage.getItem('tablon_anuncios') || '[]'));
+                    } else {
+                        drawAnuncios([]);
+                    }
+                }
             }
 
             function initProfileDynamicContent() {
@@ -4119,9 +4165,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=259"></script>
-<script src="supabase.js?v=259"></script>
-<script src="app.js?v=259"></script>
+<script src="auth.js?v=260"></script>
+<script src="supabase.js?v=260"></script>
+<script src="app.js?v=260"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -9147,6 +9193,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
