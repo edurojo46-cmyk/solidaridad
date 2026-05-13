@@ -1,23 +1,29 @@
-// SOLIDARIDAD sw.js - Version 2.0 (Forzando actualización)
+﻿// SOLIDARIDAD sw.js - Version 4.0 (Network First)
+var CACHE_NAME = 'solidaridad-cache-v4';
+
 self.addEventListener('install', function(e) {
-    e.waitUntil(
-        caches.keys().then(function(keys) {
-            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-        }).then(function() { return self.skipWaiting(); })
-    );
+    self.skipWaiting(); // Force the waiting service worker to become the active service worker.
 });
 
 self.addEventListener('activate', function(e) {
     e.waitUntil(
-        caches.keys().then(function(keys) {
-            return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-        }).then(function() { return self.clients.claim(); })
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.map(function(cacheName) {
+                    return caches.delete(cacheName); // Delete all old caches
+                })
+            );
+        }).then(function() {
+            return self.clients.claim(); // Take control of all clients immediately
+        })
     );
 });
 
 self.addEventListener('fetch', function(e) {
-    // Siempre va a la red, nunca al cache
-    e.respondWith(fetch(e.request).catch(function() {
-        return new Response('Sin conexión', { status: 503 });
-    }));
+    // Network first, fallback to cache (if any)
+    e.respondWith(
+        fetch(e.request).catch(function() {
+            return caches.match(e.request);
+        })
+    );
 });
