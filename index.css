@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
 
 :root {
     --clr-primary: #8c6d46;
@@ -34,11 +34,11 @@ body {
     left: 0;
     width: 100%;
     z-index: 200;
-    background: rgba(253, 251, 247, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(200, 230, 255, 0.4);
-    box-shadow: 0 2px 12px rgba(46, 139, 192, 0.1);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
 }
 
 .mobile-header-top {
@@ -68,10 +68,13 @@ body {
 }
 
 .mobile-header-title {
-    font-family: 'Crimson Text', serif;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--clr-text-title);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
 }
 
 .mobile-header-nav {
