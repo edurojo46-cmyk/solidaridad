@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
 
 :root {
     --clr-primary: #8c6d46;
@@ -2226,12 +2226,12 @@ body {
 #main-nav {
     display: flex;
     justify-content: flex-start;
-    padding: 6px 8px 10px;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-top: 1px solid rgba(200, 230, 255, 0.5);
-    box-shadow: 0 -2px 12px rgba(46, 139, 192, 0.08);
+    padding: 12px 12px 18px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.04);
     transition: transform 0.3s, opacity 0.3s;
     flex-shrink: 0;
     z-index: 10;
@@ -2250,22 +2250,23 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 4px;
     text-decoration: none;
-    color: var(--clr-text-body);
-    font-size: 0.62rem;
-    font-weight: 500;
-    min-width: 56px;
-    padding: 4px 6px;
-    border-radius: 10px;
-    transition: color 0.2s, background 0.2s;
+    color: #64748b;
+    font-size: 0.65rem;
+    font-weight: 600;
+    min-width: 58px;
+    padding: 6px 8px;
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
     white-space: nowrap;
 }
 
-.nav-item i { font-size: 1.2rem; }
+.nav-item i { font-size: 1.4rem; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
 .nav-item span { line-height: 1; }
-.nav-item.active { color: var(--clr-primary); background: rgba(46, 139, 192, 0.08); font-weight: 600; }
+.nav-item.active { color: var(--clr-primary); background: rgba(46, 139, 192, 0.08); font-weight: 700; }
+.nav-item.active i { transform: translateY(-3px); }
 .nav-item:not(.active):hover { color: var(--clr-primary-dark); background: rgba(46, 139, 192, 0.05); }
 .nav-item.nav-profile { color: #e67e22; }
 .nav-item.nav-profile.active { color: #d35400; background: rgba(230, 126, 34, 0.1); }
