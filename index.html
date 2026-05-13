@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=229">
+    <link rel="stylesheet" href="index.css?v=230">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3051,6 +3051,45 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <h2><i class="ri-notification-3-fill" style="font-size:1.5rem;color:var(--clr-primary);vertical-align:middle;margin-right:6px;"></i>Notificaciones</h2>
             <button class="notif-mark-all" onclick="markAllNotifsRead()">Marcar leidas</button>
         </div>
+        <!-- Timeline / Bitácora moved from Profile -->
+        <div style="padding: 16px;">
+            <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
+                    <h4 style="font-size:1.15rem;font-weight:800;color:#1a1a2e;margin:0;"><i class="ri-history-fill" style="color:#2ecc71;margin-right:4px;"></i> Mi Actividad</h4>
+                    <span style="font-size:0.8rem;color:var(--clr-primary);font-weight:700;cursor:pointer;">Ver Todo</span>
+                </div>
+                
+                <div class="prof-timeline" id="profile-timeline" style="position:relative;padding-left:12px;">
+                    <!-- Linea vertical conectora -->
+                    <div style="position:absolute;left:27px;top:20px;bottom:20px;width:2px;background:#e2e8f0;z-index:0;"></div>
+
+                    <!-- Evento Nuevo -->
+                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:24px;position:relative;">
+                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #3498db;color:#3498db;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="ri-checkbox-circle-fill"></i>
+                        </div>
+                        <div style="padding-top:4px;flex:1;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Actualizaste tus Recursos</p>
+                                <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Hoy</span>
+                            </div>
+                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">Añadiste nuevas habilidades solidarias a tu perfil.</span>
+                        </div>
+                    </div>
+
+                    <!-- Evento Inicial -->
+                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:0;position:relative;">
+                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #2ecc71;color:#2ecc71;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="ri-user-add-fill"></i>
+                        </div>
+                        <div style="padding-top:4px;flex:1;">
+                            <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Te uniste a Solidaridad</p>
+                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">¡Bienvenido a la red de voluntarios!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="notif-body" id="notif-body">
             <div id="notif-loading-state" style="text-align:center;padding:60px 20px;">
                 <i class="ri-loader-4-line" style="font-size:2rem;color:var(--clr-primary);animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i>
@@ -3458,43 +3497,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             </div>
 
 
-            <!-- Timeline / Bitácora -->
-            <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
-                    <h4 style="font-size:1.15rem;font-weight:800;color:#1a1a2e;margin:0;"><i class="ri-history-fill" style="color:#2ecc71;margin-right:4px;"></i> Mi Actividad</h4>
-                    <span style="font-size:0.8rem;color:var(--clr-primary);font-weight:700;cursor:pointer;">Ver Todo</span>
-                </div>
-                
-                <div class="prof-timeline" id="profile-timeline" style="position:relative;padding-left:12px;">
-                    <!-- Linea vertical conectora -->
-                    <div style="position:absolute;left:27px;top:20px;bottom:20px;width:2px;background:#e2e8f0;z-index:0;"></div>
 
-                    <!-- Evento Nuevo -->
-                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:24px;position:relative;">
-                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #3498db;color:#3498db;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                            <i class="ri-checkbox-circle-fill"></i>
-                        </div>
-                        <div style="padding-top:4px;flex:1;">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                                <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Actualizaste tus Recursos</p>
-                                <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Hoy</span>
-                            </div>
-                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">Añadiste nuevas habilidades solidarias a tu perfil.</span>
-                        </div>
-                    </div>
-
-                    <!-- Evento Inicial -->
-                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:0;position:relative;">
-                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #2ecc71;color:#2ecc71;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                            <i class="ri-user-add-fill"></i>
-                        </div>
-                        <div style="padding-top:4px;flex:1;">
-                            <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Te uniste a Solidaridad</p>
-                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">¡Bienvenido a la red de voluntarios!</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Muro de Agradecimientos -->
             <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;margin-top:16px;">
@@ -3543,9 +3546,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=229"></script>
-<script src="supabase.js?v=229"></script>
-<script src="app.js?v=229"></script>
+<script src="auth.js?v=230"></script>
+<script src="supabase.js?v=230"></script>
+<script src="app.js?v=230"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -8510,6 +8513,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
