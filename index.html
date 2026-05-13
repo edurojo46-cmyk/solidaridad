@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=242">
+    <link rel="stylesheet" href="index.css?v=243">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3522,7 +3522,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-top:16px;margin-bottom:16px;">
                 <!-- Card Situación de Calle -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-situacion-calle')">
-                    <img src="img-calle.png?v=242" alt="Mapa Situación de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-calle.png?v=243" alt="Mapa Situación de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
                         <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:8px;"></i> Situación de Calle</h4>
                         <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un mapa interactivo en tiempo real donde la comunidad reporta y atiende alertas para personas sin hogar. Cada pin es una oportunidad para ayudar.</p>
@@ -3531,7 +3531,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
                 <!-- Card Comedores -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-Comedores')">
-                    <img src="img-comedores.png?v=242" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-comedores.png?v=243" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
                         <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-building-4-fill" style="color:#f39c12;margin-right:8px;"></i> Red de Comedores</h4>
                         <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. Descubrí dónde y cómo sumar tu aporte.</p>
@@ -3539,11 +3539,10 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- Galería de Fotos (Privada) -->
+            <!-- Galería de Fotos (Pública) -->
             <div style="margin-bottom:24px;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 12px 4px;">
-                    <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> Mi Álbum de Acción</h4>
-                    <span style="font-size:0.75rem;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;"><i class="ri-lock-fill"></i> Privado</span>
+                    <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> Galería en Acción</h4>
                 </div>
                 <div id="private-gallery-container" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:0 -20px;padding-left:20px;padding-right:20px;scroll-snap-type:x mandatory;" class="hide-scrollbar">
                     
@@ -3569,80 +3568,120 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     </div>
 
                     <!-- Botón Agregar Foto -->
-                    <div id="add-photo-btn" style="flex-shrink:0;width:120px;height:240px;border-radius:16px;background:linear-gradient(135deg, #f8fafc, #f1f5f9);display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:start;border:2px dashed #cbd5e1;cursor:pointer;position:relative;" onclick="document.getElementById('photo-upload-input').click()">
-                        <div style="position:absolute;top:8px;right:8px;background:rgba(148, 163, 184, 0.1);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">
-                            <i class="ri-lock-2-line" style="font-size:0.8rem;color:#94a3b8;"></i>
-                        </div>
+                    <div id="add-photo-btn" class="auth-only-link" style="display:none;flex-shrink:0;width:120px;height:240px;border-radius:16px;background:linear-gradient(135deg, #f8fafc, #f1f5f9);flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:start;border:2px dashed #cbd5e1;cursor:pointer;position:relative;" onclick="document.getElementById('photo-upload-input').click()">
                         <div style="width:40px;height:40px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.05);margin-bottom:8px;">
                             <i class="ri-add-line" style="font-size:1.5rem;color:#0ea5e9;"></i>
                         </div>
                         <span style="font-size:0.8rem;font-weight:800;color:#64748b;">Subir Foto</span>
-                        <span style="font-size:0.65rem;color:#94a3b8;margin-top:4px;font-weight:600;text-align:center;padding:0 8px;">Solo vos las<br>podés ver</span>
                     </div>
                     <input type="file" id="photo-upload-input" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
                 </div>
             </div>
 
             <script>
-            function handlePhotoUpload(event) {
+            async function handlePhotoUpload(event) {
+                if(typeof auth === 'undefined' || !auth.isAuthenticated()){
+                    alert("Debes iniciar sesión para subir fotos.");
+                    return;
+                }
+                var u = auth.getCurrentUser();
+                var userId = u.id || u.uid;
+
                 var file = event.target.files[0];
                 if (!file) return;
+                
+                var addBtn = document.getElementById('add-photo-btn');
+                var origHtml = addBtn.innerHTML;
+                addBtn.innerHTML = '<div style="color:#0ea5e9;font-weight:bold;">Subiendo...</div>';
+                
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var img = new Image();
                     img.onload = function() {
                         var canvas = document.createElement('canvas');
-                        var MAX_WIDTH = 500;
+                        var MAX_WIDTH = 600;
                         var scaleSize = MAX_WIDTH / img.width;
                         if (scaleSize > 1) scaleSize = 1;
                         canvas.width = MAX_WIDTH;
                         canvas.height = img.height * scaleSize;
                         var ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                         
-                        var photos = JSON.parse(localStorage.getItem('private_photos') || '[]');
-                        photos.unshift({ id: Date.now(), url: dataUrl });
-                        localStorage.setItem('private_photos', JSON.stringify(photos));
-                        renderPrivatePhotos();
-                        
-                        // Scroll to the new photo
-                        var container = document.getElementById('private-gallery-container');
-                        if (container) container.scrollLeft = container.scrollWidth;
+                        canvas.toBlob(async function(blob) {
+                            var fileName = 'profile_gallery/' + userId + '/' + Date.now() + '.jpg';
+                            try {
+                                const { data, error } = await sbClient.storage.from('chat-images').upload(fileName, blob, { contentType: 'image/jpeg' });
+                                if(error) throw error;
+                                await renderPrivatePhotos();
+                                var container = document.getElementById('private-gallery-container');
+                                if (container) container.scrollLeft = container.scrollWidth;
+                            } catch(err) {
+                                console.error(err);
+                                alert("Error subiendo foto. Intenta más tarde.");
+                            }
+                            addBtn.innerHTML = origHtml;
+                            event.target.value = '';
+                        }, 'image/jpeg', 0.8);
                     }
                     img.src = e.target.result;
                 }
                 reader.readAsDataURL(file);
             }
 
-            function renderPrivatePhotos() {
+            async function renderPrivatePhotos() {
                 var container = document.getElementById('private-gallery-container');
                 if(!container) return;
-                var photos = JSON.parse(localStorage.getItem('private_photos') || '[]');
                 
-                container.querySelectorAll('.user-photo').forEach(function(el){ el.remove(); });
-                var addButton = document.getElementById('add-photo-btn');
+                var u = typeof auth !== 'undefined' ? auth.getCurrentUser() : null;
+                var currentUserId = u ? (u.id || u.uid) : null;
                 
-                photos.forEach(function(p) {
-                    var div = document.createElement('div');
-                    div.className = 'user-photo';
-                    div.style.cssText = 'flex-shrink:0;width:200px;height:240px;border-radius:16px;background:url('+p.url+') center/cover;box-shadow:0 8px 20px rgba(0,0,0,0.1);scroll-snap-align:start;position:relative;overflow:hidden;';
+                // For now, load current logged in user's photos, or a demo user's if not logged in.
+                // In a real app, this would use the profile ID being viewed.
+                var targetUserId = currentUserId || 'demo';
+                
+                try {
+                    const { data, error } = await sbClient.storage.from('chat-images').list('profile_gallery/' + targetUserId);
+                    if (error) throw error;
                     
-                    var delBtn = document.createElement('div');
-                    delBtn.style.cssText = 'position:absolute;top:8px;right:8px;background:rgba(231,76,60,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;backdrop-filter:blur(4px);';
-                    delBtn.innerHTML = '<i class="ri-delete-bin-line"></i>';
-                    delBtn.onclick = function(e) {
-                        e.stopPropagation();
-                        if(confirm('¿Eliminar foto privada?')) {
-                            var updated = JSON.parse(localStorage.getItem('private_photos')).filter(function(img){ return img.id !== p.id; });
-                            localStorage.setItem('private_photos', JSON.stringify(updated));
-                            renderPrivatePhotos();
+                    container.querySelectorAll('.user-photo').forEach(function(el){ el.remove(); });
+                    var addButton = document.getElementById('add-photo-btn');
+                    
+                    // Show add button only if authenticated and viewing own profile
+                    if(currentUserId && currentUserId === targetUserId) {
+                        addButton.style.display = 'flex';
+                    } else {
+                        addButton.style.display = 'none';
+                    }
+                    
+                    var files = (data || []).filter(function(f){ return f.name !== '.emptyFolderPlaceholder'; }).reverse();
+                    
+                    files.forEach(function(f) {
+                        const urlData = sbClient.storage.from('chat-images').getPublicUrl('profile_gallery/' + targetUserId + '/' + f.name);
+                        const url = urlData.data.publicUrl;
+                        
+                        var div = document.createElement('div');
+                        div.className = 'user-photo';
+                        div.style.cssText = 'flex-shrink:0;width:200px;height:240px;border-radius:16px;background:url('+url+') center/cover;box-shadow:0 8px 20px rgba(0,0,0,0.1);scroll-snap-align:start;position:relative;overflow:hidden;';
+                        
+                        if(currentUserId === targetUserId) {
+                            var delBtn = document.createElement('div');
+                            delBtn.style.cssText = 'position:absolute;top:8px;right:8px;background:rgba(231,76,60,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;backdrop-filter:blur(4px);';
+                            delBtn.innerHTML = '<i class="ri-delete-bin-line"></i>';
+                            delBtn.onclick = async function(e) {
+                                e.stopPropagation();
+                                if(confirm('¿Eliminar foto de la galería pública?')) {
+                                    delBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>';
+                                    await sbClient.storage.from('chat-images').remove(['profile_gallery/' + targetUserId + '/' + f.name]);
+                                    renderPrivatePhotos();
+                                }
+                            };
+                            div.appendChild(delBtn);
                         }
-                    };
-                    
-                    div.appendChild(delBtn);
-                    container.insertBefore(div, addButton);
-                });
+                        container.insertBefore(div, addButton);
+                    });
+                } catch(e) {
+                    console.log('No photos found or error loading:', e);
+                }
             }
             
             document.addEventListener('DOMContentLoaded', renderPrivatePhotos);
@@ -3650,7 +3689,6 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 setTimeout(renderPrivatePhotos, 100);
             }
             
-            // To ensure it runs when navigating back to profile via single-page nav
             var originalNavigatePhotos = window.app ? window.app.navigate : null;
             if (window.app && !window._photoNavHooked) {
                 window._photoNavHooked = true;
@@ -3703,9 +3741,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=242"></script>
-<script src="supabase.js?v=242"></script>
-<script src="app.js?v=242"></script>
+<script src="auth.js?v=243"></script>
+<script src="supabase.js?v=243"></script>
+<script src="app.js?v=243"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -8670,6 +8708,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
