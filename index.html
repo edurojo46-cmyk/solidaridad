@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=225">
+    <link rel="stylesheet" href="index.css?v=226">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3412,33 +3412,6 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- Colecta Personal -->
-            <div class="card glass" style="margin-bottom:16px;background:linear-gradient(135deg, #1a1a2e, #16213e);color:white;position:relative;overflow:hidden;">
-                <div style="position:absolute;right:-20px;top:-20px;opacity:0.05;font-size:120px;line-height:1;"><i class="ri-heart-3-fill"></i></div>
-                <div style="position:relative;z-index:1;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                        <div>
-                            <h4 style="margin:0;font-size:1.1rem;font-weight:800;color:white;display:flex;align-items:center;gap:6px;"><i class="ri-flag-2-fill" style="color:#e74c3c;"></i> Mi Causa Actual</h4>
-                            <p style="margin:4px 0 0;font-size:0.85rem;color:#94a3b8;">Juntando frazadas para el invierno</p>
-                        </div>
-                        <button onclick="alert('Función de editar meta en desarrollo')" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ri-pencil-fill"></i></button>
-                    </div>
-                    
-                    <div style="margin-top:16px;">
-                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;margin-bottom:6px;">
-                            <span style="color:#2ecc71;">30 donadas</span>
-                            <span style="color:#94a3b8;">Meta: 50</span>
-                        </div>
-                        <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;margin-bottom:16px;">
-                            <div style="width:60%;height:100%;background:#2ecc71;border-radius:4px;position:relative;">
-                                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);animation:shimmer 2s infinite;"></div>
-                            </div>
-                        </div>
-                        <button class="btn" style="width:100%;background:white;color:#1a1a2e;font-weight:800;border-radius:12px;padding:10px;" onclick="alert('Integración con pagos/donaciones en desarrollo')"><i class="ri-hand-heart-fill" style="color:#e74c3c;margin-right:6px;"></i> ¡Yo aporto!</button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Impact Dashboard -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
                 <div class="card" style="padding:20px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg, #ffffff, #f8fafc);border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.03);">
@@ -3454,6 +3427,33 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     </div>
                     <span style="font-size:2rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-comedores">0</span>
                     <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:700;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;">Comedores<br>Apoyados</span>
+                </div>
+            </div>
+
+            <!-- Colecta Personal -->
+            <div class="card glass" style="margin-bottom:16px;background:linear-gradient(135deg, #ff6b6b, #e74c3c);color:white;position:relative;overflow:hidden;">
+                <div style="position:absolute;right:-20px;top:-20px;opacity:0.1;font-size:120px;line-height:1;"><i class="ri-heart-3-fill"></i></div>
+                <div style="position:relative;z-index:1;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                        <div>
+                            <h4 style="margin:0;font-size:1.1rem;font-weight:800;color:white;display:flex;align-items:center;gap:6px;"><i class="ri-flag-2-fill" style="color:white;"></i> Mi Causa Actual</h4>
+                            <p style="margin:4px 0 0;font-size:0.85rem;color:rgba(255,255,255,0.9);">Juntando frazadas para el invierno</p>
+                        </div>
+                        <button onclick="alert('Función de editar meta en desarrollo')" style="background:rgba(255,255,255,0.25);border:none;color:white;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ri-pencil-fill"></i></button>
+                    </div>
+                    
+                    <div style="margin-top:16px;">
+                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:700;margin-bottom:6px;">
+                            <span style="color:white;">30 donadas</span>
+                            <span style="color:rgba(255,255,255,0.8);">Meta: 50</span>
+                        </div>
+                        <div style="height:8px;background:rgba(0,0,0,0.15);border-radius:4px;overflow:hidden;margin-bottom:16px;">
+                            <div style="width:60%;height:100%;background:white;border-radius:4px;position:relative;">
+                                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);animation:shimmer 2s infinite;"></div>
+                            </div>
+                        </div>
+                        <button class="btn" style="width:100%;background:white;color:#e74c3c;font-weight:800;border-radius:12px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);" onclick="alert('Integración con pagos/donaciones en desarrollo')"><i class="ri-hand-heart-fill" style="color:#e74c3c;margin-right:6px;"></i> ¡Yo aporto!</button>
+                    </div>
                 </div>
             </div>
 
@@ -3543,9 +3543,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=225"></script>
-<script src="supabase.js?v=225"></script>
-<script src="app.js?v=225"></script>
+<script src="auth.js?v=226"></script>
+<script src="supabase.js?v=226"></script>
+<script src="app.js?v=226"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8487,6 +8487,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
