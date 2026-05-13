@@ -3859,7 +3859,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// Chat System Ãƒâ€Ãƒâ€¡ÃƒÂ¶ REAL (Supabase)
+// Chat System Ãƒâ€ Ãƒâ€¡ÃƒÂ¶ REAL (Supabase)
 var currentChatId = null;
 var currentChatPartner = null;
 var chatProfiles = {};
@@ -3900,6 +3900,11 @@ async function initRealChat() {
     }
 }
 async function _initRealChatInner() {
+    // Guard: old chat screen was removed - skip silently
+    if (!document.getElementById('chat-contacts-list')) {
+        console.log('Chat: old chat screen not present, skipping initRealChat');
+        return;
+    }
     console.log('=== CHAT INIT START ===');
     // Get user identity: first try local auth, then find Supabase profile by email
     if (!auth.isAuthenticated()) {
@@ -3958,7 +3963,7 @@ async function _initRealChatInner() {
         // No conversations yet - just show the empty state
         if (empty) empty.style.display = 'block';
         var list = document.getElementById('chat-contacts-list');
-        list.querySelectorAll('.chat-contact, .chat-section-header').forEach(function(el) { el.remove(); });
+        if (list) list.querySelectorAll('.chat-contact, .chat-section-header').forEach(function(el) { el.remove(); });
         return;
     }
     if (empty) empty.style.display = 'none';
@@ -4029,7 +4034,7 @@ function showChatEmpty(msg) {
 
 function renderContactList(convs, myId) {
     var list = document.getElementById('chat-contacts-list');
-    list.querySelectorAll('.chat-contact, .chat-section-header').forEach(function(el) { el.remove(); });
+    if (list) list.querySelectorAll('.chat-contact, .chat-section-header').forEach(function(el) { el.remove(); });
     var ld = document.getElementById('chat-loading'); if(ld) ld.style.display = 'none';
     var convPartnerIds = {};
     convs.forEach(function(c) {
@@ -6652,7 +6657,7 @@ async function loadCenaculosFromSupabase() {
         if (!list) return;
         
         // Clear existing cards to prevent duplicates
-        list.querySelectorAll('.cenaculo-item').forEach(function(el) { el.remove(); });
+        if (list) list.querySelectorAll('.cenaculo-item').forEach(function(el) { el.remove(); });
         
         var validSaved = {};
         
@@ -8205,6 +8210,7 @@ app.navigate = function(targetId) {
 </script>
 </body>
 </html>
+
 
 
 
