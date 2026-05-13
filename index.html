@@ -3133,40 +3133,75 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 <div id="profile-tags-container" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px;">
                     <span class="prof-tag empty" onclick="document.getElementById('prof-tags-modal').style.display='flex'"><i class="ri-add-line"></i> Agregar recursos</span>
                 </div>
+                
+                <!-- Quick Actions -->
+                <div style="display:flex;gap:12px;margin-top:24px;justify-content:center;width:100%;">
+                    <button class="btn" style="flex:1;background:var(--clr-primary);color:white;border-radius:12px;padding:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,0.15);" onclick="alert('Bandeja de Mensajes en desarrollo...')">
+                        <i class="ri-chat-3-fill" style="font-size:1.2rem;"></i> Mensajes
+                    </button>
+                    <button class="btn" style="flex:1;background:white;color:var(--clr-primary);border:1.5px solid #cbd5e1;border-radius:12px;padding:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;" onclick="alert('Panel de Notificaciones en desarrollo...')">
+                        <i class="ri-notification-3-fill" style="font-size:1.2rem;"></i> Avisos
+                        <span style="position:absolute;top:-6px;right:-6px;background:#e74c3c;color:white;border-radius:50%;width:22px;height:22px;font-size:0.75rem;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.1);">3</span>
+                    </button>
+                </div>
             </div>
 
             <!-- Impact Dashboard -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-                <div class="card glass" style="padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
-                    <i class="ri-heart-pulse-fill" style="font-size:2rem;color:#e74c3c;margin-bottom:8px;"></i>
-                    <span style="font-size:1.8rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-alertas">0</span>
-                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Alertas<br>Atendidas</span>
+                <div class="card" style="padding:20px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg, #ffffff, #f8fafc);border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                    <div style="width:48px;height:48px;background:rgba(231,76,60,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <i class="ri-heart-pulse-fill" style="font-size:1.8rem;color:#e74c3c;"></i>
+                    </div>
+                    <span style="font-size:2rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-alertas">0</span>
+                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:700;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;">Alertas<br>Atendidas</span>
                 </div>
-                <div class="card glass" style="padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
-                    <i class="ri-building-4-fill" style="font-size:2rem;color:#f39c12;margin-bottom:8px;"></i>
-                    <span style="font-size:1.8rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-comedores">0</span>
-                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;">Comedores<br>Apoyados</span>
+                <div class="card" style="padding:20px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg, #ffffff, #f8fafc);border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+                    <div style="width:48px;height:48px;background:rgba(243,156,18,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <i class="ri-building-4-fill" style="font-size:1.8rem;color:#f39c12;"></i>
+                    </div>
+                    <span style="font-size:2rem;font-weight:900;color:#1a1a2e;line-height:1;" id="prof-metric-comedores">0</span>
+                    <span style="font-size:0.75rem;color:var(--clr-text-muted);font-weight:700;margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;">Comedores<br>Apoyados</span>
                 </div>
             </div>
 
 
             <!-- Timeline / Bitácora -->
-            <div class="card glass">
-                <h4 style="font-size:1.1rem;font-weight:800;color:#1a1a2e;margin-bottom:16px;"><i class="ri-history-fill" style="color:#27ae60;"></i> Mi Bitácora</h4>
+            <div class="card" style="padding:20px;border-radius:16px;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.04);border:1px solid #f1f5f9;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
+                    <h4 style="font-size:1.15rem;font-weight:800;color:#1a1a2e;margin:0;"><i class="ri-history-fill" style="color:#2ecc71;margin-right:4px;"></i> Mi Actividad</h4>
+                    <span style="font-size:0.8rem;color:var(--clr-primary);font-weight:700;cursor:pointer;">Ver Todo</span>
+                </div>
                 
-                <div class="prof-timeline" id="profile-timeline">
-                    <div class="prof-timeline-item" style="display:flex;gap:12px;margin-bottom:0;position:relative;">
-                        <div style="width:32px;height:32px;border-radius:50%;background:#e8f5e9;color:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;">
+                <div class="prof-timeline" id="profile-timeline" style="position:relative;padding-left:12px;">
+                    <!-- Linea vertical conectora -->
+                    <div style="position:absolute;left:27px;top:20px;bottom:20px;width:2px;background:#e2e8f0;z-index:0;"></div>
+
+                    <!-- Evento Nuevo -->
+                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:24px;position:relative;">
+                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #3498db;color:#3498db;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="ri-checkbox-circle-fill"></i>
+                        </div>
+                        <div style="padding-top:4px;flex:1;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Actualizaste tus Recursos</p>
+                                <span style="font-size:0.75rem;color:#94a3b8;font-weight:600;">Hoy</span>
+                            </div>
+                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">Añadiste nuevas habilidades solidarias a tu perfil.</span>
+                        </div>
+                    </div>
+
+                    <!-- Evento Inicial -->
+                    <div class="prof-timeline-item" style="display:flex;gap:16px;margin-bottom:0;position:relative;">
+                        <div style="width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #2ecc71;color:#2ecc71;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
                             <i class="ri-user-add-fill"></i>
                         </div>
-                        <div style="padding-top:6px;">
-                            <p style="font-size:0.9rem;font-weight:600;color:#1a1a2e;margin:0;">Te uniste a Solidaridad</p>
-                            <span style="font-size:0.75rem;color:var(--clr-text-muted);">¡Bienvenido a la red!</span>
+                        <div style="padding-top:4px;flex:1;">
+                            <p style="font-size:0.95rem;font-weight:700;color:#1a1a2e;margin:0;">Te uniste a Solidaridad</p>
+                            <span style="font-size:0.85rem;color:#64748b;display:block;margin-top:2px;">¡Bienvenido a la red de voluntarios!</span>
                         </div>
                     </div>
                 </div>
             </div>
-
             <button class="btn btn-logout" onclick="app.handleLogout()" style="margin-top:20px;margin-bottom:40px;"><i class="ri-logout-box-r-line"></i> Cerrar Sesión</button>
         </div>
     </section>
