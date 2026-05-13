@@ -3778,10 +3778,19 @@ async function refreshReadTicks() {
             if (el && el.style.color !== 'rgb(74, 222, 128)') {
                 el.style.color = '#4ade80';
                 el.style.transition = 'color 0.3s ease';
-            }
+           }
         }
     });
-}
+    // Notificaciones
+    if (screenId === 'screen-notificaciones') {
+        if (typeof clearNavMsgBadge === 'function') clearNavMsgBadge();
+        if (typeof loadNotificaciones === 'function') setTimeout(loadNotificaciones, 100);
+    }
+    // Mensajes
+    if (screenId === 'screen-mensajes') {
+        if (typeof loadMensajes === 'function') setTimeout(loadMensajes, 100);
+    }
+};
 
 function openChatFromMap(profileId, name) {
     if (!profileId) return;
@@ -3834,11 +3843,6 @@ app.navigate = function(screenId) {
     // Load cenaculos from Supabase when entering cenaculo screen
     if (screenId === 'screen-cenaculo') {
         loadCenaculosFromSupabase();
-    }
-    // Clear message badge when entering chat screen
-    if (screenId === 'screen-notificaciones') {
-        if (typeof clearNavMsgBadge === 'function') clearNavMsgBadge();
-        if (typeof initRealChat === 'function') initRealChat();
     }
 };
 // Force login screen on page load if not authenticated
@@ -8210,6 +8214,7 @@ app.navigate = function(targetId) {
 </script>
 </body>
 </html>
+
 
 
 
