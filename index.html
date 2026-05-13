@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=224">
+    <link rel="stylesheet" href="index.css?v=225">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3405,8 +3405,8 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     
                     <!-- Quick Actions -->
                     <div style="display:flex;gap:12px;width:100%;">
-                        <button class="btn" style="flex:1;background:var(--clr-primary);color:white;border-radius:12px;padding:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 10px rgba(0,0,0,0.15);" onclick="openMensajesPanel()">
-                            <i class="ri-chat-3-fill" style="font-size:1.1rem;"></i> Notificaciones
+                        <button class="btn" style="flex:1;background:linear-gradient(135deg, #0ea5e9, #0284c7);color:white;border-radius:12px;padding:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 12px rgba(14, 165, 233, 0.35);letter-spacing:0.5px;" onclick="openMensajesPanel()">
+                            <i class="ri-chat-3-fill" style="font-size:1.15rem;"></i> Mensajes
                         </button>
                     </div>
                 </div>
@@ -3543,9 +3543,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=224"></script>
-<script src="supabase.js?v=224"></script>
-<script src="app.js?v=224"></script>
+<script src="auth.js?v=225"></script>
+<script src="supabase.js?v=225"></script>
+<script src="app.js?v=225"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8487,6 +8487,7 @@ async function sendMpMsg(){
 
 </body>
 </html>
+
 
 
 
