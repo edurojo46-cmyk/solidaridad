@@ -3539,9 +3539,12 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- Galería de Fotos -->
+            <!-- Galería de Fotos (Privada) -->
             <div style="margin-bottom:24px;">
-                <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0 0 12px 4px;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> Galería en Acción</h4>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 12px 4px;">
+                    <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> Mi Álbum de Acción</h4>
+                    <span style="font-size:0.75rem;font-weight:800;color:#94a3b8;background:#f1f5f9;padding:4px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;"><i class="ri-lock-fill"></i> Privado</span>
+                </div>
                 <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin:0 -20px;padding-left:20px;padding-right:20px;scroll-snap-type:x mandatory;" class="hide-scrollbar">
                     
                     <!-- Foto 1 -->
@@ -3566,11 +3569,15 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     </div>
 
                     <!-- Botón Agregar Foto -->
-                    <div style="flex-shrink:0;width:120px;height:240px;border-radius:16px;background:linear-gradient(135deg, #f8fafc, #f1f5f9);display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:start;border:2px dashed #cbd5e1;cursor:pointer;" onclick="alert('Sistema de subida de fotos en desarrollo')">
+                    <div style="flex-shrink:0;width:120px;height:240px;border-radius:16px;background:linear-gradient(135deg, #f8fafc, #f1f5f9);display:flex;flex-direction:column;align-items:center;justify-content:center;scroll-snap-align:start;border:2px dashed #cbd5e1;cursor:pointer;position:relative;" onclick="alert('Sistema de subida de fotos (Bóveda Privada) en desarrollo')">
+                        <div style="position:absolute;top:8px;right:8px;background:rgba(148, 163, 184, 0.1);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;">
+                            <i class="ri-lock-2-line" style="font-size:0.8rem;color:#94a3b8;"></i>
+                        </div>
                         <div style="width:40px;height:40px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.05);margin-bottom:8px;">
                             <i class="ri-add-line" style="font-size:1.5rem;color:#0ea5e9;"></i>
                         </div>
                         <span style="font-size:0.8rem;font-weight:800;color:#64748b;">Subir Foto</span>
+                        <span style="font-size:0.65rem;color:#94a3b8;margin-top:4px;font-weight:600;text-align:center;padding:0 8px;">Solo vos las<br>podés ver</span>
                     </div>
 
                 </div>
