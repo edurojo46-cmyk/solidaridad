@@ -3098,13 +3098,18 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </section>
 
     <!-- 5. PROFILE -->
+    <style>
+        #screen-profile { overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+        #screen-profile .screen-header { position: sticky; top: 0; background: rgba(245, 243, 240, 0.95); backdrop-filter: blur(10px); z-index: 50; padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        #screen-profile .scroll-content { padding-bottom: 120px; padding-top: 10px; }
+    </style>
     <section id="screen-profile" class="screen gradient-bg">
         <div class="screen-header">
             <h2 style="font-weight:900;letter-spacing:-0.5px;color:#1a1a2e;font-size:1.8rem;">Mi Perfil</h2>
             <p style="color:var(--clr-text-muted);font-size:0.9rem;margin-top:2px;">Tu impacto solidario</p>
         </div>
 
-        <div class="scroll-content" style="padding-bottom:120px; padding-top:10px;">
+        <div class="scroll-content">
             <!-- User Identity & Level -->
             <div class="card glass" style="text-align:center; padding:24px; position:relative; overflow:hidden;">
                 <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));opacity:0.8;"></div>
