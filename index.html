@@ -3128,6 +3128,11 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 <div style="display:inline-block;padding:6px 16px;background:rgba(231,76,60,0.1);color:#e74c3c;border-radius:20px;font-weight:700;font-size:0.85rem;border:1px solid rgba(231,76,60,0.2);">
                     <i class="ri-medal-fill"></i> Voluntario Activo
                 </div>
+
+                <!-- Resource Tags (What I can offer) -->
+                <div id="profile-tags-container" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px;">
+                    <span class="prof-tag empty" onclick="document.getElementById('prof-tags-modal').style.display='flex'"><i class="ri-add-line"></i> Agregar recursos</span>
+                </div>
             </div>
 
             <!-- Impact Dashboard -->
@@ -3144,19 +3149,6 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- Resource Tags (What I can offer) -->
-            <div class="card glass">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                    <h4 style="font-size:1.1rem;font-weight:800;color:#1a1a2e;"><i class="ri-price-tag-3-fill" style="color:var(--clr-primary);"></i> Mis Recursos</h4>
-                    <button onclick="document.getElementById('prof-tags-modal').style.display='flex'" style="background:none;border:none;color:var(--clr-primary);font-weight:600;font-size:0.85rem;cursor:pointer;"><i class="ri-edit-box-line"></i> Editar</button>
-                </div>
-                
-                <p style="font-size:0.85rem;color:var(--clr-text-muted);margin-bottom:12px;line-height:1.4;">Etiqueta lo que puedes ofrecer para ayudar en emergencias.</p>
-                
-                <div id="profile-tags-container" style="display:flex;flex-wrap:wrap;gap:8px;">
-                    <span class="prof-tag empty" onclick="document.getElementById('prof-tags-modal').classList.add('active')"><i class="ri-add-line"></i> Agregar recursos</span>
-                </div>
-            </div>
 
             <!-- Timeline / Bitácora -->
             <div class="card glass">
