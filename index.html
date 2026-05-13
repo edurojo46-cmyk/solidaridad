@@ -3123,7 +3123,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
 
                 <h3 id="profile-name-main" style="font-size:1.4rem;font-weight:800;color:#1a1a2e;margin-bottom:4px;">Tu Nombre</h3>
-                <p style="color:var(--clr-text-muted);font-size:0.85rem;margin-bottom:16px;"><i class="ri-mail-line"></i> <span id="profile-email-main">Cargando...</span></p>
+                <p style="color:var(--clr-text-muted);font-size:0.95rem;font-weight:600;margin-bottom:16px;">@<span id="profile-email-main">usuario</span></p>
 
                 <div style="display:inline-block;padding:6px 16px;background:rgba(231,76,60,0.1);color:#e74c3c;border-radius:20px;font-weight:700;font-size:0.85rem;border:1px solid rgba(231,76,60,0.2);">
                     <i class="ri-medal-fill"></i> Voluntario Activo
@@ -7795,12 +7795,15 @@ function loadSolidaridadProfile() {
     var u = typeof auth !== 'undefined' ? auth.getCurrentUser() : null;
     if (!u) return;
 
-    // Set Name & Email
+    // Set Name & Username
     var pName = document.getElementById('profile-name-main');
-    if (pName) pName.textContent = u.identidad || u.email.split('@')[0] || 'Voluntario';
+    if (pName) pName.textContent = u.name || u.identidad || u.email.split('@')[0] || 'Voluntario';
     
-    var pEmail = document.getElementById('profile-email-main');
-    if (pEmail) pEmail.textContent = u.email || '';
+    var pUsername = document.getElementById('profile-email-main');
+    if (pUsername) {
+        var username = u.email ? u.email.split('@')[0] : 'usuario';
+        pUsername.textContent = username.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    }
 
     // Count Alertas Atendidas (where user_id matches or user commented)
     var alertasAtendidas = 0;
