@@ -915,6 +915,7 @@
 
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
+        if (screenId === 'screen-Comedores') { setTimeout(() => { if (typeof initComedoresGlobalMap === 'function') initComedoresGlobalMap(); if (typeof comedoresGlobalMap !== 'undefined' && comedoresGlobalMap) { comedoresGlobalMap.invalidateSize(); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 500); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 1000); } }, 400); }
         if (screenId === 'screen-rosary-detail' && this.detailMap) setTimeout(() => this.detailMap.invalidateSize(), 350);
         if (screenId === 'screen-rezo') {
             if (!this._counterStarted) { this._counterStarted = true; this.startOnlineCounter(); }

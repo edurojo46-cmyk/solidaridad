@@ -1,4 +1,4 @@
-// SOLIDARIDAD sw.js - Sin cache, siempre red
+// SOLIDARIDAD sw.js - Version 2.0 (Forzando actualización)
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.keys().then(function(keys) {

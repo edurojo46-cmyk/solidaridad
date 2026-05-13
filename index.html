@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <!-- deploy-v94-20260505 -->
@@ -1978,6 +1978,7 @@ function scRenderAlertas() {
         var iconColor = estado === 'activa' ? '#e74c3c' : (estado === 'proceso' ? '#f39c12' : '#27ae60');
         
         var isOwner = (uId && uId === a.user_id) || isAdmin;
+        var isRevealed = isOwner || (uId && scMensajes[a.id] && scMensajes[a.id].some(function(m) { return m.user_id === uId; })) || !isActiva;
         var dispDir = scEscape(a.direccion);
         
         var fotoHtml = '';
@@ -3137,36 +3138,6 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 <div class="rezando-map-wrapper" id="rezando-map-wrapper">
                     <div id="rezando-map" style="width:100%;height:100%;border-radius:16px;"></div>
                 </div>
-            </div>
-
-            <!-- Evangelio del Dia -->
-            <div class="evangelio-card glass card" id="evangelio-card">
-                <div class="evangelio-header">
-                    <div class="evangelio-icon"><i class="ri-book-3-fill"></i></div>
-                    <div>
-                        <h4>Evangelio del Dia</h4>
-                        <span class="evangelio-date" id="evangelio-date">Lunes 21 de Abril, 2026</span>
-                    </div>
-                </div>
-                <div class="evangelio-ref" id="evangelio-ref">Juan 6, 30-35</div>
-                <div class="evangelio-text" id="evangelio-text">
-                    <div class="ev-section">
-                        <div class="ev-label"><i class="ri-book-read-fill"></i> Primera Lectura Ã¢â€Å“Ã‚Â»Ã¢â€Â¬Ã¢â€ÂÃ¢â€Â¬Ã‚Â¢Ã¢â€Å“éÃ¢â€Â¬Ã‚Â¢?" Hechos 7, 51-8, 1</div>
-                        <div class="ev-body">En aquellos dias, hablo Esteban ante el sanedrin, diciendo: "Hombres de cabeza dura, cerrados de corazon y de oidos. Ustedes resisten siempre al Espiritu Santo; ustedes son iguales a sus padres." Mientras lo apedreaban, Esteban repetia esta oracion: "Senor Jesus, recibe mi espiritu". Despues se puso de rodillas y dijo con fuerte voz: "Senor, no les tomes en cuenta este pecado". Diciendo esto, se durmio en el Senor.</div>
-                    </div>
-                    <div class="ev-section ev-gospel">
-                        <div class="ev-label"><i class="ri-quill-pen-fill"></i> Evangelio Ã¢â€Å“Ã‚Â»Ã¢â€Â¬Ã¢â€ÂÃ¢â€Â¬Ã‚Â¢Ã¢â€Å“éÃ¢â€Â¬Ã‚Â¢?" Juan 6, 30-35</div>
-                        <div class="ev-body">En aquel tiempo, la gente le pregunto a Jesus: "Que signo vas a realizar tu, para que lo veamos y podamos creerte? Nuestros padres comieron el mana en el desierto, como esta escrito: Les dio a comer pan del cielo". Jesus les respondio: "Yo les aseguro: No fue Moises quien les dio pan del cielo; es mi Padre quien les da el verdadero pan del cielo. Porque el pan de Dios es aquel que baja del cielo y da la vida al mundo". Entonces le dijeron: "Senor, danos siempre de ese pan". Jesus les contesto: "Yo soy el pan de la vida. El que viene a mi no tendra hambre, y el que cree en mi nunca tendra sed".</div>
-                    </div>
-                    <div class="ev-section ev-commentary">
-                        <div class="ev-label"><i class="ri-chat-quote-fill"></i> Reflexion</div>
-                        <div class="ev-body">Que significa pan de la vida? Para vivir se necesita el pan. Jesus se revela como el pan, es decir lo esencial, lo necesario para la vida de cada dia. Nosotros, sin El, mas que vivir, sobrevivimos: porque solo El nos nutre el alma, solo El nos perdona, solo El nos hace sentir amados, solo El nos da la fuerza de amar.</div>
-                        <div class="ev-author" style="text-align:right;font-size:0.8rem;margin-top:6px;color:var(--clr-text-muted)">Ã¢â€Å“Ã‚Â»Ã¢â€Â¬Ã¢â€ÂÃ¢â€Â¬Ã‚Â¢Ã¢â€Å“éÃ¢â€Â¬Ã‚Â¢?" Papa Francisco, Angelus 2021</div>
-                    </div>
-                </div>
-                <a href="https://www.vaticannews.va/es/evangelio-de-hoy.html" target="_blank" class="evangelio-toggle" id="evangelio-toggle" style="text-decoration:none">
-                    <i class="ri-external-link-line"></i> Ver en Vatican News
-                </a>
             </div>
 
 
@@ -4778,112 +4749,7 @@ function loadAvatar() {
     }
 }
 
-// Evangelio del Dia - Vatican News RSS
-function loadEvangelio() {
-    var today = new Date();
-    var days = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-    var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    var displayDate = days[today.getDay()] + ' ' + today.getDate() + ' de ' + months[today.getMonth()] + ', ' + today.getFullYear();
-    document.getElementById('evangelio-date').textContent = displayDate;
 
-    // Try Vatican News RSS via multiple CORS proxies
-    var rssUrl = 'https://www.vaticannews.va/es/evangelio-de-hoy.rss.xml';
-    var proxies = [
-        'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(rssUrl),
-        'https://corsproxy.io/?' + encodeURIComponent(rssUrl)
-    ];
-
-    function parseRSS(text) {
-        try {
-            var parser = new DOMParser();
-            var xml = parser.parseFromString(text, 'text/xml');
-            var items = xml.querySelectorAll('item');
-            if (!items || items.length === 0) return null;
-
-            // Get first item (today's reading)
-            var item = items[0];
-            var title = item.querySelector('title') ? item.querySelector('title').textContent : '';
-            var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
-
-            // Clean HTML from description
-            var tempDiv = document.createElement('div');
-            tempDiv.innerHTML = desc;
-            var cleanDesc = tempDiv.textContent || tempDiv.innerText || '';
-
-            // Split into sections (readings are separated by book references)
-            var lines = cleanDesc.split(/(?=Lectura del santo evangelio|Lectura del libro)/);
-            var evangelioText = '';
-            var reflectionText = '';
-
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
-                if (line.indexOf('Lectura del santo evangelio') === 0) {
-                    // Find the gospel text - everything after the reference line
-                    var parts = line.split(/Juan \d|Mateo \d|Marcos \d|Lucas \d/);
-                    evangelioText = line;
-                }
-            }
-
-            // If we couldn't parse sections, just use the full description
-            if (!evangelioText) evangelioText = cleanDesc;
-
-            // Limit to reasonable length for display
-            if (evangelioText.length > 2000) evangelioText = evangelioText.substring(0, 2000) + '...';
-
-            return { title: title, text: evangelioText };
-        } catch(e) {
-            return null;
-        }
-    }
-
-    function showVaticanContent(data) {
-        var html = '<div class="ev-section ev-gospel">';
-        html += '<div class="ev-label"><i class="ri-quill-pen-fill"></i> ' + data.title + '</div>';
-        html += '<div class="ev-body">' + data.text.replace(/\n/g, '<br>') + '</div>';
-        html += '</div>';
-        html += '<div class="ev-source" style="text-align:right;font-size:0.75rem;color:var(--clr-text-muted);margin-top:8px"><i class="ri-links-fill"></i> Fuente: Vatican News</div>';
-        document.getElementById('evangelio-ref').textContent = data.title;
-        document.getElementById('evangelio-text').innerHTML = html;
-    }
-
-    // Try each proxy in sequence
-    function tryProxy(index) {
-        if (index >= proxies.length) return; // All failed, keep static fallback
-        fetch(proxies[index])
-            .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                if (proxies[index].indexOf('/get?url=') > -1) {
-                    return r.json().then(function(data) { return data.contents; });
-                }
-                return r.text();
-            })
-            .then(function(text) {
-                var data = parseRSS(text);
-                if (data) showVaticanContent(data);
-                else throw new Error('Parse Error');
-            })
-            .catch(function() {
-                tryProxy(index + 1);
-            });
-    }
-
-    tryProxy(0);
-}
-
-
-var evangelioExpanded = false;
-function toggleEvangelio() {
-    var text = document.getElementById('evangelio-text');
-    var btn = document.getElementById('evangelio-toggle');
-    evangelioExpanded = !evangelioExpanded;
-    if (evangelioExpanded) {
-        text.classList.add('expanded');
-        btn.innerHTML = '<i class="ri-arrow-up-s-line"></i> Leer menos';
-    } else {
-        text.classList.remove('expanded');
-        btn.innerHTML = '<i class="ri-arrow-down-s-line"></i> Leer mas';
-    }
-}
 
 // Santo del Dia
 function loadSanto() {
@@ -4962,7 +4828,7 @@ function toggleSanto() {
 
 document.addEventListener('DOMContentLoaded', function() {
     loadAvatar();
-    loadEvangelio();
+
     loadSanto();
 });
 </script>

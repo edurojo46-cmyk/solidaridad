@@ -1,37 +1,36 @@
-$raw = [System.IO.File]::ReadAllBytes("index.html")
-$text = [System.Text.Encoding]::UTF8.GetString($raw)
+$html = Get-Content -Raw index.html -Encoding UTF8
 
-# Fix double-encoded UTF-8 (Mojibake) — Ã© = e with accent, etc.
-$text = $text.Replace("Ã¡", "á")
-$text = $text.Replace("Ã©", "é")
-$text = $text.Replace("Ã­", "í")
-$text = $text.Replace("Ã³", "ó")
-$text = $text.Replace("Ãº", "ú")
-$text = $text.Replace("Ã±", "ñ")
-$text = $text.Replace("ÃÁ", "Á")
-$text = $text.Replace("Ã‰", "É")
-$text = $text.Replace("Ã", "Í")
-$text = $text.Replace("Ã"", "Ó")
-$text = $text.Replace("Ãš", "Ú")
-$text = $text.Replace("Ã'", "Ñ")
-$text = $text.Replace("Â¿", "¿")
-$text = $text.Replace("Â¡", "¡")
-$text = $text.Replace("Â°", "°")
-$text = $text.Replace("Â·", "·")
-$text = $text.Replace("Ã¼", "ü")
-$text = $text.Replace("Ã‡", "Ç")
-$text = $text.Replace("Ã©", "é")
-$text = $text.Replace("Ã ", "à")
-$text = $text.Replace("Ã¨", "è")
-$text = $text.Replace("Ã®", "î")
-$text = $text.Replace("Ã´", "ô")
-$text = $text.Replace("Ã»", "û")
-$text = $text.Replace("Ã„", "Ä")
-$text = $text.Replace("Ã–", "Ö")
-$text = $text.Replace("Ãœ", "Ü")
-$text = $text.Replace("Ã¤", "ä")
-$text = $text.Replace("Ã¶", "ö")
+# Dictionary of replacements
+$reps = @{
+    "Ã¢â€ Å“ÃƒÂ¢Ã¢â€ Â¼ínete" = "Únete"
+    "Ã¢â€ Â¬Ã¢â€ Â " = "¿"
+    "Ã¢â€ Â¬í" = "¡"
+    "Ã¢â€ Å“éÃ¢â€ Â¬Ãƒâ‚¬" = "•"
+    "Ãƒâ€ Ãƒâ€¡ÃƒÂ¶" = "-"
+    "ÃƒÂ " = "Ú"
+    "Ãƒâ€ éÃ‚Â¼Ãƒâ€ Ãƒâ€¡Ã‚Â£" = "-"
+    "Ã¢â€ Â¬Ã¢â€“â€˜" = "º"
+    "Ã¢â€ Å“Ã¢â€¢Â ence" = "güence"
+    "SITUACIÃƒâ€œN" = "SITUACIÓN"
+    "Ã‚Â¿" = "¿"
+    "GÃ¼emes" = "Güemes"
+    "ÃƒÂ³" = "ó"
+    "ÃƒÂ¡" = "á"
+    "ÃƒÂ­" = "í"
+    "ÃƒÂ©" = "é"
+    "ÃƒÂº" = "ú"
+    "ÃƒÂ±" = "ñ"
+    "Ã³" = "ó"
+    "Ã¡" = "á"
+    "Ã­" = "í"
+    "Ã©" = "é"
+    "Ãº" = "ú"
+    "Ã±" = "ñ"
+}
 
-$outBytes = [System.Text.Encoding]::UTF8.GetBytes($text)
-[System.IO.File]::WriteAllBytes("index.html", $outBytes)
-Write-Output "Done. File size: $($outBytes.Length) bytes"
+foreach ($key in $reps.Keys) {
+    $html = $html.Replace($key, $reps[$key])
+}
+
+[System.IO.File]::WriteAllText("$(Get-Location)\index.html", $html, [System.Text.Encoding]::UTF8)
+Write-Host "Replaced successfully"
