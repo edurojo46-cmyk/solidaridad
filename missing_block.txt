@@ -1,0 +1,716 @@
+﻿function openComedoresDetail(zoneId) {
+    var zona = zonasData.find(function(z){ return z.id === zoneId; });
+    if (!zona) return;
+    document.getElementById('Comedores-detail-title').textContent = zona.nombre;
+    document.getElementById('Comedores-detail-count').textContent = zona.Comedores.length + ' Comedores';
+    document.getElementById('Comedores-detail-count').style.background = zona.grad;
+    var list = document.getElementById('Comedores-detail-list');
+    var html = '<div class="ig-detail-nota" style="border-left: 3px solid '+zona.color+'"><i class="ri-map-pin-fill" style="color:'+zona.color+'"></i> '+zona.sub+'</div>';
+    zona.Comedores.forEach(function(ig) {
+        html += '<div class="ig-detail-item glass">' +
+            '<div class="ig-detail-dot" style="background:'+zona.color+'"></div>' +
+            '<div class="ig-detail-info">' +
+                '<h4>'+ig.n+'</h4>' +
+                '<span class="ig-detail-dir"><i class="ri-map-pin-fill"></i> '+ig.d+'</span>' +
+                '<span class="ig-detail-hora"><i class="ri-time-fill"></i> '+ig.h+'</span>' +
+            '</div>' +
+        '</div>';
+    });
+    list.innerHTML = html;
+    // Animate in
+    document.getElementById('Comedores-main-view').style.display = 'none';
+    var panel = document.getElementById('Comedores-detail-panel');
+    panel.style.display = 'flex';
+    panel.classList.add('active');
+}
+
+// Close detail panel
+function closeComedoresDetail() {
+    var panel = document.getElementById('Comedores-detail-panel');
+    panel.classList.remove('active');
+    setTimeout(function() {
+        panel.style.display = 'none';
+        document.getElementById('Comedores-main-view').style.display = '';
+    }, 50);
+}
+
+// Search / filter
+function filterComedoresGrid(query) {
+    var rawQ = query.trim();
+    var grid = document.getElementById('Comedores-grid');
+    var results = document.getElementById('Comedores-search-results');
+    if (!rawQ) {
+        grid.style.display = '';
+        results.style.display = 'none';
+        results.innerHTML = '';
+        return;
+    }
+    grid.style.display = 'none';
+    results.style.display = '';
+    
+    var normalizeText = function(str) {
+        return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    };
+    
+    var words = normalizeText(rawQ).split(/\s+/);
+    var html = '';
+    var count = 0;
+    
+    zonasData.forEach(function(z) {
+        var zNameNorm = normalizeText(z.nombre);
+        var zSubNorm = normalizeText(z.sub);
+        z.Comedores.forEach(function(ig) {
+            var nNorm = normalizeText(ig.n);
+            var dNorm = normalizeText(ig.d);
+            var hNorm = normalizeText(ig.h);
+            
+            var searchableText = nNorm + " " + dNorm + " " + hNorm + " " + zNameNorm + " " + zSubNorm;
+            var isMatch = words.every(function(w) { return searchableText.indexOf(w) !== -1; });
+            
+            if (isMatch) {
+                count++;
+                html += '<div class="ig-detail-item glass" style="animation-delay:'+(count*0.03)+'s">' +
+                    '<div class="ig-detail-dot" style="background:'+z.color+'"></div>' +
+                    '<div class="ig-detail-info">' +
+                        '<h4>'+ig.n+'</h4>' +
+                        '<span class="ig-detail-dir"><i class="ri-map-pin-fill"></i> '+ig.d+'</span>' +
+                        '<span class="ig-detail-hora"><i class="ri-time-fill"></i> '+ig.h+'</span>' +
+                        '<span class="ig-search-zone" style="color:'+z.color+'"><i class="ri-building-4-fill"></i> '+z.nombre+'</span>' +
+                    '</div>' +
+                '</div>';
+            }
+        });
+    });
+    if (count === 0) {
+        html = '<div class="ig-no-results"><i class="ri-search-line"></i><p>No se encontraron Comedores con "'+query+'"</p></div>';
+    } else {
+        html = '<div class="ig-results-count">'+count+' resultado'+(count!==1?'s':'')+'</div>' + html;
+    }
+    results.innerHTML = html;
+}
+
+// Add Comedor Modal Logic
+
+// ============================================================
+// SITUACIÃƒâ€œN EN CALLE Ã¢â‚¬â€ MÃƒÂ³dulo completo
+// ============================================================
+var scMap = null;
+var scMarkers = {};
+var scMiniMap = null;
+var scMiniMarker = null;
+var scGeoLat = null;
+var scGeoLng = null;
+var scNecesidades = [];
+var scCurrentFilter = 'todas';
+var scGeoTimer = null;
+var scAllAlertas = [];
+
+// ------ InicializaciÃƒÂ³n del mapa principal ------
+var scMap = null;
+var scMiniMap = null;
+var scMiniMarker = null;
+var scGeoTimer = null;
+var scGeoLat = null;
+var scGeoLng = null;
+var scAllAlertas = [];
+var scMarkers = {};
+var scCurrentTab = 'todas'; // 'mis' o 'todas'
+var scNecesidades = [];
+var scMensajes = {}; // Cache de mensajes por alerta_id
+
+function scInitMap() {
+    if (scMap) { scMap.invalidateSize(); return; }
+    scMap = L.map('sc-map', { zoomControl: false }).setView([-34.6037, -58.3816], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: 'Ã‚Â© OpenStreetMap'
+    }).addTo(scMap);
+    L.control.zoom({ position: 'bottomright' }).addTo(scMap);
+    scLoadAlertas();
+    
+    if (typeof sbClient !== 'undefined' && sbClient) {
+        sbClient.channel('sc-alertas-realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'alertas_calle' }, function() { scLoadAlertas(); })
+            .subscribe();
+            
+        sbClient.channel('sc-mensajes-realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'ayudas_alerta' }, function(payload) {
+                var aId = payload.new.alerta_id;
+                if (aId) scLoadMensajes(aId);
+            })
+            .subscribe();
+    }
+}
+
+function scRefresh() {
+    scLoadAlertas();
+}
+
+async function scLoadAlertas() {
+    var list = document.getElementById('sc-alertas-list');
+    if (!list) return;
+    try {
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            var { data, error } = await sbClient
+                .from('alertas_calle')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(100);
+            scAllAlertas = (data && !error) ? data : [];
+        }
+    } catch(e) { scAllAlertas = []; }
+    scRenderAlertas();
+    scRenderMapPins();
+}
+
+function scChangeTab(tab) {
+    scCurrentTab = tab;
+    document.getElementById('sc-tab-mis').style.background = tab === 'mis' ? 'white' : 'transparent';
+    document.getElementById('sc-tab-mis').style.color = tab === 'mis' ? '#1a1a2e' : '#64748b';
+    document.getElementById('sc-tab-mis').style.boxShadow = tab === 'mis' ? '0 2px 5px rgba(0,0,0,0.05)' : 'none';
+    
+    document.getElementById('sc-tab-todas').style.background = tab === 'todas' ? 'white' : 'transparent';
+    document.getElementById('sc-tab-todas').style.color = tab === 'todas' ? '#1a1a2e' : '#64748b';
+    document.getElementById('sc-tab-todas').style.boxShadow = tab === 'todas' ? '0 2px 5px rgba(0,0,0,0.05)' : 'none';
+    
+    scRenderAlertas();
+}
+
+function scRenderAlertas() {
+    var list = document.getElementById('sc-alertas-list');
+    if (!list) return;
+    
+    var uId = null;
+    var isAdmin = false;
+    if (typeof auth !== 'undefined' && auth && auth.isAuthenticated()) {
+        var u = auth.getCurrentUser();
+        uId = u.id;
+        try { isAdmin = u.email === 'ferloxxx@hotmail.com'; } catch(e){}
+    }
+    
+    var filtered = scAllAlertas;
+    if (scCurrentTab === 'mis') {
+        filtered = scAllAlertas.filter(function(a) { return a.user_id === uId; });
+    } else if (scCurrentTab === 'cerca') {
+        filtered = scAllAlertas.filter(function(a) {
+            if (!scGeoLat || !scGeoLng || !a.lat || !a.lng) return false;
+            var R = 6371; // km
+            var dLat = (a.lat - scGeoLat) * Math.PI / 180;
+            var dLon = (a.lng - scGeoLng) * Math.PI / 180;
+            var aMath = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(scGeoLat * Math.PI / 180) * Math.cos(a.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(aMath), Math.sqrt(1-aMath));
+            return (R * c) <= 5; // less than 5km
+        });
+    }
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#94a3b8;">' +
+            '<i class="ri-map-pin-line" style="font-size:2.5rem;display:block;margin-bottom:12px;"></i>' +
+            '<p style="font-weight:700;margin:0;">No hay alertas ' + (scCurrentTab === 'mis' ? 'tuyas' : '') + '</p>' +
+            '<p style="font-size:0.82rem;margin-top:6px;">Tu reporte ayuda a cambiar vidas</p></div>';
+        return;
+    }
+
+    var necIcons = { 'Ropa':'ri-t-shirt-line', 'Abrigo':'ri-windy-line', 'Manta':'ri-hotel-bed-line',
+                     'AtenciÃƒÂ³n MÃƒÂ©dica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
+
+    list.innerHTML = filtered.map(function(a) {
+        if (!scMensajes[a.id]) { scMensajes[a.id] = []; scLoadMensajes(a.id); }
+
+        var isActiva = a.activa === true;
+        var hasPledges = scMensajes[a.id] && scMensajes[a.id].some(function(m) { return m.necesidad || m.mensaje.indexOf('comprometiÃƒÂ³ a llevar') > -1; });
+        var estado = isActiva ? (hasPledges ? 'proceso' : 'activa') : 'atendida';
+        
+        var badgeText = estado === 'activa' ? 'Ã¢â€”Â Activa' : (estado === 'proceso' ? 'Ã¢â€“Â¶ En Proceso' : 'Ã¢Å“â€œ Atendida');
+        var iconColor = estado === 'activa' ? '#e74c3c' : (estado === 'proceso' ? '#f39c12' : '#27ae60');
+        
+        var isOwner = (uId && uId === a.user_id) || isAdmin;
+        var isRevealed = isOwner || (uId && scMensajes[a.id] && scMensajes[a.id].some(function(m) { return m.user_id === uId; })) || !isActiva;
+        var dispDir = isRevealed ? scEscape(a.direccion) : scEscape(a.direccion).replace(/\d+/g, 'XXX (Oculto)');
+        
+        var fotoHtml = '';
+        if (a.foto_url) {
+            if (isRevealed) {
+                fotoHtml = '<div style="float:left; margin:0 16px 12px 0; width:120px; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05);"><img src="' + a.foto_url + '" style="width:100%; height:auto; max-height:150px; object-fit:contain; display:block; background:#f8fafc; cursor:zoom-in; transition:transform 0.3s;" onclick="this.classList.toggle(\'sc-img-fullscreen\')"></div>';
+            } else {
+                fotoHtml = '<div style="float:left; margin:0 16px 12px 0; width:120px; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05); position:relative;"><img src="' + a.foto_url + '" style="width:100%; height:auto; min-height:80px; max-height:150px; object-fit:cover; display:block; background:#f8fafc; filter:blur(8px);"><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; background:rgba(255,255,255,0.4); font-size:0.65rem; font-weight:800; color:#1a1a2e; line-height:1.2;">Foto Oculta<br><span style="font-size:0.55rem;font-weight:600;">Ayuda para ver</span></div></div>';
+            }
+        }
+
+        var fecha = a.created_at ? new Date(a.created_at).toLocaleDateString('es-AR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) : '';
+        var necs = (a.necesidades || '').split(',').filter(Boolean);
+
+        if (!scMensajes[a.id]) { scMensajes[a.id] = []; scLoadMensajes(a.id); }
+
+        var html = '<div class="sc-card" onclick="scFocusAlerta(' + (a.lat || 0) + ',' + (a.lng || 0) + ')">' +
+            '<div class="sc-card-accent ' + estado + '"></div>' +
+            
+            // Header
+            '<div class="sc-card-header">' +
+                '<div>' +
+                    '<div style="font-weight:800;font-size:1rem;color:#1a1a2e;display:flex;align-items:flex-start;gap:6px;line-height:1.2;">' +
+                        '<i class="ri-map-pin-2-fill" style="color:' + iconColor + ';font-size:1.1rem;margin-top:-1px;"></i>' +
+                        '<span>' + dispDir + '</span>' +
+                    '</div>' +
+                    '<div style="font-size:0.75rem;color:#64748b;margin-top:6px;margin-left:22px;">Reportado por <strong>' + scEscape(a.reporter_name || 'AnÃƒÂ³nimo') + '</strong> Ã¢â‚¬Â¢ ' + fecha + '</div>' +
+                '</div>' +
+                '<span class="sc-badge ' + estado + '" style="flex-shrink:0;">' + badgeText + '</span>' +
+            '</div>' +
+            
+            // Info Box (Data from form)
+            '<div class="sc-info-box">' +
+                '<div class="sc-info-title"><i class="ri-file-list-3-line"></i> Reporte Original</div>' +
+                fotoHtml +
+                (necs.length > 0 ? '<div id="sc-necesidades-box-' + a.id + '" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">' + scRenderNecesidadesBox(a.id) + '</div>' : '') +
+                (a.descripcion ? '<p style="margin:0;font-size:0.88rem;color:#334155;line-height:1.5;">' + scEscape(a.descripcion) + '</p>' : '') +
+                '<div style="clear:both;"></div>' +
+            '</div>' +
+            
+            // CoordinaciÃƒÂ³n / Compromisos
+            '<div class="sc-foro" onclick="event.stopPropagation();">' +
+                '<div class="sc-info-title"><i class="ri-discuss-line"></i> CoordinaciÃƒÂ³n de Ayuda</div>' +
+                '<div class="sc-foro-list" id="sc-mensajes-' + a.id + '">' + scRenderMensajes(a.id) + '</div>' +
+                (isActiva ? 
+                (necs.length > 0 ? '<div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px;">' + necs.map(function(n) { return '<button onclick="scSubmitPledge(\'' + a.id + '\', \'' + n.trim() + '\')" class="sc-pledge-btn" style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:12px;padding:6px 12px;font-size:0.75rem;font-weight:700;color:#334155;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'#e2e8f0\'" onmouseout="this.style.background=\'#f1f5f9\'"><i class="ri-hand-heart-line" style="color:#e74c3c;margin-right:4px;"></i>Llevar ' + n.trim() + '</button>'; }).join('') + '</div>' : '') +
+                '<div class="sc-foro-input-wrap">' +
+                '<input type="text" id="sc-input-' + a.id + '" class="sc-foro-input" placeholder="O escribe un mensaje..." onkeypress="if(event.key === \'Enter\') scSubmitMensaje(\'' + a.id + '\')">' +
+                '<button class="sc-foro-btn" onclick="scSubmitMensaje(\'' + a.id + '\')"><i class="ri-send-plane-fill"></i></button>' +
+                '</div>' : '') +
+            '</div>';
+
+        // Actions
+        var isOwner = (uId && uId === a.user_id) || isAdmin;
+        if (isActiva && isOwner) {
+            html += '<div style="display:flex; gap:10px; margin-top:4px;">';
+            html += '<button onclick="event.stopPropagation(); scEditAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#e0f2fe\'" onmouseout="this.style.background=\'#f0f9ff\'"><i class="ri-edit-2-line"></i> Editar</button>';
+            html += '<button onclick="event.stopPropagation(); scEliminarAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#fee2e2\'" onmouseout="this.style.background=\'#fef2f2\'"><i class="ri-delete-bin-line"></i> Eliminar</button>';
+            html += '</div>';
+        } else if (isActiva) {
+            html += '<button onclick="event.stopPropagation(); scCompartir(\'' + scEscape(a.direccion) + '\')" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;background:white;color:#475569;border-radius:14px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="ri-share-forward-line"></i> Compartir Alerta</button>';
+        }
+
+        html += '</div>';
+        return html;
+    }).join('');
+}
+
+async function scLoadMensajes(alertaId) {
+    if (typeof sbClient === 'undefined' || !sbClient) return;
+    try {
+        var { data } = await sbClient.from('ayudas_alerta').select('*').eq('alerta_id', alertaId).order('created_at', { ascending: true });
+        if (data) {
+            scMensajes[alertaId] = data;
+            var c = document.getElementById('sc-mensajes-' + alertaId);
+            if (c) c.innerHTML = scRenderMensajes(alertaId);
+            var nBox = document.getElementById('sc-necesidades-box-' + alertaId);
+            if (nBox) nBox.innerHTML = scRenderNecesidadesBox(alertaId);
+        }
+    } catch(e) {}
+}
+
+function scRenderNecesidadesBox(alertaId) {
+    var a = scAllAlertas.find(function(x) { return x.id === alertaId; });
+    if (!a) return '';
+    var necs = (a.necesidades || '').split(',').filter(Boolean);
+    if (necs.length === 0) return '';
+    
+    var msgs = scMensajes[alertaId] || [];
+    var necIcons = { 'Ropa':'ri-t-shirt-line', 'Abrigo':'ri-windy-line', 'Manta':'ri-hotel-bed-line',
+                     'AtenciÃƒÂ³n MÃƒÂ©dica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
+                     
+    return necs.map(function(n) {
+        var necName = n.trim();
+        var pledgesCount = msgs.filter(function(m) { return m.necesidad === necName; }).length;
+        var counterHtml = pledgesCount > 0 ? '<span style="background:#e74c3c;color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;margin-left:4px;">' + pledgesCount + '</span>' : '';
+        return '<span style="display:inline-flex;align-items:center;gap:4px;background:white;color:#1e293b;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #cbd5e1;box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
+            '<i class="' + (necIcons[necName] || 'ri-check-line') + '" style="color:#e74c3c;"></i>' + necName + counterHtml + '</span>';
+    }).join('');
+}
+
+function scRenderMensajes(alertaId) {
+    var msgs = scMensajes[alertaId] || [];
+    if (msgs.length === 0) return '<div style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:12px 0;"><i class="ri-team-line" style="font-size:1.5rem;display:block;margin-bottom:4px;color:#cbd5e1;"></i>SÃƒÂ© el primero en ofrecer ayuda.</div>';
+    return msgs.map(function(m) {
+        var t = m.created_at ? new Date(m.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : '';
+        if (m.necesidad && m.necesidad !== 'general') {
+            return '<div class="sc-foro-msg" style="background:#fef2f2; border-left:3px solid #e74c3c; padding-left:10px; margin-bottom:8px;"><strong><span><i class="ri-hand-heart-fill" style="color:#e74c3c;margin-right:4px;"></i>' + scEscape(m.helper_name || 'Alguien') + '</span><span class="sc-foro-msg-date">' + t + '</span></strong><span style="color:#b91c1c;font-weight:700;font-size:0.85rem;"><i class="ri-check-line"></i> Se comprometiÃƒÂ³ a llevar: ' + scEscape(m.necesidad) + '</span></div>';
+        }
+        return '<div class="sc-foro-msg" style="margin-bottom:8px;"><strong><span><i class="ri-user-smile-line" style="color:#3498db;margin-right:4px;"></i>' + scEscape(m.helper_name || 'Alguien') + '</span><span class="sc-foro-msg-date">' + t + '</span></strong><span style="font-size:0.85rem;">' + scEscape(m.mensaje) + '</span></div>';
+    }).join('');
+}
+
+async function scSubmitPledge(alertaId, necesidad) {
+    if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
+        if (confirm('Necesitas iniciar sesiÃƒÂ³n para comprometerte a ayudar. Ã‚Â¿Ir al login?')) app.navigate('screen-login');
+        return;
+    }
+    
+    var u = auth.getCurrentUser();
+    var isValidUUID = u && u.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u.id);
+    var name = u ? (u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0]) : 'AnÃƒÂ³nimo';
+    var text = "Se comprometiÃƒÂ³ a llevar: " + necesidad;
+    
+    var payload = { alerta_id: alertaId, mensaje: text, helper_name: name, user_id: isValidUUID ? u.id : null, necesidad: necesidad };
+    
+    // Optimistic UI
+    if (!scMensajes[alertaId]) scMensajes[alertaId] = [];
+    scMensajes[alertaId].push(payload);
+    document.getElementById('sc-mensajes-' + alertaId).innerHTML = scRenderMensajes(alertaId);
+    var nBox = document.getElementById('sc-necesidades-box-' + alertaId);
+    if (nBox) nBox.innerHTML = scRenderNecesidadesBox(alertaId);
+    
+    try { await sbClient.from('ayudas_alerta').insert([payload]); } 
+    catch(e) { scLoadMensajes(alertaId); }
+}
+
+async function scSubmitMensaje(alertaId) {
+    var input = document.getElementById('sc-input-' + alertaId);
+    var text = input ? input.value.trim() : '';
+    if (!text) return;
+    
+    if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
+        if (confirm('Necesitas iniciar sesiÃƒÂ³n para enviar mensajes. Ã‚Â¿Ir al login?')) app.navigate('screen-login');
+        return;
+    }
+    
+    var u = auth.getCurrentUser();
+    var isValidUUID = u && u.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u.id);
+    var name = u ? (u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0]) : 'AnÃƒÂ³nimo';
+    
+    input.value = '';
+    
+    var payload = { alerta_id: alertaId, mensaje: text, helper_name: name, user_id: isValidUUID ? u.id : null, necesidad: 'general' };
+    
+    // Optimistic UI
+    if (!scMensajes[alertaId]) scMensajes[alertaId] = [];
+    scMensajes[alertaId].push(payload);
+    document.getElementById('sc-mensajes-' + alertaId).innerHTML = scRenderMensajes(alertaId);
+    
+    try {
+        await sbClient.from('ayudas_alerta').insert([payload]);
+    } catch(e) { scLoadMensajes(alertaId); }
+}
+
+function scRenderMapPins() {
+    if (!scMap) return;
+    Object.values(scMarkers).forEach(function(m) { scMap.removeLayer(m); });
+    scMarkers = {};
+    scAllAlertas.forEach(function(a) {
+        if (!a.lat || !a.lng) return;
+        var isActiva = a.activa === true;
+        var necs = (a.necesidades || '').split(',').filter(Boolean).join(', ');
+        
+        var popupContent = '<div style="min-width:220px;">' +
+            '<div style="font-weight:800; font-size:1.05rem; color:#1a1a2e; margin-bottom:4px; line-height:1.2;">' + scEscape(a.direccion) + '</div>' +
+            '<div style="font-size:0.75rem; color:#64748b; margin-bottom:8px;"><i class="ri-user-smile-fill" style="color:#3b82f6;"></i> Reportado por <strong>' + scEscape(a.reporter_name || 'AnÃƒÂ³nimo') + '</strong></div>' +
+            '<span style="display:inline-block; margin-bottom:12px; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; background:' + (isActiva ? '#fee2e2; color:#dc2626' : '#dcfce7; color:#16a34a') + '; text-transform:uppercase;">' + (isActiva ? 'Ã¢â€”Â Alerta Activa' : 'Ã¢Å“â€œ Atendida') + '</span>';
+        
+        if (necs) {
+            popupContent += '<div style="font-size:0.85rem; color:#334155; margin-bottom:8px;"><strong style="color:#1a1a2e;display:block;margin-bottom:2px;font-size:0.75rem;text-transform:uppercase;color:#94a3b8;">Necesidades:</strong> ' + necs + '</div>';
+        }
+        if (a.descripcion) {
+            popupContent += '<div style="font-size:0.85rem; color:#475569; font-style:italic; border-left:3px solid #cbd5e1; padding-left:10px; background:#f8fafc; padding:8px 8px 8px 10px; border-radius:0 8px 8px 0; line-height:1.4;">"' + scEscape(a.descripcion) + '"</div>';
+        }
+        popupContent += '</div>';
+
+        var icon = L.divIcon({
+            html: '<div style="width:40px;height:40px;background:' + (isActiva ? 'linear-gradient(135deg,#e74c3c,#c0392b)' : 'linear-gradient(135deg,#27ae60,#1e8449)') + ';border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,0.3);border:3px solid white;">' +
+                  '<i class="' + (isActiva ? 'ri-alarm-warning-fill' : 'ri-check-fill') + '" style="transform:rotate(45deg);color:white;font-size:1.1rem;"></i></div>',
+            iconSize: [40, 40], iconAnchor: [20, 40], className: ''
+        });
+        
+        var m = L.marker([a.lat, a.lng], { icon: icon })
+            .bindPopup(popupContent, { className: 'sc-custom-popup' })
+            .addTo(scMap);
+        m.on('click', function() {
+            scCurrentTab = 'todas';
+            scChangeTab('todas');
+            setTimeout(function() {
+                var list = document.getElementById('sc-alertas-list');
+                // Could scroll to specific card if needed
+            }, 100);
+        });
+        scMarkers[a.id] = m;
+    });
+}
+
+function scFocusAlerta(lat, lng) {
+    if (!scMap || !lat || !lng) return;
+    scMap.flyTo([lat, lng], 16, { duration: 0.8 });
+    document.getElementById('screen-situacion-calle').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+var scEditingId = null;
+
+function scOpenForm() {
+    if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
+        if (confirm('Necesitas iniciar sesiÃƒÂ³n para publicar una alerta.\nÃ‚Â¿Ir al login?')) app.navigate('screen-login');
+        return;
+    }
+    scEditingId = null;
+    document.getElementById('sc-submit-btn').innerHTML = '<i class="ri-send-plane-fill"></i> Publicar Alerta';
+    document.getElementById('sc-form-modal').style.display = 'block';
+    document.getElementById('sc-overlay').style.display = 'block';
+    setTimeout(function() {
+        document.getElementById('sc-form-modal').style.transform = 'translateY(0)';
+    }, 10);
+    
+    document.getElementById('sc-direccion').value = '';
+    document.getElementById('sc-ciudad').value = '';
+    document.getElementById('sc-observaciones').value = '';
+    document.querySelectorAll('.sc-nec-chip').forEach(function(b) { b.classList.remove('active'); });
+    scNecesidades = [];
+    scGeoLat = null; scGeoLng = null;
+    document.getElementById('sc-mini-map-wrap').style.display = 'none';
+    if (scMiniMap) { scMiniMap.remove(); scMiniMap = null; scMiniMarker = null; }
+}
+
+function scCloseForm() {
+    document.getElementById('sc-form-modal').style.transform = 'translateY(100%)';
+    setTimeout(function() {
+        document.getElementById('sc-form-modal').style.display = 'none';
+        document.getElementById('sc-overlay').style.display = 'none';
+    }, 400);
+}
+
+function scToggleNec(btn, tipo) {
+    var idx = scNecesidades.indexOf(tipo);
+    if (idx > -1) { scNecesidades.splice(idx, 1); btn.classList.remove('active'); }
+    else { scNecesidades.push(tipo); btn.classList.add('active'); }
+}
+
+function scGeocodeDebouncedForm() {
+    clearTimeout(scGeoTimer);
+    var loader = document.getElementById('sc-geo-loader');
+    if (loader) loader.style.display = 'block';
+    scGeoTimer = setTimeout(async function() {
+        var pais = document.getElementById('sc-pais').value;
+        var ciudad = document.getElementById('sc-ciudad').value.trim();
+        var dir = document.getElementById('sc-direccion').value.trim();
+        var q = dir + (ciudad ? ', ' + ciudad : '') + ', ' + pais;
+        
+        if (dir.length < 5) { if (loader) loader.style.display = 'none'; return; }
+        try {
+            var r = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1');
+            var d = await r.json();
+            if (d && d.length > 0) {
+                scGeoLat = parseFloat(d[0].lat);
+                scGeoLng = parseFloat(d[0].lon);
+                if (isNaN(scGeoLat)) scGeoLat = -34.6037;
+                if (isNaN(scGeoLng)) scGeoLng = -58.3816;
+                scShowMiniMap(scGeoLat, scGeoLng);
+            } else {
+                // Si Nominatim no lo encuentra, mostramos Buenos Aires como fallback
+                if (scGeoLat === null || isNaN(scGeoLat)) {
+                    scGeoLat = -34.6037;
+                    scGeoLng = -58.3816;
+                    scShowMiniMap(scGeoLat, scGeoLng);
+                }
+            }
+        } catch(e) {
+            // Fallback general si hay error de red
+            if (scGeoLat === null || isNaN(scGeoLat)) {
+                scGeoLat = -34.6037;
+                scGeoLng = -58.3816;
+                scShowMiniMap(scGeoLat, scGeoLng);
+            }
+        }
+        if (loader) loader.style.display = 'none';
+    }, 1000);
+}
+
+function scShowMiniMap(lat, lng) {
+    var wrap = document.getElementById('sc-mini-map-wrap');
+    wrap.style.display = 'block';
+    if (!scMiniMap) {
+        scMiniMap = L.map('sc-mini-map', { zoomControl: false, attributionControl: false }).setView([lat, lng], 16);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(scMiniMap);
+        scMiniMarker = L.marker([lat, lng], { draggable: true }).addTo(scMiniMap);
+        scMiniMarker.on('dragend', function() {
+            var p = scMiniMarker.getLatLng();
+            scGeoLat = p.lat; scGeoLng = p.lng;
+        });
+    } else {
+        scMiniMap.setView([lat, lng], 16);
+        scMiniMarker.setLatLng([lat, lng]);
+    }
+}
+
+function scCenterMyLocation() {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        if (scMap) scMap.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
+    });
+}
+
+async function scSubmitAlerta() {
+    var pais = document.getElementById('sc-pais').value;
+    var ciudad = document.getElementById('sc-ciudad').value.trim();
+    var dir = document.getElementById('sc-direccion').value.trim();
+    var obs = document.getElementById('sc-observaciones').value.trim();
+    
+    if (!dir) {
+        document.getElementById('sc-direccion').focus();
+        document.getElementById('sc-direccion').style.borderColor = '#e74c3c';
+        return;
+    }
+    
+    if (scGeoLat === null || scGeoLng === null || isNaN(scGeoLat) || isNaN(scGeoLng)) {
+        // Fallback silencioso a Buenos Aires si fallÃƒÂ³ la carga del mapa o el dato es invÃƒÂ¡lido
+        scGeoLat = -34.6037;
+        scGeoLng = -58.3816;
+    }
+    
+    var direccionCompleta = dir + (ciudad ? ', ' + ciudad : '') + ' (' + pais + ')';
+    
+    var btn = document.getElementById('sc-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Publicando...';
+
+    var u = (typeof auth !== 'undefined' && auth) ? auth.getCurrentUser() : null;
+    var isValidUUID = u && u.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u.id);
+    var payload = {
+        direccion: direccionCompleta,
+        necesidades: scNecesidades.join(','),
+        descripcion: obs,
+        lat: scGeoLat,
+        lng: scGeoLng
+    };
+    if (scFotoBase64) payload.foto_url = scFotoBase64;
+    
+    try {
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            var error = null;
+            if (scEditingId) {
+                var { error: errUpdate } = await sbClient.from('alertas_calle').update(payload).eq('id', scEditingId);
+                error = errUpdate;
+            } else {
+                payload.user_id = isValidUUID ? u.id : null;
+                payload.reporter_name = u ? (u.name || (u.email ? u.email.split('@')[0] : 'AnÃƒÂ³nimo')) : 'AnÃƒÂ³nimo';
+                payload.activa = true;
+                payload.created_at = new Date().toISOString();
+                var { error: errInsert } = await sbClient.from('alertas_calle').insert([payload]);
+                error = errInsert;
+            }
+            
+            if (error) {
+                btn.innerHTML = '<i class="ri-error-warning-line"></i> ' + (error.message || 'Error desconocido');
+                btn.disabled = false;
+                return; // Stop execution
+            }
+        }
+        scEditingId = null;
+        scCloseForm();
+        await scLoadAlertas();
+        if (scGeoLat && scGeoLng) scFocusAlerta(scGeoLat, scGeoLng);
+        scCurrentTab = 'todas';
+        scChangeTab('todas');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ri-send-plane-fill"></i> Publicar Alerta';
+        document.getElementById('sc-observaciones').value = '';
+        document.getElementById('sc-direccion').value = '';
+        document.getElementById('sc-ciudad').value = '';
+        document.getElementById('sc-mini-map-wrap').style.display = 'none';
+        scNecesidades = [];
+        document.querySelectorAll('.sc-nec-chip').forEach(function(c) { c.classList.remove('active'); });
+        if (typeof scRemoveFoto === 'function') scRemoveFoto();
+    } catch(e) {
+        btn.innerHTML = '<i class="ri-error-warning-line"></i> Error JS';
+        btn.disabled = false;
+        console.error("Submit Alerta Error:", e);
+    }
+}
+
+async function scEliminarAlerta(id) {
+    if(!confirm("Ã‚Â¿EstÃƒÂ¡s seguro de que quieres cerrar y eliminar esta alerta de forma permanente?")) return;
+    try {
+        if (typeof sbClient !== 'undefined' && sbClient) {
+            await sbClient.from('alertas_calle').delete().eq('id', id);
+        }
+        scLoadAlertas();
+    } catch(e) {}
+}
+
+function scEditAlerta(id) {
+    var a = scAllAlertas.find(function(x) { return x.id === id; });
+    if (!a) return;
+    
+    var parts = (a.direccion || '').split(',');
+    document.getElementById('sc-direccion').value = parts[0] ? parts[0].trim() : '';
+    document.getElementById('sc-ciudad').value = parts[1] ? parts[1].split('(')[0].trim() : '';
+    document.getElementById('sc-observaciones').value = a.descripcion || '';
+    
+    scNecesidades = (a.necesidades || '').split(',').filter(Boolean);
+    document.querySelectorAll('.sc-nec-chip').forEach(function(c) {
+        if (scNecesidades.indexOf(c.getAttribute('data-val')) > -1) c.classList.add('active');
+        else c.classList.remove('active');
+    });
+    
+    if (typeof scRemoveFoto === 'function') scRemoveFoto();
+    
+    scGeoLat = a.lat;
+    scGeoLng = a.lng;
+    if (scGeoLat && scGeoLng) scShowMiniMap(scGeoLat, scGeoLng);
+    
+    scEditingId = id;
+    document.getElementById('sc-submit-btn').innerHTML = '<i class="ri-save-line"></i> Guardar Cambios';
+    
+    document.getElementById('sc-form-modal').style.display = 'block';
+    document.getElementById('sc-overlay').style.display = 'block';
+    setTimeout(function() { document.getElementById('sc-form-modal').style.transform = 'translateY(0)'; }, 10);
+}
+
+function scCompartir(dir) {
+    var txt = 'Ã°Å¸Å¡Â¨ Alerta Solidaria en ' + dir + '\nAyudanos a difundir o asistir en SOLIDARIDAD.';
+    if (navigator.share) { navigator.share({ title: 'Alerta Solidaria', text: txt }).catch(function(){}); }
+    else { navigator.clipboard.writeText(txt).then(function() { alert('Copiado al portapapeles'); }).catch(function(){}); }
+}
+
+var scFotoBase64 = null;
+
+function scHandleFotoUpload(input) {
+    if (input.files && input.files[0]) {
+        var file = input.files[0];
+        if (file.size > 8 * 1024 * 1024) { alert('La foto es demasiado grande. Intenta con una menor a 8MB.'); return; }
+        
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                var maxW = 600; var maxH = 600;
+                var w = img.width; var h = img.height;
+                if (w > h && w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+                else if (h > maxW) { w = Math.round((w * maxH) / h); h = maxH; }
+                canvas.width = w; canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                scFotoBase64 = canvas.toDataURL('image/jpeg', 0.6); // Compress heavy
+                
+                document.getElementById('sc-foto-img').src = scFotoBase64;
+                document.getElementById('sc-foto-preview').style.display = 'block';
+                document.getElementById('sc-foto-label').style.display = 'none';
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function scRemoveFoto() {
+    scFotoBase64 = null;
+    var input = document.getElementById('sc-foto-input');
+    if (input) input.value = '';
+    var preview = document.getElementById('sc-foto-preview');
+    if (preview) preview.style.display = 'none';
+    var label = document.getElementById('sc-foto-label');
+    if (label) label.style.display = 'flex';
+}
+
+function scEscape(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var addComedorMapInst = null;
+var addComedorMarker = null;
+
