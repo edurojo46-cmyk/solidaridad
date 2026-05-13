@@ -1978,8 +1978,7 @@ function scRenderAlertas() {
         var iconColor = estado === 'activa' ? '#e74c3c' : (estado === 'proceso' ? '#f39c12' : '#27ae60');
         
         var isOwner = (uId && uId === a.user_id) || isAdmin;
-        var isRevealed = isOwner || (uId && scMensajes[a.id] && scMensajes[a.id].some(function(m) { return m.user_id === uId; })) || !isActiva;
-        var dispDir = isRevealed ? scEscape(a.direccion) : scEscape(a.direccion).replace(/\d+/g, 'XXX (Oculto)');
+        var dispDir = scEscape(a.direccion);
         
         var fotoHtml = '';
         if (a.foto_url) {
