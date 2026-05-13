@@ -1,6 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
+<script>
+if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(reg){reg.unregister();});});}
+if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.delete(k);});});}
+</script>
     <!-- deploy-v94-20260505 -->
     
     <script>
@@ -27,7 +31,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=201">
+    <link rel="stylesheet" href="index.css?v=202">
     <script>
         // DEV FIX: Force unregister service workers on localhost
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -3501,9 +3505,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=201"></script>
-<script src="supabase.js?v=201"></script>
-<script src="app.js?v=201"></script>
+<script src="auth.js?v=202"></script>
+<script src="supabase.js?v=202"></script>
+<script src="app.js?v=202"></script>
 
 <!-- Meditation Modal (self-contained, outside app-container) -->
 <div id="meditation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
@@ -8320,6 +8324,8 @@ function sendMpMsg(){
 
 </body>
 </html>
+
+
 
 
 
