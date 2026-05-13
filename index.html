@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <!-- deploy-v94-20260505 -->
@@ -1252,52 +1252,60 @@
             <div class="Comedores-detail-scroll" id="Comedores-detail-list"></div>
         </div>
 
-        <!-- ADD Comedor MODAL -->
-        <div id="add-comedor-modal" class="glass card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:92%; max-width:420px; z-index:9999; padding:0; flex-direction:column; border-radius:24px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2);">
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#f39c12,#d35400); padding:24px; text-align:center; position:relative;">
-                <button class="icon-btn" onclick="closeAddComedorModal()" style="position:absolute; top:16px; right:16px; color:#fff; background:rgba(255,255,255,0.2); backdrop-filter:blur(4px); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:all 0.2s;"><i class="ri-close-line"></i></button>
-                <div style="width:60px; height:60px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:2rem; color:#fff; backdrop-filter:blur(4px);"><i class="ri-building-4-fill"></i></div>
-                <h3 style="margin:0; color:#fff; font-size:1.4rem; font-weight:700;">Agregar Comedor</h3>
-                <p style="margin:6px 0 0; color:rgba(255,255,255,0.9); font-size:0.9rem;">Contribuá a la red de tu comunidad</p>
+        <!-- ADD Comedor MODAL (Bottom Sheet Style) -->
+        <div id="add-comedor-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9998; backdrop-filter:blur(4px); transition:opacity 0.3s;" onclick="closeAddComedorModal()"></div>
+        <div id="add-comedor-modal" style="display:none; position:fixed; bottom:0; left:0; right:0; background:white; border-radius:32px 32px 0 0; z-index:9999; max-height:90vh; overflow-y:auto; box-shadow:0 -10px 40px rgba(0,0,0,0.15); transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);">
+            
+            <div style="padding:16px; text-align:center; position:sticky; top:0; background:white; z-index:2; border-radius:32px 32px 0 0;">
+                <div style="width:40px; height:5px; background:#cbd5e1; border-radius:10px; margin:0 auto 12px;"></div>
+                <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:#1a1a2e;">Agregar Comedor</h3>
+                <p style="margin:4px 0 0; font-size:0.85rem; color:#64748b;">Contribuí a la red de tu comunidad</p>
+                <button onclick="closeAddComedorModal()" style="position:absolute; right:20px; top:16px; background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;"><i class="ri-close-line"></i></button>
             </div>
 
-            <!-- Body -->
-            <div style="padding:24px; display:flex; flex-direction:column; gap:16px; background:var(--clr-bg);">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                    <div class="auth-field" style="margin-bottom:0;">
-                        <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-earth-fill" style="color:#f39c12; margin-right:4px;"></i>Paás</label>
-                        <input type="text" id="add-comedor-pais" placeholder="Ej: Argentina" class="auth-input" style="border-radius:12px; border:1px solid var(--clr-border); background:var(--clr-bg-alt); padding:12px; width:100%; box-sizing:border-box;">
+            <div style="padding:0 24px 30px; display:flex; flex-direction:column; gap:20px;">
+                <div style="background:#f8fafc; padding:16px; border-radius:20px; border:1px solid #e2e8f0;">
+                    <div style="display:flex; gap:12px; margin-bottom:12px;">
+                        <div style="flex:1;">
+                            <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">País</label>
+                            <input type="text" id="add-comedor-pais" placeholder="Ej: Argentina" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Ciudad</label>
+                            <input type="text" id="add-comedor-ciudad" placeholder="Ej: Córdoba" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;">
+                        </div>
                     </div>
-                    <div class="auth-field" style="margin-bottom:0;">
-                        <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-map-pin-2-fill" style="color:#f39c12; margin-right:4px;"></i>Ciudad</label>
-                        <input type="text" id="add-comedor-ciudad" placeholder="Ej: Córdoba" class="auth-input" style="border-radius:12px; border:1px solid var(--clr-border); background:var(--clr-bg-alt); padding:12px; width:100%; box-sizing:border-box;">
+                    
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Nombre del Comedor</label>
+                        <input type="text" id="add-comedor-nombre" placeholder="Ej: Comedor Corazones" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;">
+                    </div>
+
+                    <div>
+                        <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Dirección Exacta</label>
+                        <div style="position:relative;">
+                            <i class="ri-map-pin-2-fill" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#f39c12;"></i>
+                            <input type="text" id="add-comedor-direccion" placeholder="Ej: Av. Rivadavia 1750" style="width:100%; padding:12px 12px 12px 36px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;" oninput="geocodeAddComedorDebounced()">
+                        </div>
                     </div>
                 </div>
-                <div class="auth-field" style="margin-bottom:0;">
-                    <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-home-heart-fill" style="color:#f39c12; margin-right:4px;"></i>Nombre del Comedor</label>
-                    <input type="text" id="add-comedor-nombre" placeholder="Ej: Catedral Ntra. Señora" class="auth-input" style="border-radius:12px; border:1px solid var(--clr-border); background:var(--clr-bg-alt); padding:12px; width:100%; box-sizing:border-box;">
+
+                <div>
+                    <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Ubicación en el Mapa</label>
+                    <div id="add-comedor-map" style="width: 100%; height: 160px; border-radius: 16px; border: 1px solid #cbd5e1; overflow:hidden;"></div>
+                    <span style="font-size: 0.75rem; color: #64748b; display:block; margin-top:6px;"><i class="ri-drag-move-fill" style="color:#f39c12; margin-right:4px;"></i>Mueve el pin para ajustar la ubicación exacta.</span>
                 </div>
-                <div class="auth-field" style="margin-bottom:0;">
-                    <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-map-pin-fill" style="color:#f39c12; margin-right:4px;"></i>Dirección Exacta</label>
-                    <input type="text" id="add-comedor-direccion" placeholder="Ej: Av. Rivadavia 1750" class="auth-input" style="border-radius:12px; border:1px solid var(--clr-border); background:var(--clr-bg-alt); padding:12px; width:100%; box-sizing:border-box;" oninput="geocodeAddComedorDebounced()">
-</div>
-<div class="auth-field" style="margin-top: 10px;">
-    <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-map-pin-user-fill" style="color:#f39c12; margin-right:4px;"></i>Ubicación en el Mapa</label>
-    <div id="add-comedor-map" style="width: 100%; height: 160px; border-radius: 12px; border: 1px solid var(--clr-border);"></div>
-    <span style="font-size: 0.75rem; color: var(--clr-text-muted);">Mueve el pin para ajustar la ubicación exacta.</span>
-</div>
-                <div class="auth-field" style="margin-bottom:0;">
-                    <label style="font-size:0.85rem; font-weight:600; color:var(--clr-text-title); margin-bottom:6px; display:block;"><i class="ri-time-fill" style="color:#f39c12; margin-right:4px;"></i>Días y Horarios</label>
-                    <textarea id="add-comedor-horarios" placeholder="Ej: L-V 19:00 | D 11:00 y 19:00" class="auth-input" style="border-radius:12px; border:1px solid var(--clr-border); background:var(--clr-bg-alt); padding:12px; width:100%; box-sizing:border-box; resize:none; height:70px; font-family:inherit;"></textarea>
+
+                <div style="background:#f8fafc; padding:16px; border-radius:20px; border:1px solid #e2e8f0;">
+                    <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Días y Horarios</label>
+                    <textarea id="add-comedor-horarios" placeholder="Ej: L-V 19:00 | D 11:00 y 19:00" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none; resize:none; height:70px; font-family:inherit;"></textarea>
                 </div>
-                
-                <button class="btn btn-primary" onclick="submitAddComedor()" id="btn-submit-Comedor" style="margin-top:8px; width:100%; background:linear-gradient(135deg,#f39c12,#d35400); box-shadow:0 8px 20px rgba(243,156,18,0.3); border:none; border-radius:14px; padding:16px; font-size:1.1rem; font-weight:700; display:flex; justify-content:center; align-items:center; gap:8px;">
-                    <i class="ri-save-3-fill"></i> Guardar Comedor
+
+                <button onclick="submitAddComedor()" id="btn-submit-Comedor" style="background:linear-gradient(135deg, #f39c12, #d35400); color:white; border:none; border-radius:16px; padding:16px; font-size:1.05rem; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; box-shadow:0 8px 20px rgba(243,156,18,0.3); cursor:pointer; width:100%; margin-top:10px;">
+                    <i class="ri-check-double-line"></i> Guardar Comedor
                 </button>
             </div>
         </div>
-        <div id="add-comedor-overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9998; backdrop-filter:blur(4px);" onclick="closeAddComedorModal()"></div>
 
 <script>
 // === Comedores DATA ===
@@ -2468,8 +2476,14 @@ function openAddComedorModal() {
         if (typeof app !== 'undefined') app.navigate('screen-login');
         return;
     }
-    document.getElementById('add-comedor-modal').style.display = 'flex';
+    
     document.getElementById('add-comedor-overlay').style.display = 'block';
+    document.getElementById('add-comedor-modal').style.display = 'block';
+    
+    setTimeout(() => {
+        document.getElementById('add-comedor-overlay').style.opacity = '1';
+        document.getElementById('add-comedor-modal').style.transform = 'translateY(0)';
+    }, 10);
     
     if (!addComedorMapInst) {
         var mapDiv = document.getElementById('add-comedor-map');
@@ -2489,6 +2503,7 @@ function openAddComedorModal() {
     }
     if (addComedorMapInst) {
         setTimeout(function() { addComedorMapInst.invalidateSize(); }, 200);
+        setTimeout(function() { addComedorMapInst.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 500);
     }
 }
 
@@ -2518,13 +2533,18 @@ function geocodeAddComedorDebounced() {
 }
 
 function closeAddComedorModal() {
-    document.getElementById('add-comedor-modal').style.display = 'none';
-    document.getElementById('add-comedor-overlay').style.display = 'none';
-    document.getElementById('add-comedor-pais').value = '';
-    document.getElementById('add-comedor-ciudad').value = '';
-    document.getElementById('add-comedor-nombre').value = '';
-    document.getElementById('add-comedor-direccion').value = '';
-    document.getElementById('add-comedor-horarios').value = '';
+    document.getElementById('add-comedor-overlay').style.opacity = '0';
+    document.getElementById('add-comedor-modal').style.transform = 'translateY(100%)';
+    
+    setTimeout(() => {
+        document.getElementById('add-comedor-modal').style.display = 'none';
+        document.getElementById('add-comedor-overlay').style.display = 'none';
+        document.getElementById('add-comedor-pais').value = '';
+        document.getElementById('add-comedor-ciudad').value = '';
+        document.getElementById('add-comedor-nombre').value = '';
+        document.getElementById('add-comedor-direccion').value = '';
+        document.getElementById('add-comedor-horarios').value = '';
+    }, 400);
 }
 
 async function submitAddComedor() {
