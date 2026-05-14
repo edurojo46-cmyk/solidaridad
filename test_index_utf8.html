@@ -3395,76 +3395,42 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </style>
 
     <section id="screen-mensajes" class="screen gradient-bg">
-        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-profile')"><i class="ri-arrow-left-line"></i></button><h2 id="chat-title">Mensajes</h2><div style="width:24px"></div></div>
-        
-        <!-- Contacts List -->
-        <div class="chat-contacts-view" id="chat-contacts-view">
-            <div class="chat-header-section">
-                <div class="chat-search-bar">
-                    <i class="ri-search-line"></i>
-                    <input type="text" placeholder="Buscar contacto..." id="chat-search" oninput="filterChats()">
-                </div>
-                <div class="chat-tabs">
-                    <button class="chat-tab active" onclick="filterChatTab(this,'all')">Todos</button>
-                    <button class="chat-tab" onclick="filterChatTab(this,'unread')">No leádos</button>
-                    <button class="chat-tab" onclick="filterChatTab(this,'groups')">Grupos</button>
+
+        <!-- Lista de conversaciones -->
+        <div id="msg-list-view" style="display:flex;flex-direction:column;height:100%;">
+            <div class="msg-header-bar">
+                <h2><i class="ri-chat-3-fill" style="color:var(--clr-primary);margin-right:6px;"></i>Mensajes</h2>
+                <button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-close-line" style="font-size:1.4rem;color:#1a1a2e;"></i></button>
+            </div>
+            <div class="msg-search-wrap">
+                <input type="text" id="msg-search-input" placeholder="Buscar conversacion..." oninput="filterMsgList(this.value)">
+            </div>
+            <div class="msg-list" id="msg-list-container">
+                <div id="msg-list-loading" style="text-align:center;padding:50px 20px;">
+                    <i class="ri-loader-4-line" style="font-size:2rem;color:var(--clr-primary);animation:spin 1s linear infinite;display:block;margin-bottom:12px;"></i>
+                    <p style="color:#94a3b8;font-size:0.9rem;margin:0;">Cargando conversaciones...</p>
                 </div>
             </div>
-            <div class="chat-contacts-list" id="chat-contacts-list">
-                <!-- Dynamic: populated from Supabase -->
-                <div id="chat-loading" style="display:none;text-align:center;padding:40px 20px;color:var(--clr-text-muted)">
-                    <i class="ri-loader-4-line" style="font-size:1.5rem;animation:spin 1s linear infinite;display:block;margin-bottom:8px"></i>
-                    <span style="font-size:0.82rem">Cargando conversaciones...</span>
-                </div>
-                <div id="chat-empty" style="display:none;text-align:center;padding:40px 20px">
-                    <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#3DA3D4,#2E8BC0);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.5rem;color:white"><i class="ri-chat-3-line"></i></div>
-                    <h4 style="color:var(--clr-text-title);font-size:0.95rem;margin:0 0 6px">Sin conversaciones</h4>
-                    <p style="font-size:0.8rem;color:var(--clr-text-muted);margin:0 0 16px">Inicia una conversación con otros miembros de la comunidad</p>
-                    <button onclick="showNewChatModal()" style="background:linear-gradient(135deg,#3DA3D4,#2E8BC0);color:white;border:none;padding:10px 24px;border-radius:20px;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:'Inter',sans-serif"><i class="ri-add-line"></i> Nueva Conversación</button>
-                </div>
-            </div>
-            <!-- New Chat FAB -->
-            <button id="new-chat-fab" onclick="showNewChatModal()" style="position:absolute;bottom:16px;right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3DA3D4,#2E8BC0);color:white;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 6px 24px rgba(46,139,192,0.4);display:flex;align-items:center;justify-content:center;z-index:5;transition:transform 0.2s" onmouseenter="this.style.transform='scale(1.1)'" onmouseleave="this.style.transform='scale(1)'"><i class="ri-edit-line"></i></button>
+            <button class="msg-new-fab" onclick="openNewMsgModal()" title="Nuevo mensaje"><i class="ri-edit-line"></i></button>
         </div>
 
-        <!-- Chat Conversation -->
-        <div class="chat-conversation-view" id="chat-conversation-view" style="display:none">
-            <div class="chat-conv-header glass" id="chat-conv-header">
-                <button class="icon-btn" onclick="closeChat()"><i class="ri-arrow-left-line"></i></button>
-                <div class="chat-conv-user" onclick="closeChat()">
-                    <div class="chat-conv-avatar-wrap">
-                        <div class="chat-conv-avatar" id="chat-conv-avatar">M</div>
-                        <span class="chat-conv-online-dot" id="chat-conv-online"></span>
-                    </div>
-                    <div class="chat-conv-user-info">
-                        <h4 id="chat-conv-name">Maráa</h4>
-                        <span class="chat-conv-status" id="chat-conv-status">en lánea</span>
-                    </div>
-                </div>
-                <div class="chat-conv-actions">
-                    <button class="icon-btn" onclick="chatVideoCall()" title="Videollamada"><i class="ri-vidicon-fill"></i></button>
-                    <div class="chat-more-menu-wrap">
-                        <button class="icon-btn" onclick="toggleChatMenu()" title="Más"><i class="ri-more-2-fill"></i></button>
-                        <div class="chat-more-menu" id="chat-more-menu" style="display:none">
-                            <button id="chat-block-btn" onclick="blockChatUser()"><i class="ri-forbid-line"></i> Bloquear usuario</button>
-                            <button onclick="closeChatMenu(); alert('Perfil del usuario')"><i class="ri-user-line"></i> Ver perfil</button>
-                            <button onclick="closeChatMenu(); alert('Chat silenciado')"><i class="ri-notification-off-line"></i> Silenciar</button>
-                        </div>
-                    </div>
+        <!-- Vista de conversacion individual -->
+        <div id="msg-conv-view" class="msg-conv-view">
+            <div class="msg-conv-header">
+                <button class="icon-btn" onclick="closeMsgConv()"><i class="ri-arrow-left-line"></i></button>
+                <div class="msg-avatar" id="msg-conv-avatar" style="width:38px;height:38px;font-size:1rem;margin:0;"></div>
+                <div>
+                    <h4 id="msg-conv-name"></h4>
+                    <span id="msg-conv-status">miembro de Solidaridad</span>
                 </div>
             </div>
-            <div class="chat-messages" id="chat-messages"></div>
-            <div class="chat-typing-indicator" id="chat-typing" style="display:none">
-                <div class="typing-dots"><span></span><span></span><span></span></div>
-                <span>escribiendo...</span>
-            </div>
-            <div class="chat-input-bar">
-                <button class="chat-attach-btn" onclick="document.getElementById('chat-file-upload').click()" title="Adjuntar imagen o video"><i class="ri-attachment-2"></i></button>
-                <input type="file" id="chat-file-upload" accept="image/*,video/*" style="display:none" onchange="handleChatFileUpload(this)" multiple>
-                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter')sendMessage()">
-                <button class="chat-send-btn" onclick="sendMessage()"><i class="ri-send-plane-2-fill"></i></button>
+            <div class="msg-conv-messages" id="msg-conv-messages"></div>
+            <div class="msg-input-bar">
+                <input type="text" id="msg-text-input" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter')sendMsgConv()">
+                <button class="msg-send-btn" onclick="sendMsgConv()"><i class="ri-send-plane-2-fill"></i></button>
             </div>
         </div>
+
     </section>
 
     <script>

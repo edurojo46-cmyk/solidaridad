@@ -1645,3 +1645,394 @@ function toggleProfileLike(el) {
     }
 }
 
+
+
+// ==================== CHAT JS LOGIC ====================
+let chatCurrentPartner = null;
+let chatMessagesSubscription = null;
+
+function loadChatContacts() {
+    var list = document.getElementById('chat-contacts-list');
+    var empty = document.getElementById('chat-empty');
+    var loading = document.getElementById('chat-loading');
+    if(!list) return;
+
+    if (typeof auth === 'undefined' || !auth.isAuthenticated()) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        list.appendChild(empty);
+        return;
+    }
+
+    loading.style.display = 'block';
+    empty.style.display = 'none';
+    
+    var currentUser = auth.getCurrentUser();
+    
+    if (typeof db !== 'undefined' && db.getConversations) {
+        db.getConversations(currentUser.id).then(function(conversations) {
+            loading.style.display = 'none';
+            // Also get all users to find names
+            db.getAllUsers().then(function(users) {
+                var usersMap = {};
+                users.forEach(function(u) { usersMap[u.id] = u; });
+                
+                // Clear existing (except empty/loading)
+                var toRemove = [];
+                for(var i=0; i<list.children.length; i++) {
+                    if (list.children[i].id !== 'chat-empty' && list.children[i].id !== 'chat-loading') {
+                        toRemove.push(list.children[i]);
+                    }
+                }
+                toRemove.forEach(function(el) { el.remove(); });
+
+                if (conversations.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    empty.style.display = 'none';
+                    conversations.forEach(function(conv) {
+                        var partner = usersMap[conv.partnerId];
+                        var name = partner ? partner.name : 'Usuario Desconocido';
+                        var avatarLetter = name.charAt(0).toUpperCase();
+                        var lastMsg = conv.lastMessage ? conv.lastMessage.text : '';
+                        if (lastMsg.length > 30) lastMsg = lastMsg.substring(0,30) + '...';
+                        var time = conv.lastMessage ? new Date(conv.lastMessage.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                        
+                        var item = document.createElement('div');
+                        item.className = 'chat-contact-item';
+                        item.setAttribute('data-name', name.toLowerCase());
+                        item.onclick = function() { openChat(conv.partnerId, name); };
+                        
+                        var unreadHtml = conv.unreadCount > 0 ? '<span class="chat-contact-unread" style="display:inline-block">' + conv.unreadCount + '</span>' : '<span class="chat-contact-unread"></span>';
+                        
+                        item.innerHTML = '<div class="chat-contact-avatar-wrap"><div class="chat-contact-avatar">' + avatarLetter + '</div></div>' +
+                            '<div class="chat-contact-info">' +
+                                '<div class="chat-contact-header"><h4 class="chat-contact-name">' + name + '</h4><span class="chat-contact-time">' + time + '</span></div>' +
+                                '<div class="chat-contact-body"><p class="chat-contact-lastmsg">' + lastMsg + '</p>' + unreadHtml + '</div>' +
+                            '</div>';
+                        list.appendChild(item);
+                    });
+                }
+            });
+        }).catch(function(e) {
+            console.error('Error loading contacts', e);
+            loading.style.display = 'none';
+            empty.style.display = 'block';
+        });
+    } else {
+        loading.style.display = 'none';
+        empty.style.display = 'block';
+    }
+}
+
+function filterChats() {
+    var val = document.getElementById('chat-search').value.toLowerCase();
+    var items = document.querySelectorAll('.chat-contact-item');
+    items.forEach(function(item) {
+        var name = item.getAttribute('data-name');
+        if (name && name.includes(val)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function filterChatTab(btn, type) {
+    var tabs = document.querySelectorAll('.chat-tab');
+    tabs.forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+}
+
+function showNewChatModal() {
+    var userName = prompt("Ingresa el nombre del usuario con el que quieres chatear:");
+    if (userName && userName.trim() !== '') {
+        if (typeof db !== 'undefined' && db.searchUsers) {
+            db.searchUsers(userName.trim()).then(function(users) {
+                if (users && users.length > 0) {
+                    // Pick the first match
+                    openChat(users[0].id, users[0].name);
+                } else {
+                    alert("No se encontró ningún usuario con ese nombre.");
+                }
+            }).catch(function(e){
+                console.error('Search error', e);
+            });
+        }
+    }
+}
+
+function openChat(partnerId, partnerName) {
+    chatCurrentPartner = partnerId;
+    var contactsView = document.getElementById('chat-contacts-view');
+    var convView = document.getElementById('chat-conversation-view');
+    if(contactsView) contactsView.style.display = 'none';
+    if(convView) convView.style.display = 'flex';
+    
+    var nameEl = document.getElementById('chat-conv-name');
+    var avatarEl = document.getElementById('chat-conv-avatar');
+    if(nameEl) nameEl.textContent = partnerName;
+    if(avatarEl) avatarEl.textContent = partnerName.charAt(0).toUpperCase();
+    
+    var msgContainer = document.getElementById('chat-messages');
+    if(msgContainer) msgContainer.innerHTML = '';
+
+    var currentUser = auth.getCurrentUser();
+    if (!currentUser) return;
+    
+    if (typeof db !== 'undefined' && db.markConversationAsRead) {
+        db.markConversationAsRead(currentUser.id, partnerId);
+        updateChatBadges();
+    }
+
+    if (typeof db !== 'undefined' && db.getConversationMessages) {
+        db.getConversationMessages(currentUser.id, partnerId).then(function(msgs) {
+            var lastDate = '';
+            if(msgContainer) {
+                msgs.forEach(function(m) {
+                    var dateStr = new Date(m.created_at).toLocaleDateString();
+                    if (dateStr !== lastDate) {
+                        var dH = document.createElement('div');
+                        dH.className = 'chat-date-header';
+                        dH.textContent = dateStr === new Date().toLocaleDateString() ? 'Hoy' : dateStr;
+                        msgContainer.appendChild(dH);
+                        lastDate = dateStr;
+                    }
+                    
+                    var isSent = m.from_id === currentUser.id;
+                    var mDiv = document.createElement('div');
+                    mDiv.className = 'chat-msg ' + (isSent ? 'chat-msg-sent' : 'chat-msg-received');
+                    var timeStr = new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    var statusIcon = isSent ? (m.read ? '<i class="ri-check-double-line"></i>' : '<i class="ri-check-line"></i>') : '';
+                    mDiv.innerHTML = '<div class="chat-msg-text">' + m.text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status">' + statusIcon + '</span></div>';
+                    msgContainer.appendChild(mDiv);
+                });
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }
+        });
+    }
+
+    if (typeof db !== 'undefined' && db.subscribeToMessages) {
+        if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
+        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg) {
+            if (newMsg.from_id === chatCurrentPartner) {
+                if(msgContainer) {
+                    var mDiv = document.createElement('div');
+                    mDiv.className = 'chat-msg chat-msg-received';
+                    var timeStr = new Date(newMsg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    mDiv.innerHTML = '<div class="chat-msg-text">' + newMsg.text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span></div>';
+                    msgContainer.appendChild(mDiv);
+                    msgContainer.scrollTop = msgContainer.scrollHeight;
+                }
+                db.markConversationAsRead(currentUser.id, chatCurrentPartner);
+            } else {
+                updateChatBadges();
+            }
+        });
+    }
+}
+
+function closeChat() {
+    chatCurrentPartner = null;
+    var convView = document.getElementById('chat-conversation-view');
+    var contactsView = document.getElementById('chat-contacts-view');
+    if(convView) convView.style.display = 'none';
+    if(contactsView) contactsView.style.display = 'flex';
+    if (chatMessagesSubscription) {
+        chatMessagesSubscription.unsubscribe();
+        chatMessagesSubscription = null;
+    }
+    loadChatContacts();
+}
+
+function sendMessage() {
+    var input = document.getElementById('chat-input');
+    if(!input) return;
+    var text = input.value.trim();
+    if (!text || !chatCurrentPartner) return;
+    
+    var currentUser = auth.getCurrentUser();
+    if (!currentUser) return;
+    
+    var msgContainer = document.getElementById('chat-messages');
+    if(msgContainer) {
+        var mDiv = document.createElement('div');
+        mDiv.className = 'chat-msg chat-msg-sent';
+        var timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        mDiv.innerHTML = '<div class="chat-msg-text">' + text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status"><i class="ri-time-line"></i></span></div>';
+        msgContainer.appendChild(mDiv);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+    input.value = '';
+
+    if (typeof db !== 'undefined' && db.sendMessage) {
+        db.sendMessage(currentUser.id, chatCurrentPartner, text).then(function(msg) {
+            if (msg && mDiv) {
+                var statusEl = mDiv.querySelector('.chat-msg-status');
+                if(statusEl) statusEl.innerHTML = '<i class="ri-check-line"></i>';
+            }
+        });
+    }
+}
+
+function chatVideoCall() {
+    alert('Función de videollamada de WhatsApp en desarrollo.');
+}
+
+function toggleChatMenu() {
+    var menu = document.getElementById('chat-more-menu');
+    if(menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function closeChatMenu() {
+    var menu = document.getElementById('chat-more-menu');
+    if (menu) menu.style.display = 'none';
+}
+
+function blockChatUser() {
+    closeChatMenu();
+    if (confirm('¿Estás seguro de bloquear este usuario?')) {
+        alert('Usuario bloqueado.');
+        closeChat();
+    }
+}
+
+function handleChatFileUpload(input) {
+    if (input.files && input.files.length > 0) {
+        alert('Se seleccionaron ' + input.files.length + ' archivos. Funcionalidad de subida en desarrollo.');
+    }
+}
+
+function updateChatBadges() {
+    if (typeof auth === 'undefined' || !auth.isAuthenticated()) return;
+    var currentUser = auth.getCurrentUser();
+    if (!currentUser) return;
+    
+    if (typeof db !== 'undefined' && db.getUnreadCount) {
+        db.getUnreadCount(currentUser.id).then(function(count) {
+            var badge1 = document.getElementById('sidebar-msg-badge');
+            var badge2 = document.getElementById('bottom-msg-badge');
+            if (count > 0) {
+                if(badge1) { badge1.textContent = count; badge1.style.display = 'inline-block'; }
+                if(badge2) { badge2.textContent = count; badge2.style.display = 'inline-block'; }
+            } else {
+                if(badge1) badge1.style.display = 'none';
+                if(badge2) badge2.style.display = 'none';
+            }
+        });
+    }
+}
+
+// Hook into navigation or set interval
+setInterval(updateChatBadges, 15000);
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(updateChatBadges, 2000);
+    
+    // We try to hook into app.navigate if it exists
+    if (typeof app !== 'undefined' && app.navigate) {
+        var originalNavigate = app.navigate;
+        app.navigate = function(screenId) {
+            originalNavigate.call(app, screenId);
+            if (screenId === 'screen-mensajes') {
+                loadChatContacts();
+            }
+        };
+    }
+});
+
+
+// =========== JS GLOBAL SEARCH ===========
+var chatGlobalSearchTimer = null;
+window.filterMsgList = function(q) {
+    q = (q || '').trim().toLowerCase();
+    
+    // 1. Filter existing local chats
+    var listContainer = document.getElementById('msg-list-container');
+    if (listContainer) {
+        var items = listContainer.querySelectorAll('.msg-item:not(#global-search-results-container)');
+        items.forEach(function(item) {
+            var name = (item.querySelector('h4') ? item.querySelector('h4').textContent : '').toLowerCase();
+            if (!q || name.indexOf(q) > -1) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+    
+    // 2. Global search
+    var globalContainer = document.getElementById('global-search-results-container');
+    if (!globalContainer) {
+        globalContainer = document.createElement('div');
+        globalContainer.id = 'global-search-results-container';
+        globalContainer.style.marginTop = '10px';
+        globalContainer.style.borderTop = '1px solid #e2e8f0';
+        globalContainer.style.paddingTop = '10px';
+        if (listContainer) listContainer.appendChild(globalContainer);
+    }
+    
+    if (!q || q.length < 3) {
+        globalContainer.innerHTML = '';
+        return;
+    }
+    
+    globalContainer.innerHTML = '<div style="text-align:center;padding:10px;color:#94a3b8;font-size:0.8rem;"><i class="ri-loader-4-line ri-spin"></i> Buscando usuarios globales...</div>';
+    
+    clearTimeout(chatGlobalSearchTimer);
+    chatGlobalSearchTimer = setTimeout(async function() {
+        if (!window.db || !window.db.searchUsersGlobal) return;
+        var results = await window.db.searchUsersGlobal(q);
+        
+        if (results.length === 0) {
+            globalContainer.innerHTML = '<div style="text-align:center;padding:10px;color:#94a3b8;font-size:0.8rem;">No se encontraron usuarios nuevos</div>';
+            return;
+        }
+        
+        var html = '<div style="font-size:0.75rem;font-weight:800;color:#64748b;text-transform:uppercase;margin-bottom:8px;padding-left:16px;">Descubrir Usuarios</div>';
+        results.forEach(function(u) {
+            var ini = u.nombre ? u.nombre.substring(0, 2).toUpperCase() : '??';
+            var color = u.color || '#3498db';
+            var avatarHtml = u.avatar_url 
+                ? '<img src="' + u.avatar_url + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">' 
+                : '<div style="width:100%;height:100%;border-radius:50%;background:'+color+';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;">'+ini+'</div>';
+                
+            var uData = { id: u.id, name: u.nombre || 'Sin Nombre', color: color, avatar: u.avatar_url };
+            
+            html += '<div class="msg-item new-contact" onclick=\'openGlobalChat('+JSON.stringify(uData)+')\' style="background:#f8fafc;border:1px dashed #cbd5e1;">' +
+                        '<div class="msg-avatar">' + avatarHtml + '</div>' +
+                        '<div class="msg-content">' +
+                            '<h4>' + (u.nombre || 'Sin Nombre') + ' <span style="font-size:0.65rem;background:#3b82f6;color:white;padding:2px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;">Nuevo</span></h4>' +
+                            '<p style="color:#3b82f6;font-size:0.8rem;"><i class="ri-chat-new-line"></i> Toca para iniciar chat</p>' +
+                        '</div>' +
+                    '</div>';
+        });
+        globalContainer.innerHTML = html;
+    }, 500);
+};
+
+window.openGlobalChat = function(userObj) {
+    // 1. Check if chat exists locally
+    var existingId = null;
+    for (var k in msgConversations) {
+        if (msgConversations[k].otherUser && msgConversations[k].otherUser.id === userObj.id) {
+            existingId = k; break;
+        }
+    }
+    
+    if (existingId) {
+        openChatView(existingId, msgConversations[existingId].otherUser);
+    } else {
+        // Create an optimistic local conversation
+        var tempId = 'temp_' + Date.now();
+        msgConversations[tempId] = {
+            id: tempId,
+            otherUser: userObj,
+            messages: [],
+            unread: 0,
+            lastActivity: new Date().toISOString()
+        };
+        openChatView(tempId, userObj);
+    }
+    document.getElementById('msg-search-input').value = '';
+    filterMsgList('');
+};

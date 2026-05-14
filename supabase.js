@@ -1,4 +1,4 @@
-// === SUPABASE CONFIG ===
+﻿// === SUPABASE CONFIG ===
 var SUPABASE_URL = 'https://sqimiuwnhecspmugmacu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxaW1pdXduaGVjc3BtdWdtYWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzODg0NjMsImV4cCI6MjA5Mzk2NDQ2M30.Tq0VRRY7yfiubn6ZrInT_iAEogGr0e3R7oll0EPne_c';
 
@@ -632,3 +632,21 @@ document.addEventListener('DOMContentLoaded', function() {
 // Ensure global access for inline onclick handlers
 window.db = db;
 window.sbClient = sbClient;
+
+
+// =========== BUSCADOR GLOBAL ===========
+window.db.searchUsersGlobal = async function(query) {
+    if (!sbClient) return [];
+    try {
+        var { data, error } = await sbClient
+            .from('perfiles')
+            .select('id, nombre, color, avatar_url')
+            .ilike('nombre', '%' + query + '%')
+            .limit(10);
+        if (error) throw error;
+        return data || [];
+    } catch (e) {
+        console.error("Global search error:", e);
+        return [];
+    }
+};
