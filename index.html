@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=288">
+    <link rel="stylesheet" href="index.css?v=289">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -262,7 +262,7 @@ window.CustomUI = {
         </div>
         <nav class="mobile-header-nav" id="mobile-nav-links">
             <a href="#" class="active" onclick="app.mobileNav('screen-splash')"><i class="ri-home-4-line"></i> Inicio</a>
-            <a href="#" onclick="app.mobileNav('screen-situacion-calle')"><i class="ri-alert-line"></i> SituaciÃƒÆ’Ã‚Â³n Calle</a>
+            <a href="#" onclick="app.mobileNav('screen-situacion-calle')"><i class="ri-alert-line"></i> Situación Calle</a>
             <a href="#" onclick="app.mobileNav('screen-Comedores')"><i class="ri-building-4-line"></i> Comedores</a>
             <a href="#" onclick="openMensajesPanel(); app.toggleMobileMenu();" class="nav-chat-link"><i class="ri-chat-3-line"></i> Mensajes<span class="nav-msg-badge" id="sidebar-msg-badge" style="display:none">0</span></a>
             <a href="#" onclick="app.mobileNav('screen-notificaciones')" class="auth-only-link" style="display:none;"><i class="ri-notification-3-line"></i> Notificaciones</a>
@@ -283,7 +283,7 @@ window.CustomUI = {
         </div>
         <nav class="header-nav">
             <a href="#" class="active" onclick="app.navigate('screen-splash')">Inicio</a>
-            <a href="#" onclick="app.navigate('screen-situacion-calle')" style="color:#e74c3c;font-weight:600">SituaciÃƒÆ’Ã‚Â³n Calle</a>
+            <a href="#" onclick="app.navigate('screen-situacion-calle')" style="color:#e74c3c;font-weight:600">Situación Calle</a>
             <a href="#" onclick="app.navigate('screen-Comedores')">Comedores</a>
             <a href="#" onclick="openMensajesPanel();" id="desktop-msg-item">Mensajes</a>
             <a href="#" onclick="app.navigate('screen-notificaciones')" class="auth-only-link" style="display:none;">Notificaciones</a>
@@ -343,14 +343,14 @@ window.CustomUI = {
             <button class="btn btn-secondary glass-btn" onclick="app.navigate('screen-login')">Iniciar SesiÃƒÆ’Ã‚Â³n</button>
         </div>
         <div class="splash-extended-content">
-            <h3 class="splash-intro-text">Encuentra personas cerca para rezar el<br>Rosario en plazas pÃƒÆ’Ã‚Âºblicas</h3>
+            <h3 class="splash-intro-text">Encuentra personas cerca para rezar el<br>Rosario en plazas públicas</h3>
             <div class="splash-cards">
-                <div class="glass card feature-card"><div class="feature-icon"><i class="ri-map-pin-2-fill"></i></div><h4>Sumate a un<br>Rosario cercano</h4><p>Descubre dÃƒÆ’Ã‚Â³nde se reÃƒÆ’Ã‚Âºnen en tu ciudad.</p></div>
+                <div class="glass card feature-card"><div class="feature-icon"><i class="ri-map-pin-2-fill"></i></div><h4>Sumate a un<br>Rosario cercano</h4><p>Descubre dÃƒÆ’Ã‚Â³nde se reúnen en tu ciudad.</p></div>
                 <div class="feature-card-center-bg"></div>
                 <div class="glass card feature-card"><div class="feature-icon"><i class="ri-calendar-event-fill"></i></div><h4>Organiza encuentros<br>en plazas</h4><p>SÃƒÆ’Ã‚Â© voluntario y coordina el rezo.</p></div>
-                <div class="glass card feature-card"><div class="feature-img-wrapper"><img src="assets/wedding_cana.png" alt="Comunidad"/></div><h4>Reza con comunidad<br>y paz</h4><p>La oraciÃƒÆ’Ã‚Â³n en grupo renueva tu alma.</p></div>
+                <div class="glass card feature-card"><div class="feature-img-wrapper"><img src="assets/wedding_cana.png" alt="Comunidad"/></div><h4>Reza con comunidad<br>y paz</h4><p>La oración en grupo renueva tu alma.</p></div>
             </div>
-            <h2 class="splash-how-it-works">CÃƒÆ’Ã‚Â³mo Funciona</h2>
+            <h2 class="splash-how-it-works">Cómo Funciona</h2>
             <div class="how-it-works-steps">
                 <div class="step-item glass card"><div class="step-number">1</div><div class="step-icon"><i class="ri-search-line"></i></div><h4>Busca un Rosario</h4><p>Abre el mapa y encuentra rosarios cercanos.</p></div>
                 <div class="step-connector"><i class="ri-arrow-right-line"></i></div>
@@ -367,9 +367,9 @@ window.CustomUI = {
         <div class="auth-scrollarea"><div class="auth-card glass card">
             <div class="auth-header"><div class="auth-icon-circle"><i class="ri-user-add-fill"></i></div><h3>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ÃƒÆ’Ã‚Â­nete a SOLIDARIDAD</h3><p>Crea tu cuenta para encontrar rosarios cerca</p></div>
             <form id="register-form" class="auth-form" novalidate>
-                <div class="auth-field"><label for="reg-name"><i class="ri-user-line" style="color:#6366f1"></i> Nombre Completo</label><div class="input-wrapper"><input type="text" id="reg-name" placeholder="Ej: MarÃƒÆ’Ã‚Â¡a GarcÃƒÆ’Ã‚Â¡a" autocomplete="name"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
+                <div class="auth-field"><label for="reg-name"><i class="ri-user-line" style="color:#6366f1"></i> Nombre Completo</label><div class="input-wrapper"><input type="text" id="reg-name" placeholder="Ej: María GarcÃƒÆ’Ã‚Â¡a" autocomplete="name"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
                 <div class="auth-field"><label for="reg-email"><i class="ri-mail-line" style="color:#e67e22"></i> Email</label><div class="input-wrapper"><input type="email" id="reg-email" placeholder="tu@email.com" autocomplete="email"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
-                <div class="auth-field"><label for="reg-password"><i class="ri-lock-line" style="color:#e74c3c"></i> ContraseÃƒÆ’Ã‚Â±a</label><div class="input-wrapper"><input type="password" id="reg-password" placeholder="MÃƒÆ’Ã‚Â¡nimo 8 caracteres" autocomplete="new-password"/><button type="button" class="toggle-password"><i class="ri-eye-line"></i></button></div><div class="password-strength-row"><div class="password-strength-meter" id="password-strength-meter"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div><span class="password-strength-label" id="password-strength-label"></span></div><div class="password-checklist" id="password-checklist"><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> MÃƒÆ’Ã‚Â¡nimo 8 caracteres</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Una letra mayÃƒÆ’Ã‚Âºscula</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Una letra minÃƒÆ’Ã‚Âºscula</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Un nÃƒÆ’Ã‚Âºmero</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Un carÃƒÆ’Ã‚Â¡cter especial (!@#$...)</div></div><span class="field-error"></span></div>
+                <div class="auth-field"><label for="reg-password"><i class="ri-lock-line" style="color:#e74c3c"></i> ContraseÃƒÆ’Ã‚Â±a</label><div class="input-wrapper"><input type="password" id="reg-password" placeholder="MÃƒÆ’Ã‚Â¡nimo 8 caracteres" autocomplete="new-password"/><button type="button" class="toggle-password"><i class="ri-eye-line"></i></button></div><div class="password-strength-row"><div class="password-strength-meter" id="password-strength-meter"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div><span class="password-strength-label" id="password-strength-label"></span></div><div class="password-checklist" id="password-checklist"><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> MÃƒÆ’Ã‚Â¡nimo 8 caracteres</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Una letra mayÃƒÆ’Ã‚Âºscula</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Una letra minÃƒÆ’Ã‚Âºscula</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Un número</div><div class="pw-check-item failed"><i class="ri-checkbox-blank-circle-line check-off"></i><i class="ri-checkbox-circle-fill check-on"></i> Un carÃƒÆ’Ã‚Â¡cter especial (!@#$...)</div></div><span class="field-error"></span></div>
                 <div class="auth-field"><label for="reg-confirm-password"><i class="ri-lock-check-line" style="color:#27ae60"></i> Confirmar ContraseÃƒÆ’Ã‚Â±a</label><div class="input-wrapper"><input type="password" id="reg-confirm-password" placeholder="Repite tu contraseÃƒÆ’Ã‚Â±a" autocomplete="new-password"/><button type="button" class="toggle-password"><i class="ri-eye-line"></i></button></div><span class="field-error"></span></div>
                 <div class="auth-field"><label for="reg-city"><i class="ri-map-pin-line" style="color:#2980b9"></i> Ciudad</label><div class="input-wrapper"><input type="text" id="reg-city" placeholder="Ej: Buenos Aires" autocomplete="address-level2"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
                 <div class="auth-tos"><label class="tos-check"><input type="checkbox" id="reg-tos"/><span class="tos-checkmark"><i class="ri-check-line"></i></span><span class="tos-text">Acepto los <a href="#" onclick="event.stopPropagation()">TÃƒÆ’Ã‚Â©rminos de Servicio</a> y la <a href="#" onclick="event.stopPropagation()">PolÃƒÆ’Ã‚Â¡tica de Privacidad</a></span></label></div>
@@ -403,7 +403,7 @@ window.CustomUI = {
             <div class="auth-header">
                 <div class="auth-icon-circle forgot-icon"><i class="ri-mail-send-fill"></i></div>
                 <h3>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂOlvidaste tu contraseÃƒÆ’Ã‚Â±a?</h3>
-                <p>Ingresa tu email y te daremos un cÃƒÆ’Ã‚Â³digo de recuperaciÃƒÆ’Ã‚Â³n</p>
+                <p>Ingresa tu email y te daremos un código de recuperaciÃƒÆ’Ã‚Â³n</p>
             </div>
             <form id="forgot-password-form" class="auth-form" novalidate>
                 <div class="auth-field"><label for="forgot-email"><i class="ri-mail-line"></i> Email registrado</label><div class="input-wrapper"><input type="email" id="forgot-email" placeholder="tu@email.com" autocomplete="email"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
@@ -420,15 +420,15 @@ window.CustomUI = {
             <div class="auth-header">
                 <div class="auth-icon-circle create-icon"><i class="ri-lock-unlock-fill"></i></div>
                 <h3>Crea tu nueva contraseÃƒÆ’Ã‚Â±a</h3>
-                <p>Ingresa el cÃƒÆ’Ã‚Â³digo y tu nueva contraseÃƒÆ’Ã‚Â±a</p>
+                <p>Ingresa el código y tu nueva contraseÃƒÆ’Ã‚Â±a</p>
             </div>
             <div class="recovery-code-display glass" id="recovery-code-display">
-                <span class="recovery-label">Tu cÃƒÆ’Ã‚Â³digo de recuperaciÃƒÆ’Ã‚Â³n:</span>
+                <span class="recovery-label">Tu código de recuperaciÃƒÆ’Ã‚Â³n:</span>
                 <span class="recovery-code" id="recovery-code-value">------</span>
-                <span class="recovery-hint"><i class="ri-information-line"></i> Copia este cÃƒÆ’Ã‚Â³digo e ingrÃƒÆ’Ã‚Â©salo abajo</span>
+                <span class="recovery-hint"><i class="ri-information-line"></i> Copia este código e ingrÃƒÆ’Ã‚Â©salo abajo</span>
             </div>
             <form id="reset-password-form" class="auth-form" novalidate>
-                <div class="auth-field"><label for="reset-code"><i class="ri-key-2-fill"></i> CÃƒÆ’Ã‚Â³digo</label><div class="input-wrapper"><input type="text" id="reset-code" placeholder="CÃƒÆ’Ã‚Â³digo de 6 dÃƒÆ’Ã‚Â¡gitos" maxlength="6" autocomplete="off" style="letter-spacing:4px;text-align:center;font-weight:600"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
+                <div class="auth-field"><label for="reset-code"><i class="ri-key-2-fill"></i> CÃƒÆ’Ã‚Â³digo</label><div class="input-wrapper"><input type="text" id="reset-code" placeholder="CÃƒÆ’Ã‚Â³digo de 6 dígitos" maxlength="6" autocomplete="off" style="letter-spacing:4px;text-align:center;font-weight:600"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
                 <div class="auth-field"><label for="reset-password"><i class="ri-lock-line"></i> Nueva ContraseÃƒÆ’Ã‚Â±a</label><div class="input-wrapper"><input type="password" id="reset-password" placeholder="MÃƒÆ’Ã‚Â¡nimo 8 caracteres" autocomplete="new-password"/><button type="button" class="toggle-password"><i class="ri-eye-line"></i></button></div><div class="password-strength-row"><div class="password-strength-meter" id="reset-strength-meter"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div><span class="password-strength-label" id="reset-strength-label"></span></div><span class="field-error"></span></div>
                 <div class="auth-field"><label for="reset-confirm"><i class="ri-lock-check-line"></i> Confirmar</label><div class="input-wrapper"><input type="password" id="reset-confirm" placeholder="Repite tu nueva contraseÃƒÆ’Ã‚Â±a" autocomplete="new-password"/><button type="button" class="toggle-password"><i class="ri-eye-line"></i></button></div><span class="field-error"></span></div>
                 <button type="submit" class="btn btn-primary btn-auth-submit btn-create-rosary"><span class="btn-text"><i class="ri-shield-check-fill"></i> Cambiar ContraseÃƒÆ’Ã‚Â±a</span><span class="btn-loader"><i class="ri-loader-4-line"></i></span></button>
@@ -450,7 +450,7 @@ window.CustomUI = {
             <div class="buscar-search-bar glass">
                 <i class="ri-search-line"></i>
                 <input type="text" placeholder="Buscar por lugar, barrio o intenciÃƒÆ’Ã‚Â³n..." id="buscar-search-input" oninput="app.filterBuscarCards(this.value)">
-                <button class="buscar-location-btn" title="Mi ubicaciÃƒÆ’Ã‚Â³n"><i class="ri-focus-3-line"></i></button>
+                <button class="buscar-location-btn" title="Mi ubicación"><i class="ri-focus-3-line"></i></button>
             </div>
             <div class="buscar-filter-chips">
                 <button class="buscar-chip active" onclick="app.filterByTime(this,'all')"><i class="ri-apps-fill"></i> Todos</button>
@@ -498,7 +498,7 @@ window.CustomUI = {
             </div>
             <div class="buscar-empty-state" id="buscar-empty">
                 <i class="ri-search-eye-line"></i>
-                <h4>No hay rosarios creados aÃƒÆ’Ã‚Âºn</h4>
+                <h4>No hay rosarios creados aún</h4>
                 <p>SÃƒÆ’Ã‚Â© el primero en crear un rosario en tu zona</p>
                 <button class="btn btn-primary" onclick="app.navigate('screen-create-rosary')"><i class="ri-add-line"></i> Crear Rosario</button>
             </div>
@@ -528,7 +528,7 @@ window.CustomUI = {
             <div class="intencion-form-section">
                 <div class="intencion-form-card glass card">
                     <h3><i class="ri-quill-pen-fill"></i> Escribe tu IntenciÃƒÆ’Ã‚Â³n</h3>
-                    <p>Comparte tu intenciÃƒÆ’Ã‚Â³n de oraciÃƒÆ’Ã‚Â³n con la comunidad</p>
+                    <p>Comparte tu intenciÃƒÆ’Ã‚Â³n de oración con la comunidad</p>
                     <div class="intencion-input-wrapper">
                         <textarea id="intencion-text" placeholder="Ej: Por la salud de mi familia..." rows="3"></textarea>
                         <button class="btn btn-primary" onclick="app.addIntencion()"><i class="ri-send-plane-fill"></i> Enviar IntenciÃƒÆ’Ã‚Â³n</button>
@@ -562,7 +562,7 @@ window.CustomUI = {
             <div id="create-rosary-form-wrapper">
                 <div class="auth-header"><div class="auth-icon-circle create-icon"><i class="ri-map-pin-add-fill"></i></div><h3>Organizar un Rosario</h3><p>Elige un lugar y horario para rezar en comunidad</p></div>
                 <form id="create-rosary-form" class="auth-form" novalidate>
-                    <div class="auth-field"><label for="rosary-country"><i class="ri-earth-line" style="color:#27ae60"></i> PaÃƒÆ’Ã‚Â¡s</label><div class="input-wrapper"><select id="rosary-country" class="auth-select" onchange="updateCitySelect()"><option value="">Selecciona un paÃƒÆ’Ã‚Â¡s...</option><option value="AR">Argentina</option><option value="BO">Bolivia</option><option value="BR">Brasil</option><option value="CL">Chile</option><option value="CO">Colombia</option><option value="CR">Costa Rica</option><option value="CU">Cuba</option><option value="DO">RepÃƒÆ’Ã‚Âºblica Dominicana</option><option value="EC">Ecuador</option><option value="SV">El Salvador</option><option value="ES">EspaÃƒÆ’Ã‚Â±a</option><option value="GT">Guatemala</option><option value="HN">Honduras</option><option value="MX">MÃƒÆ’Ã‚Â©xico</option><option value="NI">Nicaragua</option><option value="PA">PanamÃƒÆ’Ã‚Â¡</option><option value="PY">Paraguay</option><option value="PE">PerÃƒÆ’Ã‚Âº</option><option value="PR">Puerto Rico</option><option value="UY">Uruguay</option><option value="VE">Venezuela</option></select></div><span class="field-error"></span></div>
+                    <div class="auth-field"><label for="rosary-country"><i class="ri-earth-line" style="color:#27ae60"></i> PaÃƒÆ’Ã‚Â¡s</label><div class="input-wrapper"><select id="rosary-country" class="auth-select" onchange="updateCitySelect()"><option value="">Selecciona un paÃƒÆ’Ã‚Â¡s...</option><option value="AR">Argentina</option><option value="BO">Bolivia</option><option value="BR">Brasil</option><option value="CL">Chile</option><option value="CO">Colombia</option><option value="CR">Costa Rica</option><option value="CU">Cuba</option><option value="DO">República Dominicana</option><option value="EC">Ecuador</option><option value="SV">El Salvador</option><option value="ES">EspaÃƒÆ’Ã‚Â±a</option><option value="GT">Guatemala</option><option value="HN">Honduras</option><option value="MX">México</option><option value="NI">Nicaragua</option><option value="PA">PanamÃƒÆ’Ã‚Â¡</option><option value="PY">Paraguay</option><option value="PE">PerÃƒÆ’Ã‚Âº</option><option value="PR">Puerto Rico</option><option value="UY">Uruguay</option><option value="VE">Venezuela</option></select></div><span class="field-error"></span></div>
                     <div class="auth-field"><label for="rosary-city"><i class="ri-building-line" style="color:#2980b9"></i> Localidad</label><div class="input-wrapper"><select id="rosary-city" class="auth-select" disabled><option value="">Primero selecciona un paÃƒÆ’Ã‚Â¡s...</option></select></div><span class="field-error"></span></div>
                     <div class="auth-field"><label for="rosary-ciudad"><i class="ri-building-4-line" style="color:#f39c12"></i> Ciudad</label><div class="input-wrapper"><input type="text" id="rosary-ciudad" placeholder="Ej: Rosario, Mar del Plata..." oninput="geocodeAddressDebounced()"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
                     <div class="auth-field"><label for="rosary-place"><i class="ri-map-pin-line" style="color:#e74c3c"></i> Nombre del Lugar</label><div class="input-wrapper"><input type="text" id="rosary-place" placeholder="Ej: Plaza San Martin"/><span class="field-check"><i class="ri-check-line"></i></span></div><span class="field-error"></span></div>
@@ -661,7 +661,7 @@ window.CustomUI = {
                 <div class="rz-add-intention glass card">
                     <div class="rz-add-intention-row">
                         <div class="rz-add-intention-avatar" id="rezo-int-avatar">?</div>
-                        <input type="text" id="rezo-intencion-input" class="rz-add-intention-input" placeholder="Escribe tu intenciÃƒÆ’Ã‚Â³n de oraciÃƒÆ’Ã‚Â³n..." maxlength="200" />
+                        <input type="text" id="rezo-intencion-input" class="rz-add-intention-input" placeholder="Escribe tu intenciÃƒÆ’Ã‚Â³n de oración..." maxlength="200" />
                         <button class="rz-add-intention-btn" onclick="addRezoIntencion()" title="Enviar intenciÃƒÆ’Ã‚Â³n">
                             <i class="ri-send-plane-fill"></i>
                         </button>
@@ -727,7 +727,7 @@ window.CustomUI = {
             <div class="intention-pill glass" id="details-intention"><i class="ri-candle-fill"></i> ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ <i class="ri-candle-fill"></i></div>
             <div class="action-buttons-stack"><button class="btn btn-primary" onclick="app.navigate('screen-live')">Confirmar Asistencia</button><button class="btn btn-secondary-outline">Enviar IntenciÃƒÆ’Ã‚Â³n</button></div>
             <div class="details-list" id="details-info-list"></div>
-            <button class="btn btn-primary btn-nav glass-btn"><i class="ri-navigation-fill"></i> CÃƒÆ’Ã‚Â³mo llegar</button>
+            <button class="btn btn-primary btn-nav glass-btn"><i class="ri-navigation-fill"></i> Cómo llegar</button>
             <div class="desktop-park-image glass card"><div class="park-img-wrapper"><img src="assets/splash_landscape.png" alt="Parque"/></div></div>
         </div>
     </section>
@@ -742,8 +742,8 @@ window.CustomUI = {
                     <div class="rc-hero-ring"></div>
                     <div class="rc-hero-icon"><i class="ri-timer-flash-fill"></i></div>
                 </div>
-                <h2>OraciÃƒÆ’Ã‚Â³n las 24 Horas</h2>
-                <p>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ÃƒÆ’Ã‚Â­nete a la cadena de oraciÃƒÆ’Ã‚Â³n continua. ElegÃƒÆ’Ã‚Â¡ tu horario y rezÃƒÆ’Ã‚Â¡ desde donde estÃƒÆ’Ã‚Â©s.</p>
+                <h2>Oración las 24 Horas</h2>
+                <p>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ÃƒÆ’Ã‚Â­nete a la cadena de oración continua. ElegÃƒÆ’Ã‚Â¡ tu horario y rezÃƒÆ’Ã‚Â¡ desde donde estás.</p>
             </div>
 
             <!-- Date Navigator -->
@@ -779,7 +779,7 @@ window.CustomUI = {
             <!-- Progress Bar -->
             <div class="rc-progress-wrap">
                 <div class="rc-progress-header">
-                    <span><i class="ri-signal-tower-fill" style="color:#27ae60"></i> Cobertura del DÃƒÆ’Ã‚Â¡a</span>
+                    <span><i class="ri-signal-tower-fill" style="color:#27ae60"></i> Cobertura del Día</span>
                     <span class="rc-progress-pct" id="continuo-progress-pct">0%</span>
                 </div>
                 <div class="rc-progress-bar">
@@ -791,7 +791,7 @@ window.CustomUI = {
             <div class="rc-hint">
                 <div class="rc-hint-icon"><i class="ri-hand-coin-fill"></i></div>
                 <div class="rc-hint-text">
-                    <strong>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂCÃƒÆ’Ã‚Â³mo funciona?</strong>
+                    <strong>¿Cómo funciona?</strong>
                     <p>TocÃƒÆ’Ã‚Â¡ un horario libre para anotarte. PodÃƒÆ’Ã‚Â©s elegir varios turnos.</p>
                 </div>
             </div>
@@ -817,7 +817,7 @@ window.CustomUI = {
     <section id="screen-como-rezar" class="screen gradient-bg">
         <div class="top-bar glass">
             <button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button>
-            <h2>CÃƒÆ’Ã‚Â³mo Rezar el Rosario</h2>
+            <h2>Cómo Rezar el Rosario</h2>
             <div style="width:24px"></div>
         </div>
         <div class="rezar-scrollarea">
@@ -828,15 +828,15 @@ window.CustomUI = {
                 <p>Una guÃƒÆ’Ã‚Â¡a paso a paso para contemplar los misterios de nuestra fe</p>
             </div>
 
-            <!-- AcordeÃƒÆ’Ã‚Â³n: QuÃƒÆ’Ã‚Â© es el Rosario -->
+            <!-- AcordeÃƒÆ’Ã‚Â³n: Qué es el Rosario -->
             <div class="rzr-accordion">
                 <button class="rzr-accordion-header" onclick="this.parentElement.classList.toggle('open')">
                     <div class="rzr-acc-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><i class="ri-question-line"></i></div>
-                    <span>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂQuÃƒÆ’Ã‚Â© es el Rosario?</span>
+                    <span>¿Qué es el Rosario?</span>
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <p>El Santo Rosario es una oraciÃƒÆ’Ã‚Â³n contemplativa dedicada a la Virgen MarÃƒÆ’Ã‚Â¡a. Se compone de <strong>20 misterios</strong> agrupados en 4 series: Gozosos, Dolorosos, Gloriosos y Luminosos.</p>
+                    <p>El Santo Rosario es una oración contemplativa dedicada a la Virgen María. Se compone de <strong>20 misterios</strong> agrupados en 4 series: Gozosos, Dolorosos, Gloriosos y Luminosos.</p>
                     <p>Cada misterio se medita con un <strong>Padrenuestro</strong>, <strong>10 AvemarÃƒÆ’Ã‚Â¡as</strong> y un <strong>Gloria</strong>.</p>
                 </div>
             </div>
@@ -849,24 +849,24 @@ window.CustomUI = {
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <div class="rzr-step"><div class="rzr-step-num">1</div><div><strong>SeÃƒÆ’Ã‚Â±al de la Cruz</strong><p class="rzr-prayer">"En el nombre del Padre, y del Hijo, y del EspÃƒÆ’Ã‚Â¡ritu Santo. AmÃƒÆ’Ã‚Â©n."</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">2</div><div><strong>Acto de ContriciÃƒÆ’Ã‚Â³n</strong><p class="rzr-prayer">"SeÃƒÆ’Ã‚Â±or mÃƒÆ’Ã‚Â¡o Jesucristo, Dios y Hombre verdadero, me pesa de todo corazÃƒÆ’Ã‚Â³n haber pecado, porque con el pecado ofendÃƒÆ’Ã‚Â¡ a un Dios tan bueno. Propongo firmemente no volver a pecar y confÃƒÆ’Ã‚Â¡o en que por tu infinita misericordia me has de conceder el perdÃƒÆ’Ã‚Â³n de mis culpas. AmÃƒÆ’Ã‚Â©n."</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">3</div><div><strong>Credo</strong><p class="rzr-prayer">"Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra. Creo en Jesucristo, su ÃƒÆ’Ã‚Âúnico Hijo, nuestro SeÃƒÆ’Ã‚Â±or, que fue concebido por obra y gracia del EspÃƒÆ’Ã‚Â¡ritu Santo, naciÃƒÆ’Ã‚Â³ de Santa MarÃƒÆ’Ã‚Â¡a Virgen, padeciÃƒÆ’Ã‚Â³ bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendiÃƒÆ’Ã‚Â³ a los infiernos, al tercer dÃƒÆ’Ã‚Â¡a resucitÃƒÆ’Ã‚Â³ de entre los muertos, subiÃƒÆ’Ã‚Â³ a los cielos y estÃƒÆ’Ã‚Â¡ sentado a la derecha de Dios, Padre todopoderoso. Desde allÃƒÆ’Ã‚Â¡ ha de venir a juzgar a vivos y muertos. Creo en el EspÃƒÆ’Ã‚Â¡ritu Santo, la santa Comedor catÃƒÆ’Ã‚Â³lica, la comuniÃƒÆ’Ã‚Â³n de los santos, el perdÃƒÆ’Ã‚Â³n de los pecados, la resurrecciÃƒÆ’Ã‚Â³n de la carne y la vida eterna. AmÃƒÆ’Ã‚Â©n."</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">4</div><div><strong>1 Padrenuestro</strong><p class="rzr-prayer">"Padre nuestro, que estÃƒÆ’Ã‚Â¡s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hÃƒÆ’Ã‚Â¡gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÃƒÆ’Ã‚Â¡a; perdona nuestras ofensas, como tambiÃƒÆ’Ã‚Â©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÃƒÆ’Ã‚Â³n, y lÃƒÆ’Ã‚Â¡branos del mal. AmÃƒÆ’Ã‚Â©n."</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">5</div><div><strong>10 AvemarÃƒÆ’Ã‚Â¡as</strong><p style="font-size:0.75rem;opacity:0.6;margin:2px 0">Por las virtudes de Fe, Esperanza y Caridad</p><p class="rzr-prayer">"Dios te salve, MarÃƒÆ’Ã‚Â¡a, llena eres de gracia, el SeÃƒÆ’Ã‚Â±or es contigo. Bendita TÃƒÆ’Ã‚Âº eres entre todas las mujeres, y bendito es el fruto de tu vientre, JesÃƒÆ’Ã‚Âºs. Santa MarÃƒÆ’Ã‚Â¡a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÃƒÆ’Ã‚Â©n."</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">6</div><div><strong>1 Gloria</strong><p class="rzr-prayer">"Gloria al Padre, y al Hijo, y al EspÃƒÆ’Ã‚Â¡ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">1</div><div><strong>SeÃƒÆ’Ã‚Â±al de la Cruz</strong><p class="rzr-prayer">"En el nombre del Padre, y del Hijo, y del Espíritu Santo. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">2</div><div><strong>Acto de ContriciÃƒÆ’Ã‚Â³n</strong><p class="rzr-prayer">"Señor mÃƒÆ’Ã‚Â¡o Jesucristo, Dios y Hombre verdadero, me pesa de todo corazÃƒÆ’Ã‚Â³n haber pecado, porque con el pecado ofendÃƒÆ’Ã‚Â¡ a un Dios tan bueno. Propongo firmemente no volver a pecar y confÃƒÆ’Ã‚Â¡o en que por tu infinita misericordia me has de conceder el perdÃƒÆ’Ã‚Â³n de mis culpas. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">3</div><div><strong>Credo</strong><p class="rzr-prayer">"Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra. Creo en Jesucristo, su único Hijo, nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, naciÃƒÆ’Ã‚Â³ de Santa María Virgen, padeciÃƒÆ’Ã‚Â³ bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendiÃƒÆ’Ã‚Â³ a los infiernos, al tercer día resucitÃƒÆ’Ã‚Â³ de entre los muertos, subiÃƒÆ’Ã‚Â³ a los cielos y está¡ sentado a la derecha de Dios, Padre todopoderoso. Desde allÃƒÆ’Ã‚Â¡ ha de venir a juzgar a vivos y muertos. Creo en el Espíritu Santo, la santa Comedor católica, la comunión de los santos, el perdÃƒÆ’Ã‚Â³n de los pecados, la resurrecciÃƒÆ’Ã‚Â³n de la carne y la vida eterna. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">4</div><div><strong>1 Padrenuestro</strong><p class="rzr-prayer">"Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hÃƒÆ’Ã‚Â¡gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÃƒÆ’Ã‚Â³n, y lÃƒÆ’Ã‚Â¡branos del mal. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">5</div><div><strong>10 AvemarÃƒÆ’Ã‚Â¡as</strong><p style="font-size:0.75rem;opacity:0.6;margin:2px 0">Por las virtudes de Fe, Esperanza y Caridad</p><p class="rzr-prayer">"Dios te salve, María, llena eres de gracia, el Señor es contigo. Bendita TÃƒÆ’Ã‚Âº eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">6</div><div><strong>1 Gloria</strong><p class="rzr-prayer">"Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÃƒÆ’Ã‚Â©n."</p></div></div>
                     <div class="rzr-step"><div class="rzr-step-num">7</div><div><strong>Anunciar el Misterio</strong><p style="font-size:0.8rem;opacity:0.7">Se enuncia el misterio y se medita brevemente</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">8</div><div><strong>Por cada Misterio</strong><p style="font-size:0.8rem;opacity:0.7">1 Padrenuestro + 10 AvemarÃƒÆ’Ã‚Â¡as + 1 Gloria + OraciÃƒÆ’Ã‚Â³n de FÃƒÆ’Ã‚Â¡tima</p><p class="rzr-prayer">OraciÃƒÆ’Ã‚Â³n de FÃƒÆ’Ã‚Â¡tima: "Oh JesÃƒÆ’Ã‚Âºs mÃƒÆ’Ã‚Â¡o, perdona nuestros pecados, lÃƒÆ’Ã‚Â¡branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las mÃƒÆ’Ã‚Â¡s necesitadas de tu misericordia."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">8</div><div><strong>Por cada Misterio</strong><p style="font-size:0.8rem;opacity:0.7">1 Padrenuestro + 10 AvemarÃƒÆ’Ã‚Â¡as + 1 Gloria + Oración de FÃƒÆ’Ã‚Â¡tima</p><p class="rzr-prayer">Oración de FÃƒÆ’Ã‚Â¡tima: "Oh Jesús mÃƒÆ’Ã‚Â¡o, perdona nuestros pecados, lÃƒÆ’Ã‚Â¡branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia."</p></div></div>
                     <div class="rzr-step"><div class="rzr-step-num">9</div><div><strong>Repetir 5 veces</strong><p style="font-size:0.8rem;opacity:0.7">Se repiten los pasos 4 al 8, uno por cada Misterio</p></div></div>
-                    <div class="rzr-step"><div class="rzr-step-num">10</div><div><strong>Al finalizar ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ Salve</strong><p class="rzr-prayer">"Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lÃƒÆ’Ã‚Â¡grimas. Ea, pues, SeÃƒÆ’Ã‚Â±ora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y despuÃƒÆ’Ã‚Â©s de este destierro muÃƒÆ’Ã‚Â©stranos a JesÃƒÆ’Ã‚Âºs, fruto bendito de tu vientre. ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Oh, clementÃƒÆ’Ã‚Â¡sima, oh piadosa, oh dulce Virgen MarÃƒÆ’Ã‚Â¡a! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro SeÃƒÆ’Ã‚Â±or Jesucristo. AmÃƒÆ’Ã‚Â©n."</p></div></div>
+                    <div class="rzr-step"><div class="rzr-step-num">10</div><div><strong>Al finalizar ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ Salve</strong><p class="rzr-prayer">"Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra; Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, SeÃƒÆ’Ã‚Â±ora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y despuÃƒÆ’Ã‚Â©s de este destierro muÃƒÆ’Ã‚Â©stranos a Jesús, fruto bendito de tu vientre. ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Oh, clementÃƒÆ’Ã‚Â¡sima, oh piadosa, oh dulce Virgen María! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. AmÃƒÆ’Ã‚Â©n."</p></div></div>
                 </div>
             </div>
 
-            <!-- AcordeÃƒÆ’Ã‚Â³n: QuÃƒÆ’Ã‚Â© misterios rezo hoy -->
+            <!-- AcordeÃƒÆ’Ã‚Â³n: Qué misterios rezo hoy -->
             <div class="rzr-accordion">
                 <button class="rzr-accordion-header" onclick="this.parentElement.classList.toggle('open')">
                     <div class="rzr-acc-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><i class="ri-calendar-2-line"></i></div>
-                    <span>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂQuÃƒÆ’Ã‚Â© Misterios rezo hoy?</span>
+                    <span>¿Qué Misterios rezo hoy?</span>
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
@@ -892,11 +892,11 @@ window.CustomUI = {
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_anunciacion.png" alt="La AnunciaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AnunciaciÃƒÆ’Ã‚Â³n del ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Ângel a MarÃƒÆ’Ã‚Â¡a</h4><p>El ÃƒÆ’Ã‚Â¡ngel Gabriel anuncia a MarÃƒÆ’Ã‚Â¡a que serÃƒÆ’Ã‚Â¡ la Madre del Hijo de Dios.</p><p class="rzr-med"><i class="ri-heart-line"></i> SeÃƒÆ’Ã‚Â±or, dame la humildad de MarÃƒÆ’Ã‚Â¡a para aceptar tu voluntad.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Humildad</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_visitacion.png" alt="La VisitaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La VisitaciÃƒÆ’Ã‚Â³n de MarÃƒÆ’Ã‚Â¡a a Isabel</h4><p>MarÃƒÆ’Ã‚Â¡a visita a su prima Isabel: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Bendita tÃƒÆ’Ã‚Âº entre las mujeres!"</p><p class="rzr-med"><i class="ri-heart-line"></i> AyÃƒÆ’Ã‚Âºdame a ser portador de tu presencia.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Caridad</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_nacimiento.png" alt="El Nacimiento"/><div class="rzr-m-info"><h4>El Nacimiento del Hijo de Dios</h4><p>JesÃƒÆ’Ã‚Âºs nace en BelÃƒÆ’Ã‚Â©n en un humilde pesebre.</p><p class="rzr-med"><i class="ri-heart-line"></i> EnsÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â±ame a valorar la sencillez.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Pobreza de EspÃƒÆ’Ã‚Â¡ritu</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_presentacion.png" alt="La PresentaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La PresentaciÃƒÆ’Ã‚Â³n en el Templo</h4><p>MarÃƒÆ’Ã‚Â¡a y JosÃƒÆ’Ã‚Â© presentan al NiÃƒÆ’Ã‚Â±o JesÃƒÆ’Ã‚Âºs. SimeÃƒÆ’Ã‚Â³n reconoce al Salvador.</p><p class="rzr-med"><i class="ri-heart-line"></i> AyÃƒÆ’Ã‚Âºdame a entregarte lo mÃƒÆ’Ã‚Â¡s valioso.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Obediencia</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_hallado_templo.png" alt="Hallado en el Templo"/><div class="rzr-m-info"><h4>El NiÃƒÆ’Ã‚Â±o Perdido y Hallado en el Templo</h4><p>Tras tres dÃƒÆ’Ã‚Â¡as, encuentran a JesÃƒÆ’Ã‚Âºs enseÃƒÆ’Ã‚Â±ando en el Templo.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que siempre busque estar cerca de Ti.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Piedad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_anunciacion.png" alt="La AnunciaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AnunciaciÃƒÆ’Ã‚Â³n del ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Ângel a María</h4><p>El ÃƒÆ’Ã‚Â¡ngel Gabriel anuncia a María que serÃƒÆ’Ã‚Â¡ la Madre del Hijo de Dios.</p><p class="rzr-med"><i class="ri-heart-line"></i> Señor, dame la humildad de María para aceptar tu voluntad.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Humildad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_visitacion.png" alt="La VisitaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La VisitaciÃƒÆ’Ã‚Â³n de María a Isabel</h4><p>María visita a su prima Isabel: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Bendita tÃƒÆ’Ã‚Âº entre las mujeres!"</p><p class="rzr-med"><i class="ri-heart-line"></i> AyÃƒÆ’Ã‚Âºdame a ser portador de tu presencia.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Caridad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_nacimiento.png" alt="El Nacimiento"/><div class="rzr-m-info"><h4>El Nacimiento del Hijo de Dios</h4><p>Jesús nace en BelÃƒÆ’Ã‚Â©n en un humilde pesebre.</p><p class="rzr-med"><i class="ri-heart-line"></i> Ensíame a valorar la sencillez.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Pobreza de Espíritu</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_presentacion.png" alt="La PresentaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La PresentaciÃƒÆ’Ã‚Â³n en el Templo</h4><p>María y Josí© presentan al Niño Jesús. SimeÃƒÆ’Ã‚Â³n reconoce al Salvador.</p><p class="rzr-med"><i class="ri-heart-line"></i> AyÃƒÆ’Ã‚Âºdame a entregarte lo más valioso.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Obediencia</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_hallado_templo.png" alt="Hallado en el Templo"/><div class="rzr-m-info"><h4>El Niño Perdido y Hallado en el Templo</h4><p>Tras tres dÃƒÆ’Ã‚Â¡as, encuentran a Jesús enseÃƒÆ’Ã‚Â±ando en el Templo.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que siempre busque estar cerca de Ti.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Piedad</span></div></div>
                 </div>
             </div>
 
@@ -909,11 +909,11 @@ window.CustomUI = {
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_agonia_huerto.png" alt="La AgonÃƒÆ’Ã‚Â¡a en el Huerto"/><div class="rzr-m-info"><h4>La OraciÃƒÆ’Ã‚Â³n en el Huerto</h4><p>JesÃƒÆ’Ã‚Âºs ora en GetsemanÃƒÆ’Ã‚Â¡ y suda sangre ante su PasiÃƒÆ’Ã‚Â³n.</p><p class="rzr-med"><i class="ri-heart-line"></i> Dame fortaleza para enfrentar el sufrimiento.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Dolor de los pecados</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_flagelacion.png" alt="La FlagelaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La FlagelaciÃƒÆ’Ã‚Â³n del SeÃƒÆ’Ã‚Â±or</h4><p>JesÃƒÆ’Ã‚Âºs es azotado cruelmente por los soldados romanos.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que nunca olvide el precio de mi salvaciÃƒÆ’Ã‚Â³n.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Pureza</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_coronacion_espinas.png" alt="La CoronaciÃƒÆ’Ã‚Â³n de Espinas"/><div class="rzr-m-info"><h4>La CoronaciÃƒÆ’Ã‚Â³n de Espinas</h4><p>Los soldados coronan a JesÃƒÆ’Ã‚Âºs y se burlan: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Salve, Rey de los JudÃƒÆ’Ã‚Â¡os!"</p><p class="rzr-med"><i class="ri-heart-line"></i> Que nunca me avergÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âence de tu nombre.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Valor</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_cruz_cuestas.png" alt="La Cruz a Cuestas"/><div class="rzr-m-info"><h4>JesÃƒÆ’Ã‚Âºs Carga con la Cruz</h4><p>JesÃƒÆ’Ã‚Âºs lleva la Cruz hasta el Calvario, cayendo varias veces.</p><p class="rzr-med"><i class="ri-heart-line"></i> EnsÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â±ame a cargar mis cruces con paciencia.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Paciencia</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_crucifixion.png" alt="La CrucifixiÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La CrucifixiÃƒÆ’Ã‚Â³n y Muerte de JesÃƒÆ’Ã‚Âºs</h4><p>JesÃƒÆ’Ã‚Âºs muere en la Cruz por la salvaciÃƒÆ’Ã‚Â³n de la humanidad.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que viva agradecido por tan inmenso sacrificio.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Generosidad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_agonia_huerto.png" alt="La AgonÃƒÆ’Ã‚Â¡a en el Huerto"/><div class="rzr-m-info"><h4>La Oración en el Huerto</h4><p>Jesús ora en GetsemanÃƒÆ’Ã‚Â¡ y suda sangre ante su PasiÃƒÆ’Ã‚Â³n.</p><p class="rzr-med"><i class="ri-heart-line"></i> Dame fortaleza para enfrentar el sufrimiento.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Dolor de los pecados</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_flagelacion.png" alt="La FlagelaciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La FlagelaciÃƒÆ’Ã‚Â³n del Señor</h4><p>Jesús es azotado cruelmente por los soldados romanos.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que nunca olvide el precio de mi salvaciÃƒÆ’Ã‚Â³n.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Pureza</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_coronacion_espinas.png" alt="La CoronaciÃƒÆ’Ã‚Â³n de Espinas"/><div class="rzr-m-info"><h4>La CoronaciÃƒÆ’Ã‚Â³n de Espinas</h4><p>Los soldados coronan a Jesús y se burlan: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Salve, Rey de los JudÃƒÆ’Ã‚Â¡os!"</p><p class="rzr-med"><i class="ri-heart-line"></i> Que nunca me avergÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âence de tu nombre.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Valor</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_cruz_cuestas.png" alt="La Cruz a Cuestas"/><div class="rzr-m-info"><h4>Jesús Carga con la Cruz</h4><p>Jesús lleva la Cruz hasta el Calvario, cayendo varias veces.</p><p class="rzr-med"><i class="ri-heart-line"></i> Ensíame a cargar mis cruces con paciencia.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Paciencia</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_crucifixion.png" alt="La CrucifixiÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La CrucifixiÃƒÆ’Ã‚Â³n y Muerte de Jesús</h4><p>Jesús muere en la Cruz por la salvaciÃƒÆ’Ã‚Â³n de la humanidad.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que viva agradecido por tan inmenso sacrificio.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Generosidad</span></div></div>
                 </div>
             </div>
 
@@ -926,11 +926,11 @@ window.CustomUI = {
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_resurreccion.png" alt="La ResurrecciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La ResurrecciÃƒÆ’Ã‚Â³n del SeÃƒÆ’Ã‚Â±or</h4><p>Al tercer dÃƒÆ’Ã‚Â¡a, JesÃƒÆ’Ã‚Âºs resucita glorioso venciendo la muerte.</p><p class="rzr-med"><i class="ri-heart-line"></i> Renueva mi esperanza y hazme testigo de tu victoria.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Fe</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_ascension.png" alt="La AscensiÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AscensiÃƒÆ’Ã‚Â³n del SeÃƒÆ’Ã‚Â±or</h4><p>JesÃƒÆ’Ã‚Âºs sube al cielo y promete enviar al EspÃƒÆ’Ã‚Â¡ritu Santo.</p><p class="rzr-med"><i class="ri-heart-line"></i> Levanta mi corazÃƒÆ’Ã‚Â³n hacia las cosas del cielo.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Esperanza</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_pentecostes.png" alt="PentecostÃƒÆ’Ã‚Â©s"/><div class="rzr-m-info"><h4>La Venida del EspÃƒÆ’Ã‚Â¡ritu Santo</h4><p>El EspÃƒÆ’Ã‚Â¡ritu Santo desciende sobre los ApÃƒÆ’Ã‚Â³stoles y MarÃƒÆ’Ã‚Â¡a.</p><p class="rzr-med"><i class="ri-heart-line"></i> Ven, EspÃƒÆ’Ã‚Â¡ritu Santo, renueva mi corazÃƒÆ’Ã‚Â³n.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Amor de Dios</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_asuncion.png" alt="La AsunciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AsunciÃƒÆ’Ã‚Â³n de la Virgen MarÃƒÆ’Ã‚Â¡a</h4><p>MarÃƒÆ’Ã‚Â¡a es elevada al cielo en cuerpo y alma.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que mi vida sea un camino hacia la patria celestial.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Gracia de una buena muerte</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_coronacion_maria.png" alt="CoronaciÃƒÆ’Ã‚Â³n de MarÃƒÆ’Ã‚Â¡a"/><div class="rzr-m-info"><h4>La CoronaciÃƒÆ’Ã‚Â³n de MarÃƒÆ’Ã‚Â¡a como Reina</h4><p>MarÃƒÆ’Ã‚Â¡a es coronada Reina del Cielo y de la Tierra.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que aprenda que la grandeza estÃƒÆ’Ã‚Â¡ en el servicio.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La DevociÃƒÆ’Ã‚Â³n a MarÃƒÆ’Ã‚Â¡a</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_resurreccion.png" alt="La ResurrecciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La ResurrecciÃƒÆ’Ã‚Â³n del Señor</h4><p>Al tercer día, Jesús resucita glorioso venciendo la muerte.</p><p class="rzr-med"><i class="ri-heart-line"></i> Renueva mi esperanza y hazme testigo de tu victoria.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Fe</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_ascension.png" alt="La AscensiÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AscensiÃƒÆ’Ã‚Â³n del Señor</h4><p>Jesús sube al cielo y promete enviar al Espíritu Santo.</p><p class="rzr-med"><i class="ri-heart-line"></i> Levanta mi corazÃƒÆ’Ã‚Â³n hacia las cosas del cielo.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Esperanza</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_pentecostes.png" alt="PentecostÃƒÆ’Ã‚Â©s"/><div class="rzr-m-info"><h4>La Venida del Espíritu Santo</h4><p>El Espíritu Santo desciende sobre los Apóstoles y María.</p><p class="rzr-med"><i class="ri-heart-line"></i> Ven, Espíritu Santo, renueva mi corazÃƒÆ’Ã‚Â³n.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Amor de Dios</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_asuncion.png" alt="La AsunciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La AsunciÃƒÆ’Ã‚Â³n de la Virgen María</h4><p>María es elevada al cielo en cuerpo y alma.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que mi vida sea un camino hacia la patria celestial.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Gracia de una buena muerte</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_coronacion_maria.png" alt="CoronaciÃƒÆ’Ã‚Â³n de María"/><div class="rzr-m-info"><h4>La CoronaciÃƒÆ’Ã‚Â³n de María como Reina</h4><p>María es coronada Reina del Cielo y de la Tierra.</p><p class="rzr-med"><i class="ri-heart-line"></i> Que aprenda que la grandeza está¡ en el servicio.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La DevociÃƒÆ’Ã‚Â³n a María</span></div></div>
                 </div>
             </div>
 
@@ -943,11 +943,11 @@ window.CustomUI = {
                     <i class="ri-arrow-down-s-line rzr-chevron"></i>
                 </button>
                 <div class="rzr-accordion-body">
-                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_bautismo.png" alt="El Bautismo"/><div class="rzr-m-info"><h4>El Bautismo de JesÃƒÆ’Ã‚Âºs en el JordÃƒÆ’Ã‚Â¡n</h4><p>"Este es mi Hijo amado, en quien tengo mis complacencias."</p><p class="rzr-med"><i class="ri-heart-line"></i> Que viva cada dÃƒÆ’Ã‚Â¡a a la altura de mi dignidad bautismal.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Fidelidad</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_bodas_cana.png" alt="Las Bodas de CanÃƒÆ’Ã‚Â¡"/><div class="rzr-m-info"><h4>Las Bodas de CanÃƒÆ’Ã‚Â¡</h4><p>A peticiÃƒÆ’Ã‚Â³n de MarÃƒÆ’Ã‚Â¡a, JesÃƒÆ’Ã‚Âºs convierte el agua en vino.</p><p class="rzr-med"><i class="ri-heart-line"></i> ConfÃƒÆ’Ã‚Â¡o en la intercesiÃƒÆ’Ã‚Â³n de la Virgen MarÃƒÆ’Ã‚Â¡a.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Confianza en MarÃƒÆ’Ã‚Â¡a</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_predicacion_reino.png" alt="PredicaciÃƒÆ’Ã‚Â³n del Reino"/><div class="rzr-m-info"><h4>La PredicaciÃƒÆ’Ã‚Â³n del Reino</h4><p>"ConvertÃƒÆ’Ã‚Â¡os y creed en el Evangelio."</p><p class="rzr-med"><i class="ri-heart-line"></i> Abre mi corazÃƒÆ’Ã‚Â³n a tu Palabra.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La ConversiÃƒÆ’Ã‚Â³n</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_transfiguracion.png" alt="La TransfiguraciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La TransfiguraciÃƒÆ’Ã‚Â³n del SeÃƒÆ’Ã‚Â±or</h4><p>JesÃƒÆ’Ã‚Âºs muestra su gloria divina en el monte Tabor.</p><p class="rzr-med"><i class="ri-heart-line"></i> En la oscuridad, recuÃƒÆ’Ã‚Â©rdame que tu luz brilla.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Deseo de santidad</span></div></div>
-                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_eucaristia.png" alt="La EucaristÃƒÆ’Ã‚Â¡a"/><div class="rzr-m-info"><h4>La InstituciÃƒÆ’Ã‚Â³n de la EucaristÃƒÆ’Ã‚Â¡a</h4><p>"Esto es mi Cuerpo, que se entrega por vosotros."</p><p class="rzr-med"><i class="ri-heart-line"></i> Que valore este regalo inmenso de amor.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La AdoraciÃƒÆ’Ã‚Â³n EucarÃƒÆ’Ã‚Â¡stica</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">1ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_bautismo.png" alt="El Bautismo"/><div class="rzr-m-info"><h4>El Bautismo de Jesús en el JordÃƒÆ’Ã‚Â¡n</h4><p>"Este es mi Hijo amado, en quien tengo mis complacencias."</p><p class="rzr-med"><i class="ri-heart-line"></i> Que viva cada día a la altura de mi dignidad bautismal.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Fidelidad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">2ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_bodas_cana.png" alt="Las Bodas de CanÃƒÆ’Ã‚Â¡"/><div class="rzr-m-info"><h4>Las Bodas de CanÃƒÆ’Ã‚Â¡</h4><p>A peticiÃƒÆ’Ã‚Â³n de María, Jesús convierte el agua en vino.</p><p class="rzr-med"><i class="ri-heart-line"></i> ConfÃƒÆ’Ã‚Â¡o en la intercesiÃƒÆ’Ã‚Â³n de la Virgen María.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Confianza en María</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">3ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_predicacion_reino.png" alt="PredicaciÃƒÆ’Ã‚Â³n del Reino"/><div class="rzr-m-info"><h4>La PredicaciÃƒÆ’Ã‚Â³n del Reino</h4><p>"ConvertÃƒÆ’Ã‚Â¡os y creed en el Evangelio."</p><p class="rzr-med"><i class="ri-heart-line"></i> Abre mi corazÃƒÆ’Ã‚Â³n a tu Palabra.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Conversión</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_transfiguracion.png" alt="La TransfiguraciÃƒÆ’Ã‚Â³n"/><div class="rzr-m-info"><h4>La TransfiguraciÃƒÆ’Ã‚Â³n del Señor</h4><p>Jesús muestra su gloria divina en el monte Tabor.</p><p class="rzr-med"><i class="ri-heart-line"></i> En la oscuridad, recuÃƒÆ’Ã‚Â©rdame que tu luz brilla.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: El Deseo de santidad</span></div></div>
+                    <div class="rzr-mystery"><div class="rzr-m-num">5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ</div><img src="assets/misterio_eucaristia.png" alt="La Eucaristía"/><div class="rzr-m-info"><h4>La InstituciÃƒÆ’Ã‚Â³n de la Eucaristía</h4><p>"Esto es mi Cuerpo, que se entrega por vosotros."</p><p class="rzr-med"><i class="ri-heart-line"></i> Que valore este regalo inmenso de amor.</p><span class="rzr-fruit"><i class="ri-seedling-line"></i> Fruto: La Adoración EucarÃƒÆ’Ã‚Â¡stica</span></div></div>
                 </div>
             </div>
 
@@ -955,7 +955,7 @@ window.CustomUI = {
             <div class="rezar-cta glass card">
                 <div class="rezar-cta-icon"><i class="ri-heart-3-fill"></i></div>
                 <h3>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Comienza a rezar hoy!</h3>
-                <p>ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Ânete a la comunidad de SOLIDARIDAD y reza el Rosario en tu plaza mÃƒÆ’Ã‚Â¡s cercana</p>
+                <p>ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Ânete a la comunidad de SOLIDARIDAD y reza el Rosario en tu plaza más cercana</p>
                 <button class="btn btn-primary" onclick="app.navigate('screen-map')"><i class="ri-map-pin-line"></i> Buscar Rosario Cercano</button>
             </div>
 
@@ -966,12 +966,12 @@ window.CustomUI = {
 
     <!-- POR QU REZAR -->
     <section id="screen-porque-rezar" class="screen gradient-bg">
-        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Por quÃƒÆ’Ã‚Â© Rezar</h2><div style="width:24px"></div></div>
+        <div class="top-bar glass"><button class="icon-btn" onclick="app.navigate('screen-splash')"><i class="ri-arrow-left-line"></i></button><h2>Por qué Rezar</h2><div style="width:24px"></div></div>
         <div class="rezar-scrollarea">
             <div class="rezar-hero">
                 <div class="rezar-hero-icon"><i class="ri-history-fill"></i></div>
                 <h2>Historia del Santo Rosario</h2>
-                <p>Siglos de devociÃƒÆ’Ã‚Â³n, una oraciÃƒÆ’Ã‚Â³n universal</p>
+                <p>Siglos de devociÃƒÆ’Ã‚Â³n, una oración universal</p>
             </div>
 
             <div class="porque-card glass card">
@@ -982,14 +982,14 @@ window.CustomUI = {
 
             <div class="porque-card glass card">
                 <div class="porque-num">2</div>
-                <h3>La TransiciÃƒÆ’Ã‚Â³n al Ave MarÃƒÆ’Ã‚Â¡a</h3>
-                <p>Hacia el siglo XII, la devociÃƒÆ’Ã‚Â³n mariana creciÃƒÆ’Ã‚Â³ y se empezaron a rezar 150 "Salutaciones AngÃƒÆ’Ã‚Â©licas" (la primera parte del Ave MarÃƒÆ’Ã‚Â¡a). Londres y ParÃƒÆ’Ã‚Â¡s se convirtieron en centros de fabricaciÃƒÆ’Ã‚Â³n de estas cuerdas, ya conocidas como "rosarios" (coronas de rosas para la Virgen).</p>
+                <h3>La TransiciÃƒÆ’Ã‚Â³n al Ave María</h3>
+                <p>Hacia el siglo XII, la devociÃƒÆ’Ã‚Â³n mariana creciÃƒÆ’Ã‚Â³ y se empezaron a rezar 150 "Salutaciones AngÃƒÆ’Ã‚Â©licas" (la primera parte del Ave María). Londres y ParÃƒÆ’Ã‚Â¡s se convirtieron en centros de fabricaciÃƒÆ’Ã‚Â³n de estas cuerdas, ya conocidas como "rosarios" (coronas de rosas para la Virgen).</p>
             </div>
 
             <div class="porque-card glass card">
                 <div class="porque-num">3</div>
                 <h3>Santo Domingo de GuzmÃƒÆ’Ã‚Â¡n (1214)</h3>
-                <p>La tradiciÃƒÆ’Ã‚Â³n seÃƒÆ’Ã‚Â±ala que la Virgen MarÃƒÆ’Ã‚Â¡a se apareciÃƒÆ’Ã‚Â³ a Santo Domingo y le entregÃƒÆ’Ã‚Â³ el Rosario como una "arma" espiritual para combatir las herejÃƒÆ’Ã‚Â¡as de la ÃƒÆ’Ã‚Âépoca y convertir los corazones. Los Dominicos se convirtieron en los grandes difusores de esta oraciÃƒÆ’Ã‚Â³n.</p>
+                <p>La tradiciÃƒÆ’Ã‚Â³n seÃƒÆ’Ã‚Â±ala que la Virgen María se apareciÃƒÆ’Ã‚Â³ a Santo Domingo y le entregÃƒÆ’Ã‚Â³ el Rosario como una "arma" espiritual para combatir las herejÃƒÆ’Ã‚Â¡as de la época y convertir los corazones. Los Dominicos se convirtieron en los grandes difusores de esta oración.</p>
             </div>
 
             <div class="porque-card glass card">
@@ -1002,8 +1002,8 @@ window.CustomUI = {
             <div class="porque-card glass card">
                 <div class="porque-num">5</div>
                 <h3>EvoluciÃƒÆ’Ã‚Â³n Moderna</h3>
-                <p><strong>Siglo XIX y XX:</strong> Las apariciones en Lourdes y FÃƒÆ’Ã‚Â¡tima reafirmaron la importancia del Rosario como camino de paz y conversiÃƒÆ’Ã‚Â³n.</p>
-                <p><strong>2002:</strong> El Papa Juan Pablo II introdujo los Misterios Luminosos en la carta apostÃƒÆ’Ã‚Â³lica <em>Rosarium Virginis Mariae</em>, completando la meditaciÃƒÆ’Ã‚Â³n sobre la vida pÃƒÆ’Ã‚Âºblica de JesÃƒÆ’Ã‚Âºs.</p>
+                <p><strong>Siglo XIX y XX:</strong> Las apariciones en Lourdes y FÃƒÆ’Ã‚Â¡tima reafirmaron la importancia del Rosario como camino de paz y conversión.</p>
+                <p><strong>2002:</strong> El Papa Juan Pablo II introdujo los Misterios Luminosos en la carta apostÃƒÆ’Ã‚Â³lica <em>Rosarium Virginis Mariae</em>, completando la meditaciÃƒÆ’Ã‚Â³n sobre la vida pública de Jesús.</p>
             </div>
 
             <div class="porque-table-card glass card">
@@ -1013,10 +1013,10 @@ window.CustomUI = {
                         <tr><th>Tipo</th><th>TemÃƒÆ’Ã‚Â¡tica</th><th>DÃƒÆ’Ã‚Â¡as</th></tr>
                     </thead>
                     <tbody>
-                        <tr class="gozoso-row"><td><i class="ri-sparkling-fill"></i> Gozosos</td><td>EncarnaciÃƒÆ’Ã‚Â³n e infancia de JesÃƒÆ’Ã‚Âºs</td><td>Lunes y SÃƒÆ’Ã‚Â¡bados</td></tr>
+                        <tr class="gozoso-row"><td><i class="ri-sparkling-fill"></i> Gozosos</td><td>EncarnaciÃƒÆ’Ã‚Â³n e infancia de Jesús</td><td>Lunes y SÃƒÆ’Ã‚Â¡bados</td></tr>
                         <tr class="doloroso-row"><td><i class="ri-drop-fill"></i> Dolorosos</td><td>PasiÃƒÆ’Ã‚Â³n y muerte de Cristo</td><td>Martes y Viernes</td></tr>
                         <tr class="glorioso-row"><td><i class="ri-sun-fill"></i> Gloriosos</td><td>ResurrecciÃƒÆ’Ã‚Â³n y AscensiÃƒÆ’Ã‚Â³n</td><td>MiÃƒÆ’Ã‚Â©rcoles y Domingos</td></tr>
-                        <tr class="luminoso-row"><td><i class="ri-flashlight-fill"></i> Luminosos</td><td>Vida pÃƒÆ’Ã‚Âºblica y milagros</td><td>Jueves</td></tr>
+                        <tr class="luminoso-row"><td><i class="ri-flashlight-fill"></i> Luminosos</td><td>Vida pública y milagros</td><td>Jueves</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -1028,30 +1028,30 @@ window.CustomUI = {
             <div class="porque-card glass card">
                 <div class="porque-num">1</div>
                 <h3>La DimensiÃƒÆ’Ã‚Â³n CristocÃƒÆ’Ã‚Â©ntrica</h3>
-                <p>Aunque es una oraciÃƒÆ’Ã‚Â³n mariana, su centro es <strong>Cristo</strong>. El Papa Juan Pablo II decÃƒÆ’Ã‚Â¡a que rezar el Rosario es "contemplar el rostro de Cristo con los ojos de MarÃƒÆ’Ã‚Â¡a". Al repetir el Ave MarÃƒÆ’Ã‚Â¡a, el nombre de JesÃƒÆ’Ã‚Âºs es el punto de articulaciÃƒÆ’Ã‚Â³n de cada oraciÃƒÆ’Ã‚Â³n.</p>
+                <p>Aunque es una oración mariana, su centro es <strong>Cristo</strong>. El Papa Juan Pablo II decÃƒÆ’Ã‚Â¡a que rezar el Rosario es "contemplar el rostro de Cristo con los ojos de María". Al repetir el Ave María, el nombre de Jesús es el punto de articulaciÃƒÆ’Ã‚Â³n de cada oración.</p>
                 <ul class="porque-list">
                     <li><strong>Aprender de su ejemplo:</strong> Al meditar sus gestos y palabras, buscamos imitar sus virtudes.</li>
-                    <li><strong>Vivir el ciclo litÃƒÆ’Ã‚Âºrgico:</strong> Cada dÃƒÆ’Ã‚Â¡a de la semana nos conecta con un aspecto distinto del misterio de la SalvaciÃƒÆ’Ã‚Â³n.</li>
+                    <li><strong>Vivir el ciclo litÃƒÆ’Ã‚Âºrgico:</strong> Cada día de la semana nos conecta con un aspecto distinto del misterio de la SalvaciÃƒÆ’Ã‚Â³n.</li>
                 </ul>
             </div>
 
             <div class="porque-card glass card">
                 <div class="porque-num">2</div>
                 <h3>Un Ejercicio de PsicologÃƒÆ’Ã‚Â¡a Espiritual</h3>
-                <p>El Rosario utiliza una tÃƒÆ’Ã‚Â©cnica de "oraciÃƒÆ’Ã‚Â³n vocal y mental" simultÃƒÆ’Ã‚Â¡nea. Mientras la voz repite la oraciÃƒÆ’Ã‚Â³n, el corazÃƒÆ’Ã‚Â³n medita el misterio. Esta dualidad:</p>
+                <p>El Rosario utiliza una tÃƒÆ’Ã‚Â©cnica de "oración vocal y mental" simultÃƒÆ’Ã‚Â¡nea. Mientras la voz repite la oración, el corazÃƒÆ’Ã‚Â³n medita el misterio. Esta dualidad:</p>
                 <ul class="porque-list">
-                    <li><strong>Combate la dispersiÃƒÆ’Ã‚Â³n:</strong> Ayuda a concentrar el espÃƒÆ’Ã‚Â¡ritu en tiempos de gran fragmentaciÃƒÆ’Ã‚Â³n digital y mental.</li>
-                    <li><strong>Sana la memoria:</strong> Al llevar los problemas personales a los misterios de dolor o gloria de JesÃƒÆ’Ã‚Âºs, el creyente encuentra consuelo y resignificaciÃƒÆ’Ã‚Â³n para su propio sufrimiento.</li>
+                    <li><strong>Combate la dispersiÃƒÆ’Ã‚Â³n:</strong> Ayuda a concentrar el espíritu en tiempos de gran fragmentaciÃƒÆ’Ã‚Â³n digital y mental.</li>
+                    <li><strong>Sana la memoria:</strong> Al llevar los problemas personales a los misterios de dolor o gloria de Jesús, el creyente encuentra consuelo y resignificaciÃƒÆ’Ã‚Â³n para su propio sufrimiento.</li>
                 </ul>
             </div>
 
             <div class="porque-card glass card">
                 <div class="porque-num">3</div>
                 <h3>La IntercesiÃƒÆ’Ã‚Â³n de la Madre</h3>
-                <p>En la fe catÃƒÆ’Ã‚Â³lica, MarÃƒÆ’Ã‚Â¡a es la "Omnipotencia Suplicante". La justificaciÃƒÆ’Ã‚Â³n de rezarle a ella reside en que:</p>
+                <p>En la fe católica, María es la "Omnipotencia Suplicante". La justificaciÃƒÆ’Ã‚Â³n de rezarle a ella reside en que:</p>
                 <ul class="porque-list">
-                    <li><strong>Acorta el camino:</strong> Como en las Bodas de CanÃƒÆ’Ã‚Â¡, ella nota las necesidades antes que nosotros y le dice a JesÃƒÆ’Ã‚Âºs: "No tienen vino".</li>
-                    <li><strong>Es un puente:</strong> Ella no retiene la oraciÃƒÆ’Ã‚Â³n para sÃƒÆ’Ã‚Â¡, sino que la "magnifica" y la eleva a Dios de una forma mÃƒÆ’Ã‚Â¡s pura.</li>
+                    <li><strong>Acorta el camino:</strong> Como en las Bodas de CanÃƒÆ’Ã‚Â¡, ella nota las necesidades antes que nosotros y le dice a Jesús: "No tienen vino".</li>
+                    <li><strong>Es un puente:</strong> Ella no retiene la oración para sí¡, sino que la "magnifica" y la eleva a Dios de una forma más pura.</li>
                 </ul>
             </div>
 
@@ -1060,19 +1060,19 @@ window.CustomUI = {
                 <h3>El Rosario como "Arma Social"</h3>
                 <p>MÃƒÆ’Ã‚Â¡s AllÃƒÆ’Ã‚Â¡ de lo individual, el Rosario tiene una justificaciÃƒÆ’Ã‚Â³n comunitaria muy fuerte:</p>
                 <ul class="porque-list">
-                    <li><strong>OraciÃƒÆ’Ã‚Â³n por la Paz:</strong> En todas sus apariciones modernas, el mensaje ha sido el mismo: "Rezad el Rosario por la paz del mundo". Es un compromiso activo por la no-violencia y la unidad.</li>
-                    <li><strong>Identidad Cultural:</strong> Para muchos pueblos, el Rosario ha sido el guardiÃƒÆ’Ã‚Â¡n de la fe y la cultura en tiempos de persecuciÃƒÆ’Ã‚Â³n o crisis, manteniendo viva la esperanza de las comunidades mÃƒÆ’Ã‚Â¡s humildes.</li>
+                    <li><strong>Oración por la Paz:</strong> En todas sus apariciones modernas, el mensaje ha sido el mismo: "Rezad el Rosario por la paz del mundo". Es un compromiso activo por la no-violencia y la unidad.</li>
+                    <li><strong>Identidad Cultural:</strong> Para muchos pueblos, el Rosario ha sido el guardiÃƒÆ’Ã‚Â¡n de la fe y la cultura en tiempos de persecuciÃƒÆ’Ã‚Â³n o crisis, manteniendo viva la esperanza de las comunidades más humildes.</li>
                 </ul>
             </div>
 
             <div class="porque-card glass card">
                 <div class="porque-num">5</div>
                 <h3>Una PedagogÃƒÆ’Ã‚Â¡a de la Humildad</h3>
-                <p>En un mundo que exalta el ÃƒÆ’Ã‚Âéxito y el ruido, el Rosario es la oraciÃƒÆ’Ã‚Â³n de los sencillos. No requiere grandes conocimientos acadÃƒÆ’Ã‚Â©micos, solo un corazÃƒÆ’Ã‚Â³n dispuesto. Esta "simplicidad evangÃƒÆ’Ã‚Â©lica" nos nivela a todos "desde el Papa hasta el trabajador mÃƒÆ’Ã‚Â¡s humilde" bajo una misma plegaria.</p>
+                <p>En un mundo que exalta el éxito y el ruido, el Rosario es la oración de los sencillos. No requiere grandes conocimientos acadÃƒÆ’Ã‚Â©micos, solo un corazÃƒÆ’Ã‚Â³n dispuesto. Esta "simplicidad evangÃƒÆ’Ã‚Â©lica" nos nivela a todos "desde el Papa hasta el trabajador más humilde" bajo una misma plegaria.</p>
             </div>
 
             <div class="porque-table-card glass card">
-                <h3><i class="ri-question-line"></i> ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂPor quÃƒÆ’Ã‚Â© rezarlo hoy?</h3>
+                <h3><i class="ri-question-line"></i> ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂPor qué rezarlo hoy?</h3>
                 <table class="porque-table">
                     <thead>
                         <tr><th>Motivo</th><th>Beneficio</th></tr>
@@ -1087,7 +1087,7 @@ window.CustomUI = {
             </div>
 
             <div class="porque-divider">
-                <span class="porque-divider-text"><i class="ri-quill-pen-fill"></i> ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂQuÃƒÆ’Ã‚Â© decÃƒÆ’Ã‚Â¡an los Santos del Rosario?</span>
+                <span class="porque-divider-text"><i class="ri-quill-pen-fill"></i> ¿Qué decÃƒÆ’Ã‚Â¡an los Santos del Rosario?</span>
             </div>
 
             <div class="porque-intro glass card">
@@ -1100,14 +1100,14 @@ window.CustomUI = {
                 <p>Muchos santos veÃƒÆ’Ã‚Â¡an el Rosario como una defensa contra las dificultades de la vida y las tentaciones.</p>
                 <div class="santo-quote">
                     <div class="santo-name">San Padre PÃƒÆ’Ã‚Â¡o de Pietrelcina</div>
-                    <blockquote>"El Rosario es el arma para estos tiempos". Se dice que cuando pedÃƒÆ’Ã‚Â¡a sus cuentas, simplemente decÃƒÆ’Ã‚Â¡a: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Denme mi arma!".</blockquote>
+                    <blockquote>"El Rosario es el arma para estos tiempos". Se dice que cuando pedía sus cuentas, simplemente decÃƒÆ’Ã‚Â¡a: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Denme mi arma!".</blockquote>
                 </div>
                 <div class="santo-quote">
                     <div class="santo-name">San Juan Bosco</div>
                     <blockquote>"Si quieren que la paz reine en sus familias y en su patria, recen todos los dÃƒÆ’Ã‚Â¡as el Rosario". l lo consideraba la base de su obra educativa y espiritual.</blockquote>
                 </div>
                 <div class="santo-quote">
-                    <div class="santo-name">San Luis MarÃƒÆ’Ã‚Â¡a Grignion de Montfort</div>
+                    <div class="santo-name">San Luis María Grignion de Montfort</div>
                     <blockquote>"El que reza su Rosario todos los dÃƒÆ’Ã‚Â¡as no perecerÃƒÆ’Ã‚Â¡. Esta es una afirmaciÃƒÆ’Ã‚Â³n que con gusto firmo con mi sangre".</blockquote>
                 </div>
             </div>
@@ -1115,14 +1115,14 @@ window.CustomUI = {
             <div class="porque-card glass card">
                 <div class="porque-num"><i class="ri-mental-health-fill" style="font-size:0.85rem"></i></div>
                 <h3>2. Sobre la contemplaciÃƒÆ’Ã‚Â³n y la paz interior</h3>
-                <p>Para otros, el valor residÃƒÆ’Ã‚Â¡a en la capacidad de conectar con Dios de manera sencilla.</p>
+                <p>Para otros, el valor residía en la capacidad de conectar con Dios de manera sencilla.</p>
                 <div class="santo-quote">
-                    <div class="santo-name">Santa Teresa de JesÃƒÆ’Ã‚Âºs</div>
-                    <blockquote>"Basta el Ave MarÃƒÆ’Ã‚Â¡a para que el infierno tiemble".</blockquote>
+                    <div class="santo-name">Santa Teresa de Jesús</div>
+                    <blockquote>"Basta el Ave María para que el infierno tiemble".</blockquote>
                 </div>
                 <div class="santo-quote">
                     <div class="santo-name">San Juan Pablo II</div>
-                    <blockquote>"El Rosario es mi oraciÃƒÆ’Ã‚Â³n predilecta. Es una oraciÃƒÆ’Ã‚Â³n maravillosa en su sencillez y en su profundidad". l enfatizaba que, a travÃƒÆ’Ã‚Â©s de ÃƒÆ’Ã‚Âél, "el pueblo cristiano aprende de MarÃƒÆ’Ã‚Â¡a a contemplar la belleza del rostro de Cristo".</blockquote>
+                    <blockquote>"El Rosario es mi oración predilecta. Es una oración maravillosa en su sencillez y en su profundidad". l enfatizaba que, a travÃƒÆ’Ã‚Â©s de él, "el pueblo cristiano aprende de María a contemplar la belleza del rostro de Cristo".</blockquote>
                 </div>
                 <div class="santo-quote">
                     <div class="santo-name">San JosemarÃƒÆ’Ã‚Â¡a EscrivÃƒÆ’Ã‚Â¡</div>
@@ -1133,10 +1133,10 @@ window.CustomUI = {
             <div class="porque-card glass card">
                 <div class="porque-num"><i class="ri-hand-heart-fill" style="font-size:0.85rem"></i></div>
                 <h3>3. Sobre la humildad y la sencillez</h3>
-                <p>Los santos que trabajaron con los mÃƒÆ’Ã‚Â¡s necesitados destacaban que el Rosario iguala a todos los hombres.</p>
+                <p>Los santos que trabajaron con los más necesitados destacaban que el Rosario iguala a todos los hombres.</p>
                 <div class="santo-quote">
                     <div class="santo-name">Santa Teresa de Calcuta</div>
-                    <blockquote>"AfÃƒÆ’Ã‚Â©rrate al Rosario como la planta trepadora se aferra a la cruz". Ella siempre llevaba uno en la mano como sÃƒÆ’Ã‚Â¡mbolo de su uniÃƒÆ’Ã‚Â³n constante con Dios mientras servÃƒÆ’Ã‚Â¡a a los pobres.</blockquote>
+                    <blockquote>"AfÃƒÆ’Ã‚Â©rrate al Rosario como la planta trepadora se aferra a la cruz". Ella siempre llevaba uno en la mano como símbolo de su uniÃƒÆ’Ã‚Â³n constante con Dios mientras servÃƒÆ’Ã‚Â¡a a los pobres.</blockquote>
                 </div>
                 <div class="santo-quote">
                     <div class="santo-name">San Francisco de Sales</div>
@@ -1163,7 +1163,7 @@ window.CustomUI = {
                 <div class="rezar-cta-icon"><i class="ri-heart-3-fill"></i></div>
                 <h3>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Comienza a rezar hoy!</h3>
                 <p>ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ÃƒÆ’Ã‚Â­nete a la comunidad de SOLIDARIDAD y reza el Rosario</p>
-                <button class="btn btn-primary" onclick="app.navigate('screen-como-rezar')"><i class="ri-book-open-line"></i> CÃƒÆ’Ã‚Â³mo Rezar el Rosario</button>
+                <button class="btn btn-primary" onclick="app.navigate('screen-como-rezar')"><i class="ri-book-open-line"></i> Cómo Rezar el Rosario</button>
             </div>
 
             <div style="height:40px"></div>
@@ -1174,7 +1174,7 @@ window.CustomUI = {
         <!-- HEADER -->
         <div class="top-bar glass" style="background:linear-gradient(135deg, #e74c3c, #c0392b); color: white; border-bottom:none;">
             <button class="icon-btn" onclick="app.navigate('screen-splash')" style="color: white;"><i class="ri-arrow-left-line"></i></button>
-            <h2 style="font-weight:700; font-size:1.1rem; color: white;"><i class="ri-heart-pulse-fill" style="margin-right:8px;"></i> SituaciÃƒÆ’Ã‚Â³n Calle</h2>
+            <h2 style="font-weight:700; font-size:1.1rem; color: white;"><i class="ri-heart-pulse-fill" style="margin-right:8px;"></i> Situación Calle</h2>
             <button class="icon-btn" onclick="scRefresh()" style="color: white;"><i class="ri-refresh-line"></i></button>
         </div>
 
@@ -1234,7 +1234,7 @@ window.CustomUI = {
             <div style="padding:16px; text-align:center; position:sticky; top:0; background:white; z-index:2; border-radius:32px 32px 0 0;">
                 <div style="width:40px; height:5px; background:#cbd5e1; border-radius:10px; margin:0 auto 12px;"></div>
                 <h3 style="margin:0; font-size:1.2rem; font-weight:800; color:#1a1a2e;">Nueva Alerta</h3>
-                <p style="margin:4px 0 0; font-size:0.85rem; color:#64748b;">IngresÃƒÆ’Ã‚Â¡ los datos para coordinar ayuda</p>
+                <p style="margin:4px 0 0; font-size:0.85rem; color:#64748b;">Ingresí¡ los datos para coordinar ayuda</p>
             </div>
 
             <div style="padding:0 24px 30px; display:flex; flex-direction:column; gap:20px;">
@@ -1249,7 +1249,7 @@ window.CustomUI = {
                                 <option value="Chile">Chile</option>
                                 <option value="Uruguay">Uruguay</option>
                                 <option value="Colombia">Colombia</option>
-                                <option value="MÃƒÆ’Ã‚Â©xico">MÃƒÆ’Ã‚Â©xico</option>
+                                <option value="México">México</option>
                                 <option value="PerÃƒÆ’Ã‚Âº">PerÃƒÆ’Ã‚Âº</option>
                                 <option value="EspaÃƒÆ’Ã‚Â±a">EspaÃƒÆ’Ã‚Â±a</option>
                             </select>
@@ -1276,7 +1276,7 @@ window.CustomUI = {
                 <!-- Necesidades -->
                 <div>
                     <label style="font-size:0.8rem; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-                        <i class="ri-service-fill" style="color:#e74c3c;"></i> ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿QuÃƒÆ’Ã‚Â© necesita?
+                        <i class="ri-service-fill" style="color:#e74c3c;"></i> ¿Qué necesita?
                     </label>
                     <div style="display:flex; flex-wrap:wrap; gap:8px;" id="sc-necesidades-grid">
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Ropa')" data-val="Ropa"><i class="ri-t-shirt-line"></i> Ropa</button>
@@ -1294,7 +1294,7 @@ window.CustomUI = {
                     <label style="font-size:0.8rem; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:6px; margin-bottom:10px;">
                         <i class="ri-file-text-fill" style="color:#e74c3c;"></i> ObservaciÃƒÆ’Ã‚Â³n / Detalles
                     </label>
-                    <textarea id="sc-observaciones" rows="3" placeholder="Ej: Es un hombre mayor, estÃƒÆ’Ã‚Â¡ consciente, necesita calzado talle 40..." style="width:100%; padding:14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:16px; font-size:0.9rem; font-family:inherit; outline:none; resize:none;"></textarea>
+                    <textarea id="sc-observaciones" rows="3" placeholder="Ej: Es un hombre mayor, está¡ consciente, necesita calzado talle 40..." style="width:100%; padding:14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:16px; font-size:0.9rem; font-family:inherit; outline:none; resize:none;"></textarea>
                 </div>
 
                 <!-- Subir Foto -->
@@ -1442,7 +1442,7 @@ window.CustomUI = {
             <div class="Comedores-search glass card">
                 <div class="Comedores-search-wrapper">
                     <i class="ri-search-line"></i>
-                    <input type="text" placeholder="Buscar Comedor, barrio o direcciÃƒÆ’Ã‚Â³n..." oninput="filterComedoresGrid(this.value)" id="Comedores-search-input">
+                    <input type="text" placeholder="Buscar Comedor, barrio o dirección..." oninput="filterComedoresGrid(this.value)" id="Comedores-search-input">
                 </div>
             </div>
             
@@ -1492,7 +1492,7 @@ window.CustomUI = {
                         </div>
                         <div style="flex:1;">
                             <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">Ciudad</label>
-                            <input type="text" id="add-comedor-ciudad" placeholder="Ej: CÃƒÆ’Ã‚Â³rdoba" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;">
+                            <input type="text" id="add-comedor-ciudad" placeholder="Ej: Córdoba" style="width:100%; padding:12px; background:white; border:1px solid #cbd5e1; border-radius:12px; font-size:0.9rem; outline:none;">
                         </div>
                     </div>
                     
@@ -1513,7 +1513,7 @@ window.CustomUI = {
                 <div>
                     <label style="font-size:0.75rem; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px; display:block;">UbicaciÃƒÆ’Ã‚Â³n en el Mapa</label>
                     <div id="add-comedor-map" style="width: 100%; height: 160px; border-radius: 16px; border: 1px solid #cbd5e1; overflow:hidden;"></div>
-                    <span style="font-size: 0.75rem; color: #64748b; display:block; margin-top:6px;"><i class="ri-drag-move-fill" style="color:#f39c12; margin-right:4px;"></i>Mueve el pin para ajustar la ubicaciÃƒÆ’Ã‚Â³n exacta.</span>
+                    <span style="font-size: 0.75rem; color: #64748b; display:block; margin-top:6px;"><i class="ri-drag-move-fill" style="color:#f39c12; margin-right:4px;"></i>Mueve el pin para ajustar la ubicación exacta.</span>
                 </div>
 
                 <div style="background:#f8fafc; padding:16px; border-radius:20px; border:1px solid #e2e8f0;">
@@ -1536,10 +1536,10 @@ var zonasData = [
     {n:"Olla Popular MTE",d:"Murature 1500, Villa Fiorito",h:"Mie y Vie 19:00",tel:"",red:"@mte_lomasdezamora",lat:-34.7171,lng:-58.4357},
     {n:"Comedor Pelota de Trapo",d:"Montevideo 63, Avellaneda",h:"L-V 11:30",tel:"11-4222-1234",red:"@pelotadetrapo_ong",lat:-34.6643,lng:-58.3676},
     {n:"Comedor Corazones Solidarios",d:"AristÃƒÆ’Ã‚Â³bulo del Valle 400, Quilmes",h:"L-S 12:00",tel:"",red:"@corazonessolidariosquilmes",lat:-34.7208,lng:-58.2541},
-    {n:"Comedor PequeÃƒÆ’Ã‚Â±os Pasos",d:"Av. MÃƒÆ’Ã‚Â¡rquez 2000, JosÃƒÆ’Ã‚Â© LeÃƒÆ’Ã‚Â³n SuÃƒÆ’Ã‚Â¡rez",h:"L-V 12:30",tel:"",red:"@pequenospasos_jls",lat:-34.5428,lng:-58.5802},
+    {n:"Comedor PequeÃƒÆ’Ã‚Â±os Pasos",d:"Av. Márquez 2000, Josí© LeÃƒÆ’Ã‚Â³n SuÃƒÆ’Ã‚Â¡rez",h:"L-V 12:30",tel:"",red:"@pequenospasos_jls",lat:-34.5428,lng:-58.5802},
     {n:"Olla Popular La Poderosa",d:"Nudo 1, Fuerte Apache, Ciudadela",h:"Mar y Jue 13:00",tel:"",red:"@lapoderosa_arg",lat:-34.6288,lng:-58.5361},
     {n:"Merendero Sonrisas",d:"Boulevard Buenos Aires 1500, Monte Grande",h:"L-V 17:00",tel:"",red:"@sonrisasmontegrande",lat:-34.8193,lng:-58.4659},
-    {n:"Comedor Caritas Quilmes",d:"Av. CalchaquÃƒÆ’Ã‚Â­ 3000, Quilmes",h:"L-V 12:00",tel:"",red:"@caritasquilmes",lat:-34.7508,lng:-58.2700},
+    {n:"Comedor Caritas Quilmes",d:"Av. Calchaqué 3000, Quilmes",h:"L-V 12:00",tel:"",red:"@caritasquilmes",lat:-34.7508,lng:-58.2700},
     {n:"Olla Popular Movimiento Evita",d:"Av. San MartÃƒÆ’Ã‚Â­n 1200, Florencio Varela",h:"Mie 20:00",tel:"",red:"@evitavarela",lat:-34.8016,lng:-58.2778},
     {n:"Comedor La Esperanza",d:"Ruta 23 km 5, Moreno",h:"L-V 12:00",tel:"",red:"@esperanzamoreno",lat:-34.6508,lng:-58.7891},
     {n:"Comedor El Sol",d:"Av. Calle Real 1000, Merlo",h:"L-S 12:30",tel:"",red:"@comedor_elsolmerlo",lat:-34.6685,lng:-58.7282},
@@ -1558,7 +1558,7 @@ var zonasData = [
     {n:"Comedor Todo por los NiÃƒÆ’Ã‚Â±os",d:"Ruta 3 Sur km 695, BahÃƒÆ’Ã‚Â­a Blanca",h:"L-V 12:00",tel:"",red:"@todoporlosninos_bb",lat:-38.7183,lng:-62.2663},
     {n:"Comedor Nueva Vida",d:"Av. Savio 1500, San NicolÃƒÆ’Ã‚Â¡s",h:"L-V 12:00",tel:"",red:"@nuevavida.sn",lat:-33.3333,lng:-60.2167},
     {n:"Comedor Esperanza",d:"Ruta 3 km 22, San Justo",h:"L-V 12:00",tel:"",red:"@esperanzasunjusto",lat:-34.6869,lng:-58.5614},
-    {n:"Merendero Los Chicos",d:"Ruta 21 km 28, GonzÃƒÆ’Ã‚Â¡lez CatÃƒÆ’Ã‚Â¡n",h:"Lun, Mie y Vie 17:00",tel:"",red:"@loschicos.catan",lat:-34.7686,lng:-58.6469},
+    {n:"Merendero Los Chicos",d:"Ruta 21 km 28, González CatÃƒÆ’Ã‚Â¡n",h:"Lun, Mie y Vie 17:00",tel:"",red:"@loschicos.catan",lat:-34.7686,lng:-58.6469},
     {n:"Olla Popular Solidaria",d:"Carlos Casares 1500, Rafael Castillo",h:"SÃƒÆ’Ã‚Â¡b 12:00",tel:"",red:"@ollarafcastillo",lat:-34.6946,lng:-58.6254},
     {n:"Comedor Las Manos de mi Madre",d:"Ruta 205 km 35, Ezeiza",h:"L-V 12:30",tel:"",red:"@lasmanosdemimadreezeiza",lat:-34.8459,lng:-58.5229},
     {n:"Comedor Todo por Ellos",d:"Av. Presidente PerÃƒÆ’Ã‚Â³n 2500, San Vicente",h:"L-V 12:00",tel:"",red:"@todoporellossanvicente",lat:-35.0264,lng:-58.4239},
@@ -1569,14 +1569,14 @@ var zonasData = [
     {n:"Olla Popular Evita",d:"Mitre 2500, SarandÃƒÆ’Ã‚Â­",h:"Mar y Jue 19:00",tel:"",red:"@evitasarandi",lat:-34.6853,lng:-58.3444},
     {n:"Comedor Los Pibes de Bernal",d:"Zapiola 1000, Bernal",h:"L-V 12:00",tel:"",red:"@lospibesdebernal",lat:-34.7061,lng:-58.2933},
     {n:"Merendero Pancitas Llenas",d:"Eva PerÃƒÆ’Ã‚Â³n 3500, Florencio Varela",h:"L-V 17:30",tel:"",red:"@pancitas.varela",lat:-34.8116,lng:-58.2700},
-    {n:"Comedor La AlegrÃƒÆ’Ã‚Â­a",d:"Av. 14 nro 4500, Berazategui",h:"L-V 12:00",tel:"",red:"@laalegriaberazategui",lat:-34.7661,lng:-58.2167},
-    {n:"Olla Popular La Casita",d:"Av. MÃƒÆ’Ã‚Â¡rquez 3000, Billinghurst",h:"SÃƒÆ’Ã‚Â¡b 13:00",tel:"",red:"@lacasita.billinghurst",lat:-34.5681,lng:-58.5728},
+    {n:"Comedor La Alegría",d:"Av. 14 nro 4500, Berazategui",h:"L-V 12:00",tel:"",red:"@laalegriaberazategui",lat:-34.7661,lng:-58.2167},
+    {n:"Olla Popular La Casita",d:"Av. Márquez 3000, Billinghurst",h:"SÃƒÆ’Ã‚Â¡b 13:00",tel:"",red:"@lacasita.billinghurst",lat:-34.5681,lng:-58.5728},
     {n:"Comedor Sol y Esperanza",d:"Laprida 4000, Villa Martelli",h:"L-V 12:00",tel:"",red:"@solyesperanzamartelli",lat:-34.5503,lng:-58.5083},
     {n:"Merendero El Refugio",d:"RolÃƒÆ’Ã‚Â³n 2000, Boulogne",h:"L-V 17:00",tel:"",red:"@elrefugio.boulogne",lat:-34.4983,lng:-58.5681},
     {n:"Comedor Los NiÃƒÆ’Ã‚Â±os",d:"Av. Avellaneda 2500, San Fernando",h:"L-S 12:00",tel:"",red:"@losninos.sanfernando",lat:-34.4442,lng:-58.5639},
     {n:"Comedor El Buen Samaritano",d:"Ruta 202 km 5, Don Torcuato",h:"Lun, Mie, Vie 12:30",tel:"",red:"@buensamaritanotigre",lat:-34.4939,lng:-58.6200},
-    {n:"Olla Popular San JosÃƒÆ’Ã‚Â©",d:"Av. de Mayo 1000, Presidente Derqui",h:"Jue 19:30",tel:"",red:"@sanjose.derqui",lat:-34.4719,lng:-58.8256},
-    {n:"Comedor CorazÃƒÆ’Ã‚Â³n Valiente",d:"Ruta 197 y Croacia, JosÃƒÆ’Ã‚Â© C. Paz",h:"L-V 12:00",tel:"",red:"@corazonvalientejcp",lat:-34.5153,lng:-58.7667},
+    {n:"Olla Popular San Josí©",d:"Av. de Mayo 1000, Presidente Derqui",h:"Jue 19:30",tel:"",red:"@sanjose.derqui",lat:-34.4719,lng:-58.8256},
+    {n:"Comedor Corazón Valiente",d:"Ruta 197 y Croacia, Josí© C. Paz",h:"L-V 12:00",tel:"",red:"@corazonvalientejcp",lat:-34.5153,lng:-58.7667},
     {n:"Comedor El Sol",d:"Av. Callao 1500, Grand Bourg",h:"L-V 12:00 y 18:00",tel:"",red:"@elsolgrandbourg",lat:-34.4833,lng:-58.7167},
     {n:"Merendero Rayito de Luz",d:"Gaspar Campos 3000, San Miguel",h:"L-V 17:00",tel:"",red:"@rayitodeluz.sm",lat:-34.5422,lng:-58.7000},
     {n:"Comedor La Nueva IlusiÃƒÆ’Ã‚Â³n",d:"Av. Eva PerÃƒÆ’Ã‚Â³n 2500, MorÃƒÆ’Ã‚Â³n",h:"L-V 12:00",tel:"",red:"@lanuevailusionmoron",lat:-34.6611,lng:-58.6214},
@@ -1605,7 +1605,7 @@ var zonasData = [
     {n:"Comedor Popular La Dignidad",d:"Av. Corrientes 3400, Almagro",h:"L-V 13:00",tel:"",red:"@ladignidad.almagro",lat:-34.6042,lng:-58.4116},
     {n:"Olla Popular Plaza Once (Movimiento Evita)",d:"Plaza Miserere, Once",h:"L-V 20:00",tel:"",red:"@movimientoevita_caba",lat:-34.6096,lng:-58.4065},
     {n:"Olla Popular Paternal (FOL)",d:"Av. San MartÃƒÆ’Ã‚Â­n y Juan B. Justo, La Paternal",h:"Mie 19:30",tel:"",red:"@fol_paternal",lat:-34.6062,lng:-58.4610},
-    {n:"Comedor NiÃƒÆ’Ã‚Â±o JesÃƒÆ’Ã‚Âºs",d:"Av. Caseros 2900, Parque Patricios",h:"L-V 12:00",tel:"",red:"@ninojesus_pp",lat:-34.6358,lng:-58.3995},
+    {n:"Comedor Niño Jesús",d:"Av. Caseros 2900, Parque Patricios",h:"L-V 12:00",tel:"",red:"@ninojesus_pp",lat:-34.6358,lng:-58.3995},
     {n:"Olla Popular UTEP",d:"Av. SÃƒÆ’Ã‚Â¡enz 800, Pompeya",h:"Mar y Jue 13:00",tel:"",red:"@utep_pompeya",lat:-34.6496,lng:-58.4158},
     {n:"Comedor Estrella de la MaÃƒÆ’Ã‚Â±ana",d:"Barrio CildÃƒÆ’Ã‚Â¡ÃƒÆ’Ã‚Â±ez, Parque Avellaneda",h:"L-V 12:30",tel:"",red:"@estrelladelamanana.cildanez",lat:-34.6612,lng:-58.4721},
     {n:"Comedor El Refugio",d:"Av. Independencia 1200, San CristÃƒÆ’Ã‚Â³bal",h:"L-V 19:00",tel:"",red:"@elrefugio_sancristobal",lat:-34.6192,lng:-58.3845},
@@ -1621,7 +1621,7 @@ var zonasData = [
     {n:"Merendero El Amanecer",d:"Av. Perito Moreno 1000, Nueva Pompeya",h:"L-V 17:30",tel:"",red:"@elamanecer_pompeya",lat:-34.6422,lng:-58.4211},
     {n:"Olla Popular Mataderos",d:"Directorio y Murguiondo, Mataderos",h:"Mie y Vie 19:30",tel:"",red:"@ollamataderos",lat:-34.6571,lng:-58.4975},
     {n:"Comedor Los NiÃƒÆ’Ã‚Â±os Libres",d:"ZuvirÃƒÆ’Ã‚Â­a 5000, Villa Lugano",h:"L-S 12:30",tel:"",red:"@ninoslibres_lugano",lat:-34.6761,lng:-58.4722},
-    {n:"Comedor CorazÃƒÆ’Ã‚Â³n Abierto",d:"Gallo 1000, Recoleta",h:"Lun, Mie y Vie 12:00",tel:"",red:"@corazonabierto_caba",lat:-34.5981,lng:-58.4122},
+    {n:"Comedor Corazón Abierto",d:"Gallo 1000, Recoleta",h:"Lun, Mie y Vie 12:00",tel:"",red:"@corazonabierto_caba",lat:-34.5981,lng:-58.4122},
     {n:"Olla Comunitaria Chacarita",d:"Federico Lacroze 4000, Chacarita",h:"Mar 20:00",tel:"",red:"@ollachacarita",lat:-34.5851,lng:-58.4522},
     {n:"Comedor Unidos",d:"Av. San Juan 2000, San CristÃƒÆ’Ã‚Â³bal",h:"L-V 13:00",tel:"",red:"@unidos_sancristobal",lat:-34.6221,lng:-58.3966},
     {n:"Comedor La Familia",d:"Av. Rivadavia 8500, Floresta",h:"L-V 12:00",tel:"",red:"@lafamilia_floresta",lat:-34.6341,lng:-58.4833},
@@ -1640,7 +1640,7 @@ var zonasData = [
     {n:"Comedor Comunitario Belgrano",d:"Av. Belgrano 850, San Fernando del Valle",h:"L-V 12:00",tel:"",red:"@caritascatamarca",lat:-28.4697,lng:-65.7795},
     {n:"Merendero Los Angelitos",d:"Sarmiento 245, Capital",h:"L-V 16:00",tel:"",red:"",lat:-28.4726,lng:-65.7821},
     {n:"C.I.F NÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°1 Comedor Social",d:"Av. Costanera Sur 120",h:"L-V 11:30",tel:"",red:"",lat:-28.4818,lng:-65.7673},
-    {n:"Olla Popular San Fernando",d:"Av. GÃƒÆ’Ã‚Â¼emes 1200",h:"SÃƒÆ’Ã‚Â¡b 12:00",tel:"",red:"@ollasanfernando",lat:-28.475,lng:-65.78},
+    {n:"Olla Popular San Fernando",d:"Av. Güemes 1200",h:"SÃƒÆ’Ã‚Â¡b 12:00",tel:"",red:"@ollasanfernando",lat:-28.475,lng:-65.78},
     {n:"Comedor La Esperanza",d:"Ruta 38 km 2",h:"L-V 13:00",tel:"",red:"@esperanzacatamarca",lat:-28.49,lng:-65.77},
     {n:"Merendero Los Pekes",d:"Barrio Valle Chico",h:"Mar y Jue 17:00",tel:"",red:"@pekesvallechico",lat:-28.505,lng:-65.805},
     {n:"Comedor Solidario",d:"Av. Virgen del Valle 500",h:"L-V 12:30",tel:"",red:"@solidariocatamarca",lat:-28.455,lng:-65.79},
@@ -1658,8 +1658,8 @@ var zonasData = [
   ]},
   {id:5,nombre:"Chubut",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
     {n:"Comedor Universitario Luis Yllana",d:"Av. Fontana 183, Trelew",h:"L-V 12:00",tel:"280-442-2000",red:"@comedorunpsjb",lat:-43.2502,lng:-65.3075},
-    {n:"Comedor GÃƒÆ’Ã‚Â¼emes",d:"GÃƒÆ’Ã‚Â¼emes 450, Comodoro Rivadavia",h:"L-V 11:30 y 19:00",tel:"",red:"",lat:-45.8641,lng:-67.5031},
-    {n:"Merendero PatagÃƒÆ’Ã‚Âúnico",d:"Av. HipÃƒÆ’Ã‚Â³lito Yrigoyen 900, Esquel",h:"L-V 16:00",tel:"",red:"@caritachubut",lat:-42.9086,lng:-71.3195},
+    {n:"Comedor Güemes",d:"Güemes 450, Comodoro Rivadavia",h:"L-V 11:30 y 19:00",tel:"",red:"",lat:-45.8641,lng:-67.5031},
+    {n:"Merendero Patagúnico",d:"Av. HipÃƒÆ’Ã‚Â³lito Yrigoyen 900, Esquel",h:"L-V 16:00",tel:"",red:"@caritachubut",lat:-42.9086,lng:-71.3195},
     {n:"Comedor Esperanza",d:"Trelew, Barrio INTA",h:"L-V 12:30",tel:"",red:"@esperanzatrelew",lat:-43.25,lng:-65.31},
     {n:"Olla Popular Comodoro",d:"Av. Rivadavia 3000, Comodoro Rivadavia",h:"Mie 20:00",tel:"",red:"@ollacomodoro",lat:-45.865,lng:-67.485},
     {n:"Merendero Sonrisas",d:"Puerto Madryn, Barrio Pujol",h:"Mar y Jue 17:00",tel:"",red:"@sonrisasmadryn",lat:-42.755,lng:-65.045},
@@ -1667,13 +1667,13 @@ var zonasData = [
     {n:"Olla Comunitaria Rawson",d:"Av. San MartÃƒÆ’Ã‚Â­n 500, Rawson",h:"SÃƒÆ’Ã‚Â¡b 13:00",tel:"",red:"@ollarawson",lat:-43.3,lng:-65.105}
   ]},
   {id:6,nombre:"Cordoba",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
-    {n:"Comedor CÃƒÆ’Ã‚Â¡ritas CÃƒÆ’Ã‚Â³rdoba",d:"HipÃƒÆ’Ã‚Â³lito Yrigoyen 78, CÃƒÆ’Ã‚Â³rdoba Capital",h:"L-V 12:00",tel:"351-422-9000",red:"@caritas.cordoba",lat:-31.4135,lng:-64.1811},
-    {n:"Comedor La Mateada",d:"Av. Madrid 1200, CÃƒÆ’Ã‚Â³rdoba",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"@lamateadacba",lat:-31.4397,lng:-64.1691},
-    {n:"Olla Popular Alta CÃƒÆ’Ã‚Â³rdoba",d:"Rondeau 2345, Alta CÃƒÆ’Ã‚Â³rdoba",h:"L-V 18:30",tel:"",red:"@ollaaltacordoba",lat:-31.3870,lng:-64.1850}
+    {n:"Comedor CÃƒÆ’Ã‚Â¡ritas Córdoba",d:"HipÃƒÆ’Ã‚Â³lito Yrigoyen 78, Córdoba Capital",h:"L-V 12:00",tel:"351-422-9000",red:"@caritas.cordoba",lat:-31.4135,lng:-64.1811},
+    {n:"Comedor La Mateada",d:"Av. Madrid 1200, Córdoba",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"@lamateadacba",lat:-31.4397,lng:-64.1691},
+    {n:"Olla Popular Alta Córdoba",d:"Rondeau 2345, Alta Córdoba",h:"L-V 18:30",tel:"",red:"@ollaaltacordoba",lat:-31.3870,lng:-64.1850}
   ]},
   {id:7,nombre:"Corrientes",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
-    {n:"Comedor CorazÃƒÆ’Ã‚Â³n Contento",d:"Av. Costanera Juan Pablo II 2500",h:"L-V 12:00",tel:"",red:"@comedorcorazoncontento",lat:-27.5001,lng:-58.8438},
-    {n:"Comedor Parroquia San JosÃƒÆ’Ã‚Â©",d:"BolÃƒÆ’Ã‚Â­var 1085, Corrientes Capital",h:"L-V 11:30",tel:"379-442-3456",red:"@caritascorrientes",lat:-27.4630,lng:-58.8328},
+    {n:"Comedor Corazón Contento",d:"Av. Costanera Juan Pablo II 2500",h:"L-V 12:00",tel:"",red:"@comedorcorazoncontento",lat:-27.5001,lng:-58.8438},
+    {n:"Comedor Parroquia San Josí©",d:"BolÃƒÆ’Ã‚Â­var 1085, Corrientes Capital",h:"L-V 11:30",tel:"379-442-3456",red:"@caritascorrientes",lat:-27.4630,lng:-58.8328},
     {n:"Merendero Esperanza",d:"Ruta 12 km 5, Corrientes",h:"L-S 16:00",tel:"",red:"",lat:-27.3900,lng:-58.8200},
     {n:"Comedor La Amistad",d:"Barrio La Olla",h:"L-V 12:00",tel:"",red:"@amistadlaolla",lat:-27.485,lng:-58.815},
     {n:"Olla Popular 17 de Agosto",d:"Barrio 17 de Agosto",h:"Mie 19:30",tel:"",red:"@olla17deagosto",lat:-27.495,lng:-58.795},
@@ -1704,7 +1704,7 @@ var zonasData = [
   {id:10,nombre:"Jujuy",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
     {n:"Comedor CÃƒÆ’Ã‚Â¡ritas San Salvador",d:"Belgrano 758, San Salvador de Jujuy",h:"L-V 12:00",tel:"388-422-3333",red:"@caritasjujuy",lat:-24.1857,lng:-65.2995},
     {n:"Comedor Universitario UNJU",d:"Av. Bolivia 1239, San Salvador",h:"L-V 12:00 y 18:30",tel:"388-422-0001",red:"@comedorunju",lat:-24.1942,lng:-65.3019},
-    {n:"Olla Popular PalpalÃƒÆ’Ã‚Â¡",d:"GÃƒÆ’Ã‚Â¼emes 450, PalpalÃƒÆ’Ã‚Â¡",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"",lat:-24.2601,lng:-65.2083},
+    {n:"Olla Popular PalpalÃƒÆ’Ã‚Â¡",d:"Güemes 450, PalpalÃƒÆ’Ã‚Â¡",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"",lat:-24.2601,lng:-65.2083},
     {n:"Comedor Alto Comedero",d:"Alto Comedero, San Salvador",h:"L-V 12:30",tel:"",red:"@altocomedero_jujuy",lat:-24.225,lng:-65.265},
     {n:"Olla Popular PalpalÃƒÆ’Ã‚Â¡",d:"Av. Martijena 500, PalpalÃƒÆ’Ã‚Â¡",h:"Jue 20:00",tel:"",red:"@ollapalpala",lat:-24.255,lng:-65.205},
     {n:"Merendero Sonrisas",d:"Barrio Chingo",h:"Mar y Jue 17:30",tel:"",red:"@sonrisaschingo",lat:-24.185,lng:-65.295},
@@ -1717,7 +1717,7 @@ var zonasData = [
     {n:"Merendero Los Pinos",d:"Av. Roca 890, General Pico",h:"L-V 16:00",tel:"",red:"",lat:-35.6960,lng:-63.7538},
     {n:"Comedor Santa Rosa",d:"Barrio RÃƒÆ’Ã‚Â­o Atuel",h:"L-V 12:00",tel:"",red:"@santarosacomedor",lat:-36.635,lng:-64.295},
     {n:"Olla Popular Pico",d:"General Pico, Barrio Rucci",h:"Mie y Vie 19:30",tel:"",red:"@ollapico",lat:-35.655,lng:-63.745},
-    {n:"Merendero Los Peques",d:"Barrio Santa MarÃƒÆ’Ã‚Â­a de Las Pampas",h:"Mar y Jue 17:00",tel:"",red:"@pequessantarosa",lat:-36.605,lng:-64.285},
+    {n:"Merendero Los Peques",d:"Barrio Santa María de Las Pampas",h:"Mar y Jue 17:00",tel:"",red:"@pequessantarosa",lat:-36.605,lng:-64.285},
     {n:"Comedor Solidario",d:"Toay",h:"L-S 12:30",tel:"",red:"@solidariotoay",lat:-36.675,lng:-64.385},
     {n:"Olla Comunitaria",d:"Plaza San MartÃƒÆ’Ã‚Â­n",h:"Dom 12:00",tel:"",red:"@ollalapampa",lat:-36.62,lng:-64.29}
   ]},
@@ -1752,10 +1752,10 @@ var zonasData = [
     {n:"Olla Comunitaria Posadas",d:"Plaza San MartÃƒÆ’Ã‚Â­n",h:"SÃƒÆ’Ã‚Â¡b 13:00",tel:"",red:"@ollaposadas",lat:-27.365,lng:-55.895}
   ]},
   {id:15,nombre:"Neuquen",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
-    {n:"Comedor Universitario UNCo",d:"Buenos Aires 1400, NeuquÃƒÆ’Ã‚Â©n Capital",h:"L-V 12:00 y 19:00",tel:"299-449-0000",red:"@comedorunco",lat:-38.9514,lng:-68.0591},
-    {n:"Comedor Legislatura NeuquÃƒÆ’Ã‚Â©n",d:"Carlos H. RodrÃƒÆ’Ã‚Â­guez 221, NeuquÃƒÆ’Ã‚Â©n",h:"L-V 12:00",tel:"",red:"",lat:-38.9370,lng:-68.0590},
-    {n:"Olla Popular Alto Valle",d:"Av. Argentina 4500, NeuquÃƒÆ’Ã‚Â©n",h:"SÃƒÆ’Ã‚Â¡b 11:30",tel:"",red:"@ollaneuquen",lat:-38.9500,lng:-68.0800},
-    {n:"Comedor Los Pibes",d:"NeuquÃƒÆ’Ã‚Â©n, Barrio San Lorenzo",h:"L-V 12:30",tel:"",red:"@lospibesneuquen",lat:-38.935,lng:-68.105},
+    {n:"Comedor Universitario UNCo",d:"Buenos Aires 1400, Neuquén Capital",h:"L-V 12:00 y 19:00",tel:"299-449-0000",red:"@comedorunco",lat:-38.9514,lng:-68.0591},
+    {n:"Comedor Legislatura Neuquén",d:"Carlos H. RodrÃƒÆ’Ã‚Â­guez 221, Neuquén",h:"L-V 12:00",tel:"",red:"",lat:-38.9370,lng:-68.0590},
+    {n:"Olla Popular Alto Valle",d:"Av. Argentina 4500, Neuquén",h:"SÃƒÆ’Ã‚Â¡b 11:30",tel:"",red:"@ollaneuquen",lat:-38.9500,lng:-68.0800},
+    {n:"Comedor Los Pibes",d:"Neuquén, Barrio San Lorenzo",h:"L-V 12:30",tel:"",red:"@lospibesneuquen",lat:-38.935,lng:-68.105},
     {n:"Olla Popular Plottier",d:"Plottier",h:"Mie y Vie 20:00",tel:"",red:"@ollaplottier",lat:-38.955,lng:-68.235},
     {n:"Merendero Rayito",d:"Centenario",h:"L-V 17:00",tel:"",red:"@rayitocentenario",lat:-38.825,lng:-68.135},
     {n:"Comedor Solidario",d:"Cutral CÃƒÆ’Ã‚Â³",h:"L-S 12:00",tel:"",red:"@solidariocutralco",lat:-38.935,lng:-69.235},
@@ -1778,11 +1778,11 @@ var zonasData = [
     {n:"Comedor Solidario",d:"Salta, Barrio Solidaridad",h:"L-V 12:30",tel:"",red:"@solidariosalta",lat:-24.835,lng:-65.375},
     {n:"Olla Popular OrÃƒÆ’Ã‚Â¡n",d:"San RamÃƒÆ’Ã‚Â³n de la Nueva OrÃƒÆ’Ã‚Â¡n",h:"Mie 20:00",tel:"",red:"@ollaoran",lat:-23.135,lng:-64.325},
     {n:"Merendero Los Chicos",d:"Tartagal",h:"L-V 17:00",tel:"",red:"@loschicostartagal",lat:-22.515,lng:-63.805},
-    {n:"Comedor La Casita",d:"General GÃƒÆ’Ã‚Â¼emes",h:"L-S 12:00",tel:"",red:"@lacasitaguemes",lat:-24.665,lng:-65.045},
+    {n:"Comedor La Casita",d:"General Güemes",h:"L-S 12:00",tel:"",red:"@lacasitaguemes",lat:-24.665,lng:-65.045},
     {n:"Olla Comunitaria Salta",d:"Plaza 9 de Julio",h:"Dom 12:00",tel:"",red:"@ollasalta",lat:-24.785,lng:-65.41}
   ]},
   {id:18,nombre:"San Juan",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
-    {n:"Comedor Universitario UNSJ",d:"Av. JosÃƒÆ’Ã‚Â© I. de la Roza 590, San Juan",h:"L-V 12:00 y 18:30",tel:"264-422-2000",red:"@comedorunsj",lat:-31.5368,lng:-68.5332},
+    {n:"Comedor Universitario UNSJ",d:"Av. Josí© I. de la Roza 590, San Juan",h:"L-V 12:00 y 18:30",tel:"264-422-2000",red:"@comedorunsj",lat:-31.5368,lng:-68.5332},
     {n:"Comedor Las Moras",d:"Las Moras 450, San Juan",h:"L-V 12:00",tel:"",red:"",lat:-31.5347,lng:-68.5254},
     {n:"Olla Popular Rawson",d:"Av. Champagnat 500, Rawson",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"@caritassanjuan",lat:-31.5352,lng:-68.5699},
     {n:"Comedor Los Pibes",d:"Chimbas, Barrio Los Pinos",h:"L-V 12:00",tel:"",red:"@lospibeschimbas",lat:-31.495,lng:-68.535},
@@ -1803,7 +1803,7 @@ var zonasData = [
   ]},
   {id:20,nombre:"Santa Cruz",sub:"Red provincial",icon:"ri-restaurant-fill",color:"#e67e22",grad:"linear-gradient(135deg,#e67e22,#d35400)",Comedores:[
     {n:"Comedor AMSA",d:"Av. Kirchner 73, RÃƒÆ’Ã‚Â­o Gallegos",h:"L-V 12:00",tel:"",red:"",lat:-51.6182,lng:-69.2246},
-    {n:"Comedor Sagrado CorazÃƒÆ’Ã‚Â³n de JesÃƒÆ’Ã‚Âºs",d:"Ricardo GÃƒÆ’Ã‚Â¼iraldes 450, RÃƒÆ’Ã‚Â­o Gallegos",h:"L-V 12:00",tel:"",red:"@comedorsagradocsc",lat:-51.6311,lng:-69.2128},
+    {n:"Comedor Sagrado Corazón de Jesús",d:"Ricardo Güiraldes 450, RÃƒÆ’Ã‚Â­o Gallegos",h:"L-V 12:00",tel:"",red:"@comedorsagradocsc",lat:-51.6311,lng:-69.2128},
     {n:"Olla Popular Caleta Olivia",d:"Av. San MartÃƒÆ’Ã‚Â­n 890, Caleta Olivia",h:"SÃƒÆ’Ã‚Â¡b 11:00",tel:"",red:"",lat:-46.4389,lng:-67.5250},
     {n:"Comedor Esperanza",d:"RÃƒÆ’Ã‚Â­o Gallegos, Barrio San Benito",h:"L-V 12:00",tel:"",red:"@esperanzagallegos",lat:-51.645,lng:-69.245},
     {n:"Olla Popular Caleta",d:"Caleta Olivia",h:"Mie 19:30",tel:"",red:"@ollacaleta",lat:-46.435,lng:-67.525},
@@ -2066,7 +2066,7 @@ function filterComedoresGrid(query) {
 // Add Comedor Modal Logic
 
 // ============================================================
-// SITUACIÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“N EN CALLE ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â MÃƒÆ’Ã‚Â³dulo completo
+// SITUACIÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“N EN CALLE ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â Módulo completo
 // ============================================================
 var scMap = null;
 var scMarkers = {};
@@ -2314,7 +2314,7 @@ function scRenderMensajes(alertaId) {
 
 async function scSubmitPledge(alertaId, necesidad) {
     if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
-        if (confirm('Necesitas iniciar sesiÃƒÆ’Ã‚Â³n para comprometerte a ayudar. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
+        if (confirm('Necesitas iniciar sesión para comprometerte a ayudar. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
         return;
     }
     
@@ -2342,7 +2342,7 @@ async function scSubmitMensaje(alertaId) {
     if (!text) return;
     
     if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
-        if (confirm('Necesitas iniciar sesiÃƒÆ’Ã‚Â³n para enviar mensajes. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
+        if (confirm('Necesitas iniciar sesión para enviar mensajes. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
         return;
     }
     
@@ -2417,7 +2417,7 @@ var scEditingId = null;
 
 function scOpenForm() {
     if (typeof auth !== 'undefined' && auth && !auth.isAuthenticated()) {
-        if (confirm('Necesitas iniciar sesiÃƒÆ’Ã‚Â³n para publicar una alerta.\nÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
+        if (confirm('Necesitas iniciar sesión para publicar una alerta.\nÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Ir al login?')) app.navigate('screen-login');
         return;
     }
     scEditingId = null;
@@ -2595,7 +2595,7 @@ async function scSubmitAlerta() {
 }
 
 async function scEliminarAlerta(id) {
-    if(!confirm("ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿EstÃƒÆ’Ã‚Â¡s seguro de que quieres cerrar y eliminar esta alerta de forma permanente?")) return;
+    if(!confirm("ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿Estás seguro de que quieres cerrar y eliminar esta alerta de forma permanente?")) return;
     try {
         if (typeof sbClient !== 'undefined' && sbClient) {
             await sbClient.from('alertas_calle').delete().eq('id', id);
@@ -2805,7 +2805,7 @@ var Comedor = {
 
     if (typeof db !== 'undefined' && db.addComedorComunidad) {
         await db.addComedorComunidad(Comedor);
-        alert("ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Comedor agregada con ÃƒÆ’Ã‚Âéxito!");
+        alert("ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Comedor agregada con éxito!");
         closeAddComedorModal();
         await loadAndRenderComedores();
     } else {
@@ -2999,7 +2999,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 <!-- Icon -->
                 <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#3DA3D4,#6366f1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.7rem;color:white;box-shadow:0 6px 24px rgba(61,163,212,0.3),0 0 0 5px rgba(61,163,212,0.08);"><i class="ri-team-fill"></i></div>
                 <!-- Title -->
-                <h3 style="font-size:1.2rem;margin:0 0 14px;font-weight:700;color:#1A3A5C;letter-spacing:-0.2px;">Grupos Privados de OraciÃƒÆ’Ã‚Â³n</h3>
+                <h3 style="font-size:1.2rem;margin:0 0 14px;font-weight:700;color:#1A3A5C;letter-spacing:-0.2px;">Grupos Privados de Oración</h3>
                 <!-- Description box -->
                 <div style="background:linear-gradient(135deg,rgba(61,163,212,0.07),rgba(99,102,241,0.06));border-radius:14px;padding:14px 16px;margin:0 0 16px;border:1px solid rgba(61,163,212,0.12);">
                     <p style="color:#2E6B8A;font-size:0.84rem;margin:0;line-height:1.65;font-weight:400;text-align:left;"><i class="ri-sparkling-fill" style="color:#3DA3D4;margin-right:5px;font-size:0.78rem;"></i>CreÃƒÆ’Ã‚Â¡ grupos cerrados donde solo se entra con invitaciÃƒÆ’Ã‚Â³n. Pensado para familia o amigos que se juntan a rezar.</p>
@@ -3165,7 +3165,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
         <div class="apar-gallery-scroll">
             <div class="apar-gallery">
                 <div class="apar-tile" onclick="openAparicion(0)"><img src="assets/aparicion_pilar_1776720011641.png" alt="Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora del Pilar"/><div class="apar-tile-overlay"><span class="apar-tile-year">40 d.C.</span><h3>Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora del Pilar</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> Zaragoza, EspaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢a</span></div></div>
-                <div class="apar-tile" onclick="openAparicion(1)"><img src="assets/aparicion_guadalupe_1776720027612.png" alt="Guadalupe"/><div class="apar-tile-overlay"><span class="apar-tile-year">1531</span><h3>Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora de Guadalupe</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> Ciudad de MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â®xico</span></div></div>
+                <div class="apar-tile" onclick="openAparicion(1)"><img src="assets/aparicion_guadalupe_1776720027612.png" alt="Guadalupe"/><div class="apar-tile-overlay"><span class="apar-tile-year">1531</span><h3>Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora de Guadalupe</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> Ciudad de México</span></div></div>
                 <div class="apar-tile" onclick="openAparicion(2)"><img src="assets/aparicion_medalla_1776720079152.png" alt="Medalla Milagrosa"/><div class="apar-tile-overlay"><span class="apar-tile-year">1830</span><h3>La Medalla Milagrosa</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> ParÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡s, Francia</span></div></div>
                 <div class="apar-tile" onclick="openAparicion(3)"><img src="assets/aparicion_salette_1776720093479.png" alt="La Salette"/><div class="apar-tile-overlay"><span class="apar-tile-year">1846</span><h3>Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora de La Salette</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> La Salette, Francia</span></div></div>
                 <div class="apar-tile" onclick="openAparicion(4)"><img src="assets/aparicion_lourdes_1776720042178.png" alt="Lourdes"/><div class="apar-tile-overlay"><span class="apar-tile-year">1858</span><h3>Nuestra SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ora de Lourdes</h3><span class="apar-tile-loc"><i class="ri-map-pin-fill"></i> Lourdes, Francia</span></div></div>
@@ -3673,7 +3673,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                                 ML
                             </div>
                             <div style="flex:1;">
-                                <p style="margin:0;font-size:0.95rem;color:#1a1a2e;font-weight:700;">MarÃƒÆ’Ã‚Â­a LÃƒÆ’Ã‚Â³pez <span style="font-weight:500;color:#64748b;">te agradeciÃƒÆ’Ã‚Â³.</span></p>
+                                <p style="margin:0;font-size:0.95rem;color:#1a1a2e;font-weight:700;">María López <span style="font-weight:500;color:#64748b;">te agradeciÃƒÆ’Ã‚Â³.</span></p>
                                 <span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-thumb-up-fill" style="color:#3498db;"></i> Hace 2 dÃƒÆ’Ã‚Â­as</span>
                             </div>
                         </div>
@@ -3693,21 +3693,21 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
             <!-- PresentaciÃƒÆ’Ã‚Â³n de Iniciativas -->
             <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-top:16px;margin-bottom:16px;">
-                <!-- Card SituaciÃƒÆ’Ã‚Â³n de Calle -->
+                <!-- Card Situación de Calle -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-situacion-calle')">
-                    <img src="img-calle.png?v=288" alt="Mapa SituaciÃƒÆ’Ã‚Â³n de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-calle.png?v=289" alt="Mapa Situación de Calle" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
-                        <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:8px;"></i> SituaciÃƒÆ’Ã‚Â³n de Calle</h4>
+                        <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-alert-fill" style="color:#e74c3c;margin-right:8px;"></i> Situación de Calle</h4>
                         <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un mapa interactivo en tiempo real donde la comunidad reporta y atiende alertas para personas sin hogar. Cada pin es una oportunidad para ayudar.</p>
                     </div>
                 </div>
 
                 <!-- Card Comedores -->
                 <div class="card" style="border-radius:20px;background:white;box-shadow:0 12px 30px rgba(0,0,0,0.06);border:1px solid #f1f5f9;overflow:hidden;transition:transform 0.2s;cursor:pointer;" onclick="app.navigate('screen-Comedores')">
-                    <img src="img-comedores.png?v=288" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
+                    <img src="img-comedores.png?v=289" alt="Red de Comedores" style="width:100%;height:220px;object-fit:cover;border-bottom:1px solid #f1f5f9;">
                     <div style="padding:24px;">
                         <h4 style="font-size:1.25rem;font-weight:900;color:#1a1a2e;margin:0 0 10px;"><i class="ri-building-4-fill" style="color:#f39c12;margin-right:8px;"></i> Red de Comedores</h4>
-                        <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. DescubrÃƒÆ’Ã‚Â­ dÃƒÆ’Ã‚Â³nde y cÃƒÆ’Ã‚Â³mo sumar tu aporte.</p>
+                        <p style="font-size:0.95rem;color:#64748b;margin:0;line-height:1.6;">Un directorio nacional que conecta donantes con organizaciones, ollas populares y comedores. DescubrÃƒÆ’Ã‚Â­ dÃƒÆ’Ã‚Â³nde y cómo sumar tu aporte.</p>
                     </div>
                 </div>
             </div>
@@ -3719,7 +3719,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                         <i class="ri-megaphone-fill" style="color:#f39c12;font-size:1.5rem;"></i> TablÃƒÆ’Ã‚Â³n de Actividades
                         <i id="add-tablon-btn" class="ri-add-circle-fill" style="color:#0ea5e9;font-size:1.6rem;cursor:pointer;display:none;margin-left:4px;" onclick="openTablonModal()"></i>
                     </h4>
-                    <span style="font-size:0.9rem;color:#0ea5e9;font-weight:800;cursor:pointer;" onclick="alert('Ver todos los avisos en desarrollo')">Ver mÃƒÆ’Ã‚Â¡s</span>
+                    <span style="font-size:0.9rem;color:#0ea5e9;font-weight:800;cursor:pointer;" onclick="alert('Ver todos los avisos en desarrollo')">Ver más</span>
                 </div>
                 
                 <div id="tablon-dynamic-container" style="display:flex;flex-direction:column;gap:16px;margin-bottom:16px;"></div>
@@ -3737,7 +3737,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                             </div>
                             
                             <div>
-                                <label style="font-size:0.85rem;font-weight:800;color:#475569;margin-bottom:8px;display:block;">TÃƒÆ’Ã‚Â­tulo <span style="color:#e74c3c">*</span></label>
+                                <label style="font-size:0.85rem;font-weight:800;color:#475569;margin-bottom:8px;display:block;">Título <span style="color:#e74c3c">*</span></label>
                                 <input type="text" id="tablon-modal-title" placeholder="Ej: Colecta de Alimentos" style="width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:14px;box-sizing:border-box;font-family:inherit;font-size:1rem;background:#f8fafc;transition:border-color 0.2s;">
                             </div>
                             
@@ -3755,7 +3755,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                                         <option value="Chile">Chile</option>
                                         <option value="PerÃƒÆ’Ã‚Âº">PerÃƒÆ’Ã‚Âº</option>
                                         <option value="Colombia">Colombia</option>
-                                        <option value="MÃƒÆ’Ã‚Â©xico">MÃƒÆ’Ã‚Â©xico</option>
+                                        <option value="México">México</option>
                                         <option value="EspaÃƒÆ’Ã‚Â±a">EspaÃƒÆ’Ã‚Â±a</option>
                                         <option value="Otro">Otro</option>
                                     </select>
@@ -3780,7 +3780,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 <div style="display:flex;flex-direction:column;gap:16px;">
                     <!-- Aviso Prominente (Destacado) -->
                     <div style="border-radius:20px;background:linear-gradient(135deg, #1a1a2e, #16213e);color:white;padding:24px;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(26,26,46,0.25);">
-                        <!-- DecoraciÃƒÆ’Ã‚Â³n de fondo -->
+                        <!-- Decoración de fondo -->
                         <div style="position:absolute;right:-20px;top:-20px;opacity:0.04;font-size:200px;line-height:1;"><i class="ri-hand-heart-fill"></i></div>
                         
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
@@ -3789,7 +3789,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                         </div>
                         
                         <h5 style="margin:0 0 10px 0;font-size:1.4rem;font-weight:900;line-height:1.3;position:relative;z-index:1;">Colecta de Abrigos de Invierno en Plaza de Mayo</h5>
-                        <p style="margin:0 0 20px 0;font-size:1rem;color:#cbd5e1;line-height:1.6;position:relative;z-index:1;">Se necesitan frazadas, camperas y calzado. Sumate como voluntario para la clasificaciÃƒÆ’Ã‚Â³n y reparto a personas en situaciÃƒÆ’Ã‚Â³n de calle.</p>
+                        <p style="margin:0 0 20px 0;font-size:1rem;color:#cbd5e1;line-height:1.6;position:relative;z-index:1;">Se necesitan frazadas, camperas y calzado. Sumate como voluntario para la clasificaciÃƒÆ’Ã‚Â³n y reparto a personas en situación de calle.</p>
                         
                         <button style="background:white;color:#1a1a2e;border:none;border-radius:14px;padding:12px 24px;font-size:1rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform 0.2s;box-shadow:0 6px 16px rgba(0,0,0,0.15);" onclick="alert('Registro de voluntarios en desarrollo')">
                             Anotarme como Voluntario <i class="ri-arrow-right-line" style="font-size:1.2rem;"></i>
@@ -3810,10 +3810,10 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- GalerÃƒÆ’Ã‚Â­a de Fotos (PÃƒÆ’Ã‚Âºblica) -->
+            <!-- Galería de Fotos (Pública) -->
             <div style="margin-bottom:24px;position:relative;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 12px 4px;">
-                    <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> GalerÃƒÆ’Ã‚Â­a en AcciÃƒÆ’Ã‚Â³n</h4>
+                    <h4 style="font-size:1.15rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:6px;"><i class="ri-camera-lens-fill" style="color:#0ea5e9;"></i> Galería en AcciÃƒÆ’Ã‚Â³n</h4>
                 </div>
                 
                 <!-- Flecha Izquierda -->
@@ -3863,7 +3863,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             <script>
             async function handlePhotoUpload(event) {
                 if(typeof auth === 'undefined' || !auth.isAuthenticated()){
-                    alert("Debes iniciar sesiÃƒÆ’Ã‚Â³n para subir fotos.");
+                    alert("Debes iniciar sesión para subir fotos.");
                     return;
                 }
                 var u = auth.getCurrentUser();
@@ -3872,7 +3872,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 var file = event.target.files[0];
                 if (!file) return;
                 
-                var captionText = await CustomUI.prompt('AÃ±adir Comentario', 'Escribe un breve texto para acompaÃ±ar la foto (opcional)', 'Ej: Entregando mercaderÃ­a...');
+                var captionText = await CustomUI.prompt('Añadir Comentario', 'Escribe un breve texto para acompaÃ±ar la foto (opcional)', 'Ej: Entregando mercaderÃ­a...');
                 if (captionText === null) { captionText = ''; }
                 var encodedCaption = captionText ? "---" + encodeURIComponent(captionText) : "";
                 
@@ -3908,13 +3908,13 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                                 
                                 try {
                                     try { localStorage.setItem('private_photos', JSON.stringify(photos)); } catch(e) { console.warn('LocalStorage full, skipping local save'); }
-                                    alert("ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â GUARDADO LOCALMENTE: Tu base de datos Supabase aÃƒÆ’Ã‚Âºn no tiene habilitada la galerÃƒÆ’Ã‚Â­a pÃƒÆ’Ã‚Âºblica. Para que otros vean tus fotos, ejecuta el comando SQL indicado por el asistente para crear el bucket 'chat-images'.");
+                                    alert("ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â GUARDADO LOCALMENTE: Tu base de datos Supabase aún no tiene habilitada la galería pública. Para que otros vean tus fotos, ejecuta el comando SQL indicado por el asistente para crear el bucket 'chat-images'.");
                                 } catch(e) {
                                     photos = photos.slice(0, Math.max(1, Math.floor(photos.length / 2)));
                                     try {
                                         try { localStorage.setItem('private_photos', JSON.stringify(photos)); } catch(e) { console.warn('LocalStorage full, skipping local save'); }
                                     } catch(e2) {
-                                        alert("Error: El almacenamiento de tu celular estÃƒÆ’Ã‚Â¡ lleno. Por favor borra avisos o fotos anteriores.");
+                                        alert("Error: El almacenamiento de tu celular está¡ lleno. Por favor borra avisos o fotos anteriores.");
                                     }
                                 }
                             }
@@ -4041,7 +4041,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             }
             function openTablonModal() {
                 if(typeof auth === 'undefined' || !auth.isAuthenticated()){
-                    alert("Debes iniciar sesiÃƒÆ’Ã‚Â³n para publicar un aviso.");
+                    alert("Debes iniciar sesión para publicar un aviso.");
                     return;
                 }
                 var modal = document.getElementById('tablon-modal');
@@ -4176,7 +4176,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 async function drawAnuncios(anunciosList) {
                     container.innerHTML = '';
                     if (!anunciosList || anunciosList.length === 0) {
-                        container.innerHTML = '<div style="padding:20px;text-align:center;color:#64748b;font-weight:700;">No hay actividades publicadas aÃƒÆ’Ã‚Âºn.</div>';
+                        container.innerHTML = '<div style="padding:20px;text-align:center;color:#64748b;font-weight:700;">No hay actividades publicadas aún.</div>';
                         return;
                     }
                     anunciosList.forEach(function(a) {
@@ -4352,9 +4352,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=288"></script>
-<script src="supabase.js?v=288"></script>
-<script src="app.js?v=288"></script>
+<script src="auth.js?v=289"></script>
+<script src="supabase.js?v=289"></script>
+<script src="app.js?v=289"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
@@ -5234,14 +5234,14 @@ function shareMsgContent(btn) {
 
 function shareToWhatsApp() {
     var d = window._shareData;
-    var msg = d.isImage ? 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ Imagen de SOLIDARIDAD' : d.text;
+    var msg = d.isImage ? '📷 Imagen de SOLIDARIDAD' : d.text;
     window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     closeShareModal();
 }
 
 function shareToTelegram() {
     var d = window._shareData;
-    var msg = d.isImage ? 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ Imagen de SOLIDARIDAD' : d.text;
+    var msg = d.isImage ? '📷 Imagen de SOLIDARIDAD' : d.text;
     window.open('https://t.me/share/url?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(msg), '_blank');
     closeShareModal();
 }
@@ -5950,7 +5950,7 @@ document.addEventListener('DOMContentLoaded', function() { loadAvatar(); });
             <button class="gsearch-close" onclick="closeProfileTagsModal()"><i class="ri-close-line"></i></button>
         </div>
         <div style="padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
-            <p style="margin:0 0 10px;color:#64748b;font-size:0.9rem;">Selecciona cÃƒÆ’Ã‚Â³mo puedes ayudar en la red de Solidaridad.</p>
+            <p style="margin:0 0 10px;color:#64748b;font-size:0.9rem;">Selecciona cómo puedes ayudar en la red de Solidaridad.</p>
             
             <label class="tag-checkbox">
                 <input type="checkbox" value="Tengo VehÃƒÆ’Ã‚Â­culo">
@@ -5986,7 +5986,7 @@ document.addEventListener('DOMContentLoaded', function() { loadAvatar(); });
     <div class="gsearch-modal">
         <div class="gsearch-header">
             <i class="ri-search-line"></i>
-            <input type="text" id="gsearch-input" placeholder="Buscar pÃƒÆ’Ã‚Â¡ginas, usuarios, rosarios..." oninput="doGlobalSearch()" autocomplete="off">
+            <input type="text" id="gsearch-input" placeholder="Buscar páginas, usuarios, rosarios..." oninput="doGlobalSearch()" autocomplete="off">
             <button class="gsearch-close" onclick="closeGlobalSearch()"><i class="ri-close-line"></i></button>
         </div>
         <div class="gsearch-results" id="gsearch-results">
@@ -5997,33 +5997,33 @@ document.addEventListener('DOMContentLoaded', function() { loadAvatar(); });
 
 <script>
 var searchIndex = [
-    // PÃƒÆ’Ã‚Â¡ginas
-    {type:'page',icon:'ri-home-4-fill',title:'Inicio',desc:'PÃƒÆ’Ã‚Â¡gina principal de SOLIDARIDAD',action:"app.navigate('screen-splash')"},
+    // Páginas
+    {type:'page',icon:'ri-home-4-fill',title:'Inicio',desc:'Página principal de SOLIDARIDAD',action:"app.navigate('screen-splash')"},
     {type:'page',icon:'ri-map-pin-fill',title:'Buscar Rosarios',desc:'EncontrÃƒÆ’Ã‚Â¡ rosarios cerca tuyo',action:"app.navigate('screen-map')"},
     {type:'page',icon:'ri-add-circle-fill',title:'Crear Rosario',desc:'OrganizÃƒÆ’Ã‚Â¡ un rosario en tu zona',action:"app.navigate('screen-create-rosary')"},
-    {type:'page',icon:'ri-time-fill',title:'Rosario Continuo',desc:'Cronograma 24hs de oraciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-live')"},
+    {type:'page',icon:'ri-time-fill',title:'Rosario Continuo',desc:'Cronograma 24hs de oración',action:"app.navigate('screen-live')"},
     {type:'page',icon:'ri-heart-3-fill',title:'Reza x Mi',desc:'Intenciones de la comunidad',action:"app.navigate('screen-intenciones')"},
     {type:'page',icon:'ri-hand-heart-fill',title:'Rezar',desc:'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ÃƒÆ’Ã‚Â­nete a un rosario en vivo',action:"app.navigate('screen-rezo')"},
-    {type:'page',icon:'ri-book-open-fill',title:'CÃƒÆ’Ã‚Â³mo Rezar',desc:'GuÃƒÆ’Ã‚Â¡a completa del Santo Rosario',action:"app.navigate('screen-como-rezar')"},
-    {type:'page',icon:'ri-question-fill',title:'Por quÃƒÆ’Ã‚Â© Rezar',desc:'Historia y razones del Rosario',action:"app.navigate('screen-porque-rezar')"},
+    {type:'page',icon:'ri-book-open-fill',title:'Cómo Rezar',desc:'GuÃƒÆ’Ã‚Â¡a completa del Santo Rosario',action:"app.navigate('screen-como-rezar')"},
+    {type:'page',icon:'ri-question-fill',title:'Por qué Rezar',desc:'Historia y razones del Rosario',action:"app.navigate('screen-porque-rezar')"},
     {type:'page',icon:'ri-chat-3-fill',title:'Mensajes',desc:'Mensajes con la comunidad',action:"app.navigate('screen-notificaciones')"},
     {type:'page',icon:'ri-eye-fill',title:'Apariciones',desc:'Historia de las apariciones marianas',action:"app.navigate('screen-apariciones')"},
-    {type:'page',icon:'ri-user-fill',title:'Mi Perfil',desc:'Tu informaciÃƒÆ’Ã‚Â³n y notificaciones',action:"app.navigate('screen-profile')"},
+    {type:'page',icon:'ri-user-fill',title:'Mi Perfil',desc:'Tu información y notificaciones',action:"app.navigate('screen-profile')"},
     // Misterios
-    {type:'content',icon:'ri-sparkling-fill',title:'Misterios Gozosos',desc:'Lunes y SÃƒÆ’Ã‚Â¡bados ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ EncarnaciÃƒÆ’Ã‚Â³n e infancia de JesÃƒÆ’Ã‚Âºs',action:"app.navigate('screen-como-rezar')"},
+    {type:'content',icon:'ri-sparkling-fill',title:'Misterios Gozosos',desc:'Lunes y SÃƒÆ’Ã‚Â¡bados ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ EncarnaciÃƒÆ’Ã‚Â³n e infancia de Jesús',action:"app.navigate('screen-como-rezar')"},
     {type:'content',icon:'ri-drop-fill',title:'Misterios Dolorosos',desc:'Martes y Viernes ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ PasiÃƒÆ’Ã‚Â³n y muerte de Cristo',action:"app.navigate('screen-como-rezar')"},
     {type:'content',icon:'ri-sun-fill',title:'Misterios Gloriosos',desc:'MiÃƒÆ’Ã‚Â©rcoles y Domingos ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ ResurrecciÃƒÆ’Ã‚Â³n y AscensiÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-como-rezar')"},
-    {type:'content',icon:'ri-flashlight-fill',title:'Misterios Luminosos',desc:'Jueves ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ Vida pÃƒÆ’Ã‚Âºblica y milagros',action:"app.navigate('screen-como-rezar')"},
+    {type:'content',icon:'ri-flashlight-fill',title:'Misterios Luminosos',desc:'Jueves ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ Vida pública y milagros',action:"app.navigate('screen-como-rezar')"},
     // Santos
     {type:'content',icon:'ri-quill-pen-fill',title:'Padre PÃƒÆ’Ã‚Â¡o',desc:'"El Rosario es el arma para estos tiempos"',action:"app.navigate('screen-porque-rezar')"},
-    {type:'content',icon:'ri-quill-pen-fill',title:'Juan Pablo II',desc:'"El Rosario es mi oraciÃƒÆ’Ã‚Â³n predilecta"',action:"app.navigate('screen-porque-rezar')"},
+    {type:'content',icon:'ri-quill-pen-fill',title:'Juan Pablo II',desc:'"El Rosario es mi oración predilecta"',action:"app.navigate('screen-porque-rezar')"},
     {type:'content',icon:'ri-quill-pen-fill',title:'Santa Teresa de Calcuta',desc:'"AfÃƒÆ’Ã‚Â©rrate al Rosario como la planta trepadora"',action:"app.navigate('screen-porque-rezar')"},
     {type:'content',icon:'ri-quill-pen-fill',title:'San Juan Bosco',desc:'"Recen todos los dÃƒÆ’Ã‚Â¡as el Rosario"',action:"app.navigate('screen-porque-rezar')"},
     // Intenciones
-    {type:'intention',icon:'ri-chat-heart-fill',title:'Por la salud de mi familia',desc:'MarÃƒÆ’Ã‚Â¡a GarcÃƒÆ’Ã‚Â¡a ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
+    {type:'intention',icon:'ri-chat-heart-fill',title:'Por la salud de mi familia',desc:'María GarcÃƒÆ’Ã‚Â¡a ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
     {type:'intention',icon:'ri-chat-heart-fill',title:'Por la paz en el mundo',desc:'Laura MartÃƒÆ’Ã‚Â¡nez ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
-    {type:'intention',icon:'ri-chat-heart-fill',title:'Por los jÃƒÆ’Ã‚Â³venes que buscan a Dios',desc:'Juan RodrÃƒÆ’Ã‚Â¡guez ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
-    {type:'intention',icon:'ri-chat-heart-fill',title:'Por los enfermos',desc:'SofÃƒÆ’Ã‚Â¡a LÃƒÆ’Ã‚Â³pez ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
+    {type:'intention',icon:'ri-chat-heart-fill',title:'Por los jóvenes que buscan a Dios',desc:'Juan RodrÃƒÆ’Ã‚Â¡guez ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
+    {type:'intention',icon:'ri-chat-heart-fill',title:'Por los enfermos',desc:'SofÃƒÆ’Ã‚Â¡a López ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ IntenciÃƒÆ’Ã‚Â³n',action:"app.navigate('screen-intenciones')"},
 ];
 
 var typeLabels = {page:'Paginas',user:'Usuarios',rosary:'Rosarios',content:'Contenido',intention:'Intenciones'};
@@ -6036,7 +6036,7 @@ function openGlobalSearch() {
     if(typeof sbClient !== 'undefined' && sbClient) {
         sbClient.from('profiles').select('id, name, username').limit(50).then(function(res) {
             if(!res.error && res.data) {
-                // Limpiar usuarios antiguos del ÃƒÆ’Ã‚Âíndice
+                // Limpiar usuarios antiguos del Índice
                 searchIndex = searchIndex.filter(function(item) { return item.type !== 'user'; });
                 res.data.forEach(function(u) {
                     if(!u.name && !u.username) return;
@@ -6080,7 +6080,7 @@ function viewUserProfile(id, name, username) {
         var editTags = document.querySelector('.prof-tag.empty');
         if(editTags) editTags.style.display = 'none';
         
-        // Cambiar el botÃƒÆ’Ã‚Â³n "Mensajes" para enviar mensaje a esta persona
+        // Cambiar el botón "Mensajes" para enviar mensaje a esta persona
         var msgBtn = document.querySelector('button[onclick="openMensajesPanel()"]');
         if(msgBtn) {
             msgBtn.innerHTML = '<i class="ri-chat-1-fill"></i> Enviar Mensaje';
@@ -6230,26 +6230,26 @@ function translatePage(lang) {
 <script>
 // Country-City data for create rosary form
 var countryCities = {
-    'AR': ['Buenos Aires','CÃƒÆ’Ã‚Â³rdoba','Rosario','Mendoza','San Miguel de TucumÃƒÆ’Ã‚Â¡n','La Plata','Mar del Plata','Salta','Santa Fe','San Juan','Resistencia','Corrientes','Posadas','San Salvador de Jujuy','BahÃƒÆ’Ã‚Â¡a Blanca','ParanÃƒÆ’Ã‚Â¡','NeuquÃƒÆ’Ã‚Â©n','Formosa','San Luis','Santiago del Estero','RÃƒÆ’Ã‚Â¡o Cuarto','Comodoro Rivadavia','San Rafael','Tandil','Concordia','San NicolÃƒÆ’Ã‚Â¡s','Rafaela','OlavarrÃƒÆ’Ã‚Â¡a','Pergamino','JunÃƒÆ’Ã‚Â¡n','LujÃƒÆ’Ã‚Â¡n'],
-    'BO': ['La Paz','Santa Cruz de la Sierra','Cochabamba','Sucre','Oruro','Tarija','PotosÃƒÆ’Ã‚Â¡','Trinidad','Cobija','El Alto'],
+    'AR': ['Buenos Aires','Córdoba','Rosario','Mendoza','San Miguel de TucumÃƒÆ’Ã‚Â¡n','La Plata','Mar del Plata','Salta','Santa Fe','San Juan','Resistencia','Corrientes','Posadas','San Salvador de Jujuy','BahÃƒÆ’Ã‚Â¡a Blanca','ParanÃƒÆ’Ã‚Â¡','Neuquén','Formosa','San Luis','Santiago del Estero','RÃƒÆ’Ã‚Â¡o Cuarto','Comodoro Rivadavia','San Rafael','Tandil','Concordia','San NicolÃƒÆ’Ã‚Â¡s','Rafaela','OlavarrÃƒÆ’Ã‚Â¡a','Pergamino','JunÃƒÆ’Ã‚Â¡n','LujÃƒÆ’Ã‚Â¡n'],
+    'BO': ['La Paz','Santa Cruz de la Sierra','Cochabamba','Sucre','Oruro','Tarija','Potosí¡','Trinidad','Cobija','El Alto'],
     'BR': ['SÃƒÆ’Ã‚Â£o LuÃƒÆ’Ã‚Â­s','MaceiÃƒÆ’Ã‚Â³','Campo Grande','Natal','FlorianÃƒÆ’Ã‚Â³polis','VitÃƒÆ’Ã‚Â³ria'],
-    'CL': ['Santiago','ValparaÃƒÆ’Ã‚Â¡so','ConcepciÃƒÆ’Ã‚Â³n','La Serena','Antofagasta','Temuco','Rancagua','Talca','Arica','Iquique','Puerto Montt','ChillÃƒÆ’Ã‚Â¡n','Osorno','Valdivia','Punta Arenas','CopiapÃƒÆ’Ã‚Â³','Calama','Los ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚ÂÁngeles','CuricÃƒÆ’Ã‚Â³','Linares'],
+    'CL': ['Santiago','ValparaÃƒÆ’Ã‚Â¡so','ConcepciÃƒÆ’Ã‚Â³n','La Serena','Antofagasta','Temuco','Rancagua','Talca','Arica','Iquique','Puerto Montt','ChillÃƒÆ’Ã‚Â¡n','Osorno','Valdivia','Punta Arenas','CopiapÃƒÆ’Ã‚Â³','Calama','Los Ángeles','CuricÃƒÆ’Ã‚Â³','Linares'],
     'CO': ['BogotÃƒÆ’Ã‚Â¡','MedellÃƒÆ’Ã‚Â¡n','Cali','Barranquilla','Cartagena','CÃƒÆ’Ã‚Âºcuta','Bucaramanga','Pereira','Santa Marta','IbaguÃƒÆ’Ã‚Â©','Pasto','Manizales','Neiva','Villavicencio','Armenia','Valledupar','MonterÃƒÆ’Ã‚Â¡a','PopayÃƒÆ’Ã‚Â¡n','Sincelejo','Tunja'],
-    'CR': ['San JosÃƒÆ’Ã‚Â©','Alajuela','Cartago','Heredia','Liberia','Puntarenas','LimÃƒÆ’Ã‚Â³n','San Isidro','Nicoya','Turrialba'],
+    'CR': ['San Josí©','Alajuela','Cartago','Heredia','Liberia','Puntarenas','LimÃƒÆ’Ã‚Â³n','San Isidro','Nicoya','Turrialba'],
     'CU': ['La Habana','Santiago de Cuba','CamagÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âey','HolguÃƒÆ’Ã‚Â¡n','Santa Clara','GuantÃƒÆ’Ã‚Â¡namo','Bayamo','Las Tunas','Cienfuegos','Pinar del RÃƒÆ’Ã‚Â¡o','Matanzas','Sancti SpÃƒÆ’Ã‚Â¡ritus'],
     'DO': ['Santo Domingo','Santiago de los Caballeros','La Romana','San Pedro de MacorÃƒÆ’Ã‚Â¡s','San CristÃƒÆ’Ã‚Â³bal','Puerto Plata','La Vega','HigÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âey','San Francisco de MacorÃƒÆ’Ã‚Â¡s','Bonao'],
     'EC': ['Quito','Guayaquil','Cuenca','Santo Domingo','Ambato','Portoviejo','Machala','DurÃƒÆ’Ã‚Â¡n','Manta','Riobamba','Esmeraldas','Loja','Ibarra','Quevedo','Latacunga'],
     'SV': ['San Salvador','Santa Ana','San Miguel','Mejicanos','Santa Tecla','Apopa','Delgado','Soyapango','San MartÃƒÆ’Ã‚Â¡n','Ilopango'],
-    'ES': ['Madrid','Barcelona','Valencia','Sevilla','Zaragoza','MÃƒÆ’Ã‚Â¡laga','Murcia','Palma','Las Palmas','Bilbao','Alicante','CÃƒÆ’Ã‚Â³rdoba','Valladolid','Vigo','GijÃƒÆ’Ã‚Â³n','Granada','Vitoria','La CoruÃƒÆ’Ã‚Â±a','Pamplona','San SebastiÃƒÆ’Ã‚Â¡n','Salamanca','Santander','Toledo','Burgos','LeÃƒÆ’Ã‚Â³n','Oviedo'],
+    'ES': ['Madrid','Barcelona','Valencia','Sevilla','Zaragoza','MÃƒÆ’Ã‚Â¡laga','Murcia','Palma','Las Palmas','Bilbao','Alicante','Córdoba','Valladolid','Vigo','GijÃƒÆ’Ã‚Â³n','Granada','Vitoria','La CoruÃƒÆ’Ã‚Â±a','Pamplona','San SebastiÃƒÆ’Ã‚Â¡n','Salamanca','Santander','Toledo','Burgos','LeÃƒÆ’Ã‚Â³n','Oviedo'],
     'GT': ['Ciudad de Guatemala','Mixco','Villa Nueva','Quetzaltenango','Petapa','San Juan SacatepÃƒÆ’Ã‚Â©quez','Escuintla','Chinautla','Chimaltenango','Huehuetenango','CobÃƒÆ’Ã‚Â¡n','Antigua Guatemala'],
     'HN': ['Tegucigalpa','San Pedro Sula','Choloma','La Ceiba','El Progreso','Choluteca','Comayagua','Puerto CortÃƒÆ’Ã‚Â©s','DanlÃƒÆ’Ã‚Â¡','Siguatepeque'],
-    'MX': ['Ciudad de MÃƒÆ’Ã‚Â©xico','Guadalajara','Monterrey','Puebla','Tijuana','LeÃƒÆ’Ã‚Â³n','Ciudad JuÃƒÆ’Ã‚Â¡rez','Zapopan','MÃƒÆ’Ã‚Â©rida','San Luis PotosÃƒÆ’Ã‚Â¡','Aguascalientes','QuerÃƒÆ’Ã‚Â©taro','Morelia','Chihuahua','Hermosillo','Saltillo','CancÃƒÆ’Ã‚Âºn','Mexicali','CuliacÃƒÆ’Ã‚Â¡n','Acapulco','Toluca','Oaxaca','Veracruz','Villahermosa','Tuxtla GutiÃƒÆ’Ã‚Â©rrez','Tampico','Durango','Cuernavaca','Pachuca','Xalapa'],
+    'MX': ['Ciudad de México','Guadalajara','Monterrey','Puebla','Tijuana','LeÃƒÆ’Ã‚Â³n','Ciudad JuÃƒÆ’Ã‚Â¡rez','Zapopan','MÃƒÆ’Ã‚Â©rida','San Luis Potosí¡','Aguascalientes','QuerÃƒÆ’Ã‚Â©taro','Morelia','Chihuahua','Hermosillo','Saltillo','CancÃƒÆ’Ã‚Âºn','Mexicali','CuliacÃƒÆ’Ã‚Â¡n','Acapulco','Toluca','Oaxaca','Veracruz','Villahermosa','Tuxtla Gutiérrez','Tampico','Durango','Cuernavaca','Pachuca','Xalapa'],
     'NI': ['Managua','LeÃƒÆ’Ã‚Â³n','Masaya','Chinandega','Matagalpa','EstelÃƒÆ’Ã‚Â¡','Granada','Jinotega','Juigalpa','Bluefields'],
     'PA': ['Ciudad de PanamÃƒÆ’Ã‚Â¡','San Miguelito','ColÃƒÆ’Ã‚Â³n','David','La Chorrera','ArraijÃƒÆ’Ã‚Â¡n','Santiago','ChitrÃƒÆ’Ã‚Â©','PenonomÃƒÆ’Ã‚Â©','Aguadulce'],
     'PY': ['AsunciÃƒÆ’Ã‚Â³n','Ciudad del Este','San Lorenzo','Luque','CapiatÃƒÆ’Ã‚Â¡','LambarÃƒÆ’Ã‚Â©','Fernando de la Mora','Limpio','ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿emby','EncarnaciÃƒÆ’Ã‚Â³n','Pedro Juan Caballero','CaaguazÃƒÆ’Ã‚Âº','Coronel Oviedo','ConcepciÃƒÆ’Ã‚Â³n','Villarrica'],
     'PE': ['Lima','Arequipa','Trujillo','Chiclayo','Piura','Iquitos','Cusco','Huancayo','Chimbote','Tacna','Pucallpa','Juliaca','Ayacucho','Cajamarca','Puno','Ica','HuÃƒÆ’Ã‚Â¡nuco','Sullana','Tumbes','Huaraz'],
     'PR': ['San Juan','BayamÃƒÆ’Ã‚Â³n','Carolina','Ponce','Caguas','Guaynabo','MayagÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âez','Arecibo','Toa Baja','Trujillo Alto'],
-    'UY': ['Montevideo','Salto','Ciudad de la Costa','PaysandÃƒÆ’Ã‚Âº','Las Piedras','Rivera','Maldonado','TacuarembÃƒÆ’Ã‚Â³','Melo','Mercedes','Artigas','Minas','Treinta y Tres','Durazno','Florida','San JosÃƒÆ’Ã‚Â© de Mayo','Colonia del Sacramento','Rocha'],
+    'UY': ['Montevideo','Salto','Ciudad de la Costa','PaysandÃƒÆ’Ã‚Âº','Las Piedras','Rivera','Maldonado','TacuarembÃƒÆ’Ã‚Â³','Melo','Mercedes','Artigas','Minas','Treinta y Tres','Durazno','Florida','San Josí© de Mayo','Colonia del Sacramento','Rocha'],
     'VE': ['Caracas','Maracaibo','Valencia','Barquisimeto','Maracay','Ciudad Guayana','Barcelona','MaturÃƒÆ’Ã‚Â¡n','San CristÃƒÆ’Ã‚Â³bal','CumanÃƒÆ’Ã‚Â¡','Barinas','MÃƒÆ’Ã‚Â©rida','Puerto La Cruz','Cabimas','Punto Fijo','Los Teques','Guarenas','Guatire','Acarigua','Valera']
 };
 
@@ -6471,7 +6471,7 @@ function _vcCreatePeer(cenaculoId) {
                 _vcLocalStream.getAudioTracks().forEach(function(t) { t.enabled = false; });
                 var btn = document.getElementById('vc-btn-mic');
                 if (btn) { btn.innerHTML = '<i class="ri-mic-off-fill" style="color:#ef4444"></i>'; btn.style.background = 'rgba(239,68,68,0.3)'; }
-                if (typeof showMsgToast === 'function') showMsgToast('ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾ÃƒÆ’Ã‚Â± Mic muteado para evitar ruido. TocÃƒÆ’Ã‚Â¡ el botÃƒÆ’Ã‚Â³n para hablar.');
+                if (typeof showMsgToast === 'function') showMsgToast('ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾ÃƒÆ’Ã‚Â± Mic muteado para evitar ruido. TocÃƒÆ’Ã‚Â¡ el botón para hablar.');
             }
         }
     };
@@ -7499,7 +7499,7 @@ function openVideoCall() {
     }
     updateVideoCallButton();
 
-    // Start WebRTC call as caller ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ but this is Rosary call, not cenÃƒÆ’Ã‚Â¡culo
+    // Start WebRTC call as caller ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ but this is Rosary call, not cenáculo
     // For rosary calls, just show local video for now
     _vcShowOverlay('SOLIDARIDAD - Rosario en Vivo');
     _vcGetMedia().then(function(stream) {
@@ -7722,7 +7722,7 @@ function setCenaculoAccess(type) {
 async function createCenaculo() {
     var name = document.getElementById('cenaculo-name').value.trim();
     var invites = document.getElementById('cenaculo-invites').value.trim();
-    if (!name) { alert('Ingresa un nombre para el cenÃƒÆ’Ã‚Â¡culo'); return; }
+    if (!name) { alert('Ingresa un nombre para el cenáculo'); return; }
 
     var userLat = -34.5955, userLng = -58.3739;
     if (navigator.geolocation) {
@@ -7807,7 +7807,7 @@ async function createCenaculo() {
     var notifCount = 0;
     for (var i = 0; i < invitedProfiles.length; i++) {
         var p = invitedProfiles[i];
-        var msgText = 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Te invitaron al cenÃƒÆ’Ã‚Â¡culo "' + name + '"! AbrÃƒÆ’Ã‚Â¡ la secciÃƒÆ’Ã‚Â³n cenÃƒÆ’Ã‚Âículos para unirte. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦';
+        var msgText = 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Te invitaron al cenáculo "' + name + '"! AbrÃƒÆ’Ã‚Â¡ la secciÃƒÆ’Ã‚Â³n cenáculos para unirte. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦';
         await db.sendMessage(myId, p.id, msgText);
         notifCount++;
     }
@@ -7816,7 +7816,7 @@ async function createCenaculo() {
     document.getElementById('cenaculo-name').value = '';
     document.getElementById('cenaculo-invites').value = '';
 
-    var successMsg = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  cenÃƒÆ’Ã‚Â¡culo "' + name + '" creado';
+    var successMsg = 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  cenáculo "' + name + '" creado';
     if (notifCount > 0) successMsg += ' ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ ' + notifCount + ' invitaciÃƒÆ’Ã‚Â³n' + (notifCount > 1 ? 'es' : '') + ' enviada' + (notifCount > 1 ? 's' : '');
     if (invitedNames.length > notifCount) successMsg += ' ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ ' + (invitedNames.length - notifCount) + ' usuario(s) no encontrado(s)';
     showMsgToast(successMsg);
@@ -7840,7 +7840,7 @@ async function openCenaculo(id) {
     currentCenaculoId = id;
     var c = getSavedCenaculos()[id];
     if (!c) { await loadCenaculosFromSupabase(); c = getSavedCenaculos()[id]; }
-    if (!c) { showMsgToast('cenÃƒÆ’Ã‚Â¡culo no encontrado'); return; }
+    if (!c) { showMsgToast('cenáculo no encontrado'); return; }
     if (!c.members) c.members = [];
 
     document.getElementById('cenaculos-list').style.display = 'none';
@@ -7933,15 +7933,15 @@ async function inviteMember() {
         var myProfile = user ? await db.getProfileByEmail(user.email) : null;
         var myId = myProfile ? myProfile.id : null;
         var c = getSavedCenaculos()[currentCenaculoId];
-        var cName = c ? c.name : 'un cenÃƒÆ’Ã‚Â¡culo';
+        var cName = c ? c.name : 'un cenáculo';
         if (myId) {
-            var msgText = 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Te invitaron al cenÃƒÆ’Ã‚Â¡culo "' + cName + '"! AbrÃƒÆ’Ã‚Â¡ la secciÃƒÆ’Ã‚Â³n cenÃƒÆ’Ã‚Âículos para unirte. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦';
+            var msgText = 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¿ ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â­Te invitaron al cenáculo "' + cName + '"! AbrÃƒÆ’Ã‚Â¡ la secciÃƒÆ’Ã‚Â³n cenáculos para unirte. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦';
             await db.sendMessage(myId, foundUser.id, msgText);
             console.log('[Cenaculos] Invitation sent to', foundUser.name);
         }
     }
 
-    showMsgToast(foundUser ? 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  ' + displayName + ' invitado al cenÃƒÆ’Ã‚Â¡culo' : 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ Usuario no encontrado, invitaciÃƒÆ’Ã‚Â³n guardada localmente');
+    showMsgToast(foundUser ? 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  ' + displayName + ' invitado al cenáculo' : 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ Usuario no encontrado, invitaciÃƒÆ’Ã‚Â³n guardada localmente');
 }
 
 var _cenaculoVideoCallActive = false;
@@ -8192,7 +8192,7 @@ async function openCenaculoGroupChat() {
     if (!currentCenaculoId) return;
     var c = getSavedCenaculos()[currentCenaculoId];
     if (!c) { await loadCenaculosFromSupabase(); c = getSavedCenaculos()[currentCenaculoId]; }
-    if (!c) { showMsgToast('Error: no se pudo cargar el cenÃƒÆ’Ã‚Â¡culo'); return; }
+    if (!c) { showMsgToast('Error: no se pudo cargar el cenáculo'); return; }
     if (!c.members) c.members = [];
 
     // Hide detail, show group chat
@@ -8400,7 +8400,7 @@ function sendGcMessage() {
 var gcChannel = null;
 var gcChannelId = null;
 
-// === MULTI-CHANNEL SYSTEM: Subscribe to ALL cenÃƒÆ’Ã‚Âículos for call detection ===
+// === MULTI-CHANNEL SYSTEM: Subscribe to ALL cenáculos for call detection ===
 var _allGcChannels = {}; // { cenaculoId: channel }
 var _swRegistration = null; // Service Worker registration
 
@@ -8475,7 +8475,7 @@ function _showNotificationBanner() {
     var banner = document.createElement('div');
     banner.id = 'notif-permission-banner';
     banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.3);animation:slideDown 0.4s ease;font-family:Inter,sans-serif';
-    banner.innerHTML = '<div style="flex:1"><div style="font-weight:700;font-size:0.9rem">ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ Activar Notificaciones</div><div style="font-size:0.75rem;opacity:0.85;margin-top:2px">Para recibir llamadas aunque la app estÃƒÆ’Ã‚Â© minimizada</div></div>' +
+    banner.innerHTML = '<div style="flex:1"><div style="font-weight:700;font-size:0.9rem">ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ Activar Notificaciones</div><div style="font-size:0.75rem;opacity:0.85;margin-top:2px">Para recibir llamadas aunque la app está© minimizada</div></div>' +
         '<button id="notif-accept-btn" style="background:white;color:#6366f1;border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;white-space:nowrap">Activar</button>' +
         '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:4px">ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â²</button>';
     document.body.appendChild(banner);
@@ -8536,7 +8536,7 @@ function _showCallNotification(data) {
     // Fallback: basic notification
     try {
         var notif = new Notification('ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â´ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Llamada entrante - SOLIDARIDAD', {
-            body: data.callerName + ' te estÃƒÆ’Ã‚Â¡ llamando desde ' + (data.cenaculoName || 'un cenÃƒÆ’Ã‚Â¡culo'),
+            body: data.callerName + ' te está¡ llamando desde ' + (data.cenaculoName || 'un cenáculo'),
             icon: 'assets/',
             tag: 'incoming-call',
             renotify: true,
@@ -8570,7 +8570,7 @@ function _cancelCallNotification() {
     }
 }
 
-// Subscribe to a cenÃƒÆ’Ã‚Â¡culo channel for call detection (doesn't affect active chat channel)
+// Subscribe to a cenáculo channel for call detection (doesn't affect active chat channel)
 function _subscribeForCalls(cenaculoId) {
     if (_allGcChannels[cenaculoId]) return; // already subscribed
     if (!sbClient) return;
@@ -8603,7 +8603,7 @@ function _subscribeForCalls(cenaculoId) {
         if (msg.text && msg.text.indexOf('__VIDEOCALL__') === 0) {
             var parts = msg.text.split('|');
             if (parts.length >= 5) {
-                console.log('[VC-GLOBAL] INCOMING CALL from', msg.from, 'on cenÃƒÆ’Ã‚Â¡culo', cenaculoId);
+                console.log('[VC-GLOBAL] INCOMING CALL from', msg.from, 'on cenáculo', cenaculoId);
 
                 var vcO = document.getElementById('videocall-overlay');
                 if (vcO && vcO.style.display === 'flex') return;
@@ -8624,7 +8624,7 @@ function _subscribeForCalls(cenaculoId) {
                 // ALSO show system notification (works in background!)
                 _showCallNotification(callData);
 
-                // If the active channel is different, switch to this cenÃƒÆ’Ã‚Â¡culo
+                // If the active channel is different, switch to this cenáculo
                 if (gcChannelId !== cenaculoId) {
                     joinGcChannel(cenaculoId);
                     currentCenaculoId = cenaculoId;
@@ -8635,26 +8635,26 @@ function _subscribeForCalls(cenaculoId) {
 
     ch.subscribe(function(status) {
         if (status === 'SUBSCRIBED') {
-            console.log('[VC-GLOBAL] Listening for calls on cenÃƒÆ’Ã‚Â¡culo:', cenaculoId);
+            console.log('[VC-GLOBAL] Listening for calls on cenáculo:', cenaculoId);
         }
     });
 
     _allGcChannels[cenaculoId] = ch;
 }
 
-// Subscribe to ALL user's cenÃƒÆ’Ã‚Âículos for call detection
+// Subscribe to ALL user's cenáculos for call detection
 function _subscribeAllCenaculosForCalls() {
     var saved = getSavedCenaculos();
     Object.keys(saved).forEach(function(cId) {
         _subscribeForCalls(cId);
     });
-    console.log('[VC-GLOBAL] Subscribed to', Object.keys(_allGcChannels).length, 'cenÃƒÆ’Ã‚Â¡culo channels for calls');
+    console.log('[VC-GLOBAL] Subscribed to', Object.keys(_allGcChannels).length, 'cenáculo channels for calls');
 }
 
-// Broadcast a message on the global call channel for a cenÃƒÆ’Ã‚Â¡culo
+// Broadcast a message on the global call channel for a cenáculo
 function _broadcastOnCallChannel(cenaculoId, msg) {
     if (!sbClient) return;
-    // If we already have a subscription channel for this cenÃƒÆ’Ã‚Â¡culo, use it
+    // If we already have a subscription channel for this cenáculo, use it
     if (_allGcChannels[cenaculoId]) {
         try {
             _allGcChannels[cenaculoId].send({ type: 'broadcast', event: 'gc-msg', payload: msg });
@@ -8683,11 +8683,11 @@ function _initGlobalCallListening() {
         attempts++;
         if (sbClient && (typeof auth !== 'undefined' && auth.isAuthenticated())) {
             clearInterval(checkInterval);
-            // Load cenÃƒÆ’Ã‚Âículos first, then subscribe
+            // Load cenáculos first, then subscribe
             loadCenaculosFromSupabase().then(function() {
                 _subscribeAllCenaculosForCalls();
             }).catch(function() {
-                // Still subscribe to locally saved cenÃƒÆ’Ã‚Âículos
+                // Still subscribe to locally saved cenáculos
                 _subscribeAllCenaculosForCalls();
             });
         }
@@ -9022,35 +9022,35 @@ function populateGcInfoPanel(c) {
 // === APARICIONES GALLERY ===
 var aparicionesData = [
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora del Pilar',year:'40 d.C.',loc:'Zaragoza, EspaÃƒÆ’Ã‚Â±a',img:'assets/aparicion_pilar_1776720011641.png',
-historia:'Se considera la apariciÃƒÆ’Ã‚Â³n mariana mÃƒÆ’Ã‚Â¡s antigua de la historia y la ÃƒÆ’Ã‚Âúnica ocurrida antes de la AsunciÃƒÆ’Ã‚Â³n de MarÃƒÆ’Ã‚Â¡a al cielo. El apÃƒÆ’Ã‚Â³stol Santiago el Mayor habÃƒÆ’Ã‚Â¡a viajado a Hispania para predicar el Evangelio, pero se encontraba desanimado ante la resistencia de los paganos a orillas del rÃƒÆ’Ã‚Â¡o Ebro. En la noche del 2 de enero del aÃƒÆ’Ã‚Â±o 40 d.C., la Virgen MarÃƒÆ’Ã‚Â¡a, que aÃƒÆ’Ã‚Âºn vivÃƒÆ’Ã‚Â¡a en JerusalÃƒÆ’Ã‚Â©n, se le apareciÃƒÆ’Ã‚Â³ "en carne mortal", transportada por ÃƒÆ’Ã‚ÂÁngeles. MarÃƒÆ’Ã‚Â¡a estaba de pie sobre un pilar de jaspe y le pidiÃƒÆ’Ã‚Â³ a Santiago que construyera una capilla en ese lugar, prometiÃƒÆ’Ã‚Â©ndole que la fe nunca se apagarÃƒÆ’Ã‚Â¡a en esas tierras.',
-legado:'El pilar original se conserva en la BasÃƒÆ’Ã‚Â¡lica de Nuestra SeÃƒÆ’Ã‚Â±ora del Pilar en Zaragoza, uno de los santuarios marianos mÃƒÆ’Ã‚Â¡s visitados de Europa, recibiendo mÃƒÆ’Ã‚Â¡s de 10 millones de peregrinos al aÃƒÆ’Ã‚Â±o. La devociÃƒÆ’Ã‚Â³n al Pilar se extendiÃƒÆ’Ã‚Â³ a toda HispanoamÃƒÆ’Ã‚Â©rica y el 12 de octubre, festividad de la Virgen del Pilar, coincide con el DÃƒÆ’Ã‚Â¡a de la Hispanidad.'},
-{title:'Nuestra SeÃƒÆ’Ã‚Â±ora de Guadalupe',year:'1531',loc:'Ciudad de MÃƒÆ’Ã‚Â©xico, MÃƒÆ’Ã‚Â©xico',img:'assets/aparicion_guadalupe_1776720027612.png',
-historia:'Entre el 9 y el 12 de diciembre de 1531, la Virgen MarÃƒÆ’Ã‚Â¡a se apareciÃƒÆ’Ã‚Â³ cuatro veces al indÃƒÆ’Ã‚Â¡gena Juan Diego en el cerro del Tepeyac. Se presentÃƒÆ’Ã‚Â³ como una mujer mestiza, hablÃƒÆ’Ã‚Â¡ndole en nÃƒÆ’Ã‚Â¡huatl. Tras la incredulidad del obispo, la Virgen hizo brotar rosas de Castilla en pleno invierno. Cuando Juan Diego desplegÃƒÆ’Ã‚Â³ su tilma ante el obispo, en el tejido habÃƒÆ’Ã‚Â¡a quedado impresa milagrosamente la imagen de la Virgen.',
-legado:'La apariciÃƒÆ’Ã‚Â³n desencadenÃƒÆ’Ã‚Â³ la conversiÃƒÆ’Ã‚Â³n masiva de los pueblos indÃƒÆ’Ã‚Â¡genas: en siete aÃƒÆ’Ã‚Â±os, nueve millones de nativos se bautizaron. La tilma, hecha de fibra de maguey que normalmente se desintegra en 20 aÃƒÆ’Ã‚Â±os, se conserva intacta tras casi 500 aÃƒÆ’Ã‚Â±os. La BasÃƒÆ’Ã‚Â¡lica de Guadalupe es el santuario mariano mÃƒÆ’Ã‚Â¡s visitado del mundo con mÃƒÆ’Ã‚Â¡s de 20 millones de peregrinos anuales.'},
+historia:'Se considera la apariciÃƒÆ’Ã‚Â³n mariana más antigua de la historia y la única ocurrida antes de la AsunciÃƒÆ’Ã‚Â³n de María al cielo. El apóstol Santiago el Mayor habÃƒÆ’Ã‚Â¡a viajado a Hispania para predicar el Evangelio, pero se encontraba desanimado ante la resistencia de los paganos a orillas del rÃƒÆ’Ã‚Â¡o Ebro. En la noche del 2 de enero del año 40 d.C., la Virgen María, que aún vivÃƒÆ’Ã‚Â¡a en JerusalÃƒÆ’Ã‚Â©n, se le apareciÃƒÆ’Ã‚Â³ "en carne mortal", transportada por Ángeles. María estaba de pie sobre un pilar de jaspe y le pidiÃƒÆ’Ã‚Â³ a Santiago que construyera una capilla en ese lugar, prometiÃƒÆ’Ã‚Â©ndole que la fe nunca se apagarÃƒÆ’Ã‚Â¡a en esas tierras.',
+legado:'El pilar original se conserva en la Basílica de Nuestra SeÃƒÆ’Ã‚Â±ora del Pilar en Zaragoza, uno de los santuarios marianos más visitados de Europa, recibiendo más de 10 millones de peregrinos al año. La devociÃƒÆ’Ã‚Â³n al Pilar se extendiÃƒÆ’Ã‚Â³ a toda HispanoamÃƒÆ’Ã‚Â©rica y el 12 de octubre, festividad de la Virgen del Pilar, coincide con el Día de la Hispanidad.'},
+{title:'Nuestra SeÃƒÆ’Ã‚Â±ora de Guadalupe',year:'1531',loc:'Ciudad de México, México',img:'assets/aparicion_guadalupe_1776720027612.png',
+historia:'Entre el 9 y el 12 de diciembre de 1531, la Virgen María se apareciÃƒÆ’Ã‚Â³ cuatro veces al indÃƒÆ’Ã‚Â¡gena Juan Diego en el cerro del Tepeyac. Se presentÃƒÆ’Ã‚Â³ como una mujer mestiza, hablÃƒÆ’Ã‚Â¡ndole en nÃƒÆ’Ã‚Â¡huatl. Tras la incredulidad del obispo, la Virgen hizo brotar rosas de Castilla en pleno invierno. Cuando Juan Diego desplegÃƒÆ’Ã‚Â³ su tilma ante el obispo, en el tejido habÃƒÆ’Ã‚Â¡a quedado impresa milagrosamente la imagen de la Virgen.',
+legado:'La apariciÃƒÆ’Ã‚Â³n desencadenÃƒÆ’Ã‚Â³ la conversión masiva de los pueblos indÃƒÆ’Ã‚Â¡genas: en siete aÃƒÆ’Ã‚Â±os, nueve millones de nativos se bautizaron. La tilma, hecha de fibra de maguey que normalmente se desintegra en 20 aÃƒÆ’Ã‚Â±os, se conserva intacta tras casi 500 aÃƒÆ’Ã‚Â±os. La Basílica de Guadalupe es el santuario mariano más visitado del mundo con más de 20 millones de peregrinos anuales.'},
 {title:'La Medalla Milagrosa',year:'1830',loc:'ParÃƒÆ’Ã‚Â¡s, Francia',img:'assets/aparicion_medalla_1776720079152.png',
-historia:'En la noche del 18 de julio de 1830, Santa Catalina LabourÃƒÆ’Ã‚Â©, una humilde novicia de las Hijas de la Caridad, fue conducida a la capilla del convento en la Rue du Bac de ParÃƒÆ’Ã‚Â¡s. La Virgen MarÃƒÆ’Ã‚Â¡a le hablÃƒÆ’Ã‚Â³ durante dos horas. El 27 de noviembre, la Virgen se le apareciÃƒÆ’Ã‚Â³ nuevamente, de pie sobre un globo terrÃƒÆ’Ã‚Â¡queo, con rayos de luz brotando de sus manos, y le pidiÃƒÆ’Ã‚Â³ acuÃƒÆ’Ã‚Â±ar una medalla con esa imagen.',
-legado:'Las primeras 1,500 medallas se acuÃƒÆ’Ã‚Â±aron en 1832. Los testimonios de curaciones milagrosas se multiplicaron y el pueblo la bautizÃƒÆ’Ã‚Â³ como "La Medalla Milagrosa". Para 1836, se habÃƒÆ’Ã‚Â¡an distribuido mÃƒÆ’Ã‚Â¡s de 10 millones. Catalina LabourÃƒÆ’Ã‚Â© guardÃƒÆ’Ã‚Â³ el secreto 46 aÃƒÆ’Ã‚Â±os. Se estima que se han distribuido mÃƒÆ’Ã‚Â¡s de mil millones de medallas en todo el mundo.'},
+historia:'En la noche del 18 de julio de 1830, Santa Catalina LabourÃƒÆ’Ã‚Â©, una humilde novicia de las Hijas de la Caridad, fue conducida a la capilla del convento en la Rue du Bac de ParÃƒÆ’Ã‚Â¡s. La Virgen María le hablÃƒÆ’Ã‚Â³ durante dos horas. El 27 de noviembre, la Virgen se le apareciÃƒÆ’Ã‚Â³ nuevamente, de pie sobre un globo terrÃƒÆ’Ã‚Â¡queo, con rayos de luz brotando de sus manos, y le pidiÃƒÆ’Ã‚Â³ acuÃƒÆ’Ã‚Â±ar una medalla con esa imagen.',
+legado:'Las primeras 1,500 medallas se acuÃƒÆ’Ã‚Â±aron en 1832. Los testimonios de curaciones milagrosas se multiplicaron y el pueblo la bautizÃƒÆ’Ã‚Â³ como "La Medalla Milagrosa". Para 1836, se habÃƒÆ’Ã‚Â¡an distribuido más de 10 millones. Catalina LabourÃƒÆ’Ã‚Â© guardÃƒÆ’Ã‚Â³ el secreto 46 aÃƒÆ’Ã‚Â±os. Se estima que se han distribuido más de mil millones de medallas en todo el mundo.'},
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora de La Salette',year:'1846',loc:'La Salette, Francia',img:'assets/aparicion_salette_1776720093479.png',
-historia:'El 19 de septiembre de 1846, dos niÃƒÆ’Ã‚Â±os pastores, MÃƒÆ’Ã‚Â©lanie Calvat y Maximin Giraud, vieron una gran esfera de luz que revelÃƒÆ’Ã‚Â³ a una mujer llorando amargamente. Llevaba un crucifijo resplandeciente y les hablÃƒÆ’Ã‚Â³ sobre el abandono de la oraciÃƒÆ’Ã‚Â³n, la falta de respeto al dÃƒÆ’Ã‚Â¡a dominical y la necesidad de conversiÃƒÆ’Ã‚Â³n.',
-legado:'La apariciÃƒÆ’Ã‚Â³n fue aprobada oficialmente en 1851. El santuario, construido a 1,800 metros de altitud en los Alpes, se convirtiÃƒÆ’Ã‚Â³ en lugar de peregrinaciÃƒÆ’Ã‚Â³n. El mensaje de La Salette marcÃƒÆ’Ã‚Â³ un precedente histÃƒÆ’Ã‚Â³rico: fue la primera vez que la Virgen transmitiÃƒÆ’Ã‚Â³ un mensaje pÃƒÆ’Ã‚Âºblico de advertencia profÃƒÆ’Ã‚Â©tica.'},
+historia:'El 19 de septiembre de 1846, dos niÃƒÆ’Ã‚Â±os pastores, MÃƒÆ’Ã‚Â©lanie Calvat y Maximin Giraud, vieron una gran esfera de luz que revelÃƒÆ’Ã‚Â³ a una mujer llorando amargamente. Llevaba un crucifijo resplandeciente y les hablÃƒÆ’Ã‚Â³ sobre el abandono de la oración, la falta de respeto al día dominical y la necesidad de conversión.',
+legado:'La apariciÃƒÆ’Ã‚Â³n fue aprobada oficialmente en 1851. El santuario, construido a 1,800 metros de altitud en los Alpes, se convirtiÃƒÆ’Ã‚Â³ en lugar de peregrinaciÃƒÆ’Ã‚Â³n. El mensaje de La Salette marcÃƒÆ’Ã‚Â³ un precedente histÃƒÆ’Ã‚Â³rico: fue la primera vez que la Virgen transmitiÃƒÆ’Ã‚Â³ un mensaje público de advertencia profÃƒÆ’Ã‚Â©tica.'},
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora de Lourdes',year:'1858',loc:'Lourdes, Francia',img:'assets/aparicion_lourdes_1776720042178.png',
-historia:'Entre el 11 de febrero y el 16 de julio de 1858, Bernadette Soubirous, una niÃƒÆ’Ã‚Â±a de 14 aÃƒÆ’Ã‚Â±os, presenciÃƒÆ’Ã‚Â³ 18 apariciones de la Virgen MarÃƒÆ’Ã‚Â¡a en la gruta de Massabielle. La SeÃƒÆ’Ã‚Â±ora le indicÃƒÆ’Ã‚Â³ que cavara en el suelo y brotÃƒÆ’Ã‚Â³ un manantial. Cuando Bernadette preguntÃƒÆ’Ã‚Â³ su nombre, respondiÃƒÆ’Ã‚Â³: "Yo soy la Inmaculada ConcepciÃƒÆ’Ã‚Â³n", un dogma proclamado apenas cuatro aÃƒÆ’Ã‚Â±os antes que la niÃƒÆ’Ã‚Â±a desconocÃƒÆ’Ã‚Â¡a.',
-legado:'El manantial produce unos 122,400 litros de agua al dÃƒÆ’Ã‚Â¡a. La Comedor ha reconocido oficialmente 70 curaciones milagrosas, aunque se han documentado mÃƒÆ’Ã‚Â¡s de 7,000 curaciones inexplicables. MÃƒÆ’Ã‚Â¡s de 6 millones de peregrinos visitan el santuario cada aÃƒÆ’Ã‚Â±o. El cuerpo de Bernadette se encontrÃƒÆ’Ã‚Â³ incorrupto y fue canonizada en 1933.'},
+historia:'Entre el 11 de febrero y el 16 de julio de 1858, Bernadette Soubirous, una niÃƒÆ’Ã‚Â±a de 14 aÃƒÆ’Ã‚Â±os, presenciÃƒÆ’Ã‚Â³ 18 apariciones de la Virgen María en la gruta de Massabielle. La SeÃƒÆ’Ã‚Â±ora le indicÃƒÆ’Ã‚Â³ que cavara en el suelo y brotÃƒÆ’Ã‚Â³ un manantial. Cuando Bernadette preguntÃƒÆ’Ã‚Â³ su nombre, respondiÃƒÆ’Ã‚Â³: "Yo soy la Inmaculada ConcepciÃƒÆ’Ã‚Â³n", un dogma proclamado apenas cuatro aÃƒÆ’Ã‚Â±os antes que la niÃƒÆ’Ã‚Â±a desconocÃƒÆ’Ã‚Â¡a.',
+legado:'El manantial produce unos 122,400 litros de agua al día. La Comedor ha reconocido oficialmente 70 curaciones milagrosas, aunque se han documentado más de 7,000 curaciones inexplicables. MÃƒÆ’Ã‚Â¡s de 6 millones de peregrinos visitan el santuario cada año. El cuerpo de Bernadette se encontrÃƒÆ’Ã‚Â³ incorrupto y fue canonizada en 1933.'},
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora de FÃƒÆ’Ã‚Â¡tima',year:'1917',loc:'FÃƒÆ’Ã‚Â¡tima, Portugal',img:'assets/aparicion_fatima_1776720064636.png',
-historia:'Entre mayo y octubre de 1917, tres niÃƒÆ’Ã‚Â±os pastores ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ LucÃƒÆ’Ã‚Â¡a, Francisco y Jacinta ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ recibieron seis visitas de la Virgen MarÃƒÆ’Ã‚Â¡a en la Cova da Iria. Les pidiÃƒÆ’Ã‚Â³ rezar el Rosario todos los dÃƒÆ’Ã‚Â¡as por la paz del mundo y les confiÃƒÆ’Ã‚Â³ tres secretos: una visiÃƒÆ’Ã‚Â³n del infierno, profecÃƒÆ’Ã‚Â¡as sobre guerras mundiales, y la persecuciÃƒÆ’Ã‚Â³n a la Comedor.',
-legado:'La ÃƒÆ’Ã‚Âúltima apariciÃƒÆ’Ã‚Â³n culminÃƒÆ’Ã‚Â³ con el "Milagro del Sol" ante 70,000 personas. Francisco y Jacinta fueron canonizados en 2017. El santuario de FÃƒÆ’Ã‚Â¡tima recibe mÃƒÆ’Ã‚Â¡s de 4 millones de peregrinos al aÃƒÆ’Ã‚Â±o y su mensaje sobre el Rosario como arma de paz sigue siendo el mÃƒÆ’Ã‚Â¡s influyente de la era moderna.'},
+historia:'Entre mayo y octubre de 1917, tres niÃƒÆ’Ã‚Â±os pastores ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ LucÃƒÆ’Ã‚Â¡a, Francisco y Jacinta ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ recibieron seis visitas de la Virgen María en la Cova da Iria. Les pidiÃƒÆ’Ã‚Â³ rezar el Rosario todos los dÃƒÆ’Ã‚Â¡as por la paz del mundo y les confiÃƒÆ’Ã‚Â³ tres secretos: una visiÃƒÆ’Ã‚Â³n del infierno, profecÃƒÆ’Ã‚Â¡as sobre guerras mundiales, y la persecuciÃƒÆ’Ã‚Â³n a la Comedor.',
+legado:'La última apariciÃƒÆ’Ã‚Â³n culminÃƒÆ’Ã‚Â³ con el "Milagro del Sol" ante 70,000 personas. Francisco y Jacinta fueron canonizados en 2017. El santuario de FÃƒÆ’Ã‚Â¡tima recibe más de 4 millones de peregrinos al año y su mensaje sobre el Rosario como arma de paz sigue siendo el más influyente de la era moderna.'},
 {title:'Beauraing y Banneux',year:'1932-1933',loc:'BÃƒÆ’Ã‚Â©lgica',img:'assets/aparicion_beauraing_1776720147345.png',
-historia:'En pleno periodo de entreguerras, la Virgen MarÃƒÆ’Ã‚Â¡a eligiÃƒÆ’Ã‚Â³ BÃƒÆ’Ã‚Â©lgica para dos apariciones consecutivas. En Beauraing, cinco niÃƒÆ’Ã‚Â±os la vieron 33 veces. En Banneux, Mariette Beco vio a la Virgen ocho veces. MarÃƒÆ’Ã‚Â¡a se presentÃƒÆ’Ã‚Â³ como "La Virgen de los Pobres" y la condujo a un manantial curativo, declarando: "Vengo a aliviar el sufrimiento".',
-legado:'Ambas apariciones fueron aprobadas oficialmente en 1949. Su mensaje resulta profÃƒÆ’Ã‚Â©tico considerando que Europa estaba a solo seis aÃƒÆ’Ã‚Â±os de la Segunda Guerra Mundial. Los santuarios enfatizan un mensaje de humildad, compasiÃƒÆ’Ã‚Â³n por los mÃƒÆ’Ã‚Â¡s necesitados y la urgencia de la oraciÃƒÆ’Ã‚Â³n en tiempos de crisis.'},
+historia:'En pleno periodo de entreguerras, la Virgen María eligiÃƒÆ’Ã‚Â³ BÃƒÆ’Ã‚Â©lgica para dos apariciones consecutivas. En Beauraing, cinco niÃƒÆ’Ã‚Â±os la vieron 33 veces. En Banneux, Mariette Beco vio a la Virgen ocho veces. María se presentÃƒÆ’Ã‚Â³ como "La Virgen de los Pobres" y la condujo a un manantial curativo, declarando: "Vengo a aliviar el sufrimiento".',
+legado:'Ambas apariciones fueron aprobadas oficialmente en 1949. Su mensaje resulta profÃƒÆ’Ã‚Â©tico considerando que Europa estaba a solo seis aÃƒÆ’Ã‚Â±os de la Segunda Guerra Mundial. Los santuarios enfatizan un mensaje de humildad, compasiÃƒÆ’Ã‚Â³n por los más necesitados y la urgencia de la oración en tiempos de crisis.'},
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora de Akita',year:'1973',loc:'Akita, JapÃƒÆ’Ã‚Â³n',img:'assets/aparicion_akita_1776720190674.png',
-historia:'El 6 de julio de 1973, la hermana Agnes Sasagawa, una monja sorda, comenzÃƒÆ’Ã‚Â³ a recibir mensajes sobrenaturales. Una estatua de la Virgen en la capilla llorÃƒÆ’Ã‚Â³ un total de 101 veces entre 1975 y 1981. Las lÃƒÆ’Ã‚Â¡grimas fueron analizadas y confirmadas como de origen humano, conteniendo los tres componentes del fluido lagrimal.',
-legado:'Las apariciones fueron aprobadas en 1984 con la conformidad del cardenal Ratzinger, quien confirmÃƒÆ’Ã‚Â³ que el mensaje era continuaciÃƒÆ’Ã‚Â³n del tercer secreto de FÃƒÆ’Ã‚Â¡tima. La hermana Agnes recuperÃƒÆ’Ã‚Â³ completamente la audiciÃƒÆ’Ã‚Â³n. Es la primera y ÃƒÆ’Ã‚Âúnica apariciÃƒÆ’Ã‚Â³n mariana aprobada en Asia.'},
+historia:'El 6 de julio de 1973, la hermana Agnes Sasagawa, una monja sorda, comenzÃƒÆ’Ã‚Â³ a recibir mensajes sobrenaturales. Una estatua de la Virgen en la capilla llorÃƒÆ’Ã‚Â³ un total de 101 veces entre 1975 y 1981. Las lágrimas fueron analizadas y confirmadas como de origen humano, conteniendo los tres componentes del fluido lagrimal.',
+legado:'Las apariciones fueron aprobadas en 1984 con la conformidad del cardenal Ratzinger, quien confirmÃƒÆ’Ã‚Â³ que el mensaje era continuaciÃƒÆ’Ã‚Â³n del tercer secreto de FÃƒÆ’Ã‚Â¡tima. La hermana Agnes recuperÃƒÆ’Ã‚Â³ completamente la audiciÃƒÆ’Ã‚Â³n. Es la primera y única apariciÃƒÆ’Ã‚Â³n mariana aprobada en Asia.'},
 {title:'Nuestra SeÃƒÆ’Ã‚Â±ora de Kibeho',year:'1981',loc:'Kibeho, Ruanda',img:'assets/aparicion_kibeho_1776720206452.png',
-historia:'A partir del 28 de noviembre de 1981, la Virgen se apareciÃƒÆ’Ã‚Â³ a tres jÃƒÆ’Ã‚Â³venes africanas en Kibeho, Ruanda. MarÃƒÆ’Ã‚Â¡a se presentÃƒÆ’Ã‚Â³ como "Madre del Verbo". El 19 de agosto de 1982, las videntes experimentaron terribles visiones: rÃƒÆ’Ã‚Â¡os de sangre, cuerpos decapitados ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ una premoniciÃƒÆ’Ã‚Â³n del genocidio que azotarÃƒÆ’Ã‚Â¡a Ruanda 12 aÃƒÆ’Ã‚Â±os despuÃƒÆ’Ã‚Â©s.',
+historia:'A partir del 28 de noviembre de 1981, la Virgen se apareciÃƒÆ’Ã‚Â³ a tres jóvenes africanas en Kibeho, Ruanda. María se presentÃƒÆ’Ã‚Â³ como "Madre del Verbo". El 19 de agosto de 1982, las videntes experimentaron terribles visiones: rÃƒÆ’Ã‚Â¡os de sangre, cuerpos decapitados ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶ una premoniciÃƒÆ’Ã‚Â³n del genocidio que azotarÃƒÆ’Ã‚Â¡a Ruanda 12 aÃƒÆ’Ã‚Â±os despuÃƒÆ’Ã‚Â©s.',
 legado:'Las apariciones fueron aprobadas en 2001, convirtiÃƒÆ’Ã‚Â©ndose en la primera apariciÃƒÆ’Ã‚Â³n mariana reconocida oficialmente en ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âfrica. TrÃƒÆ’Ã‚Â¡gicamente, Marie Claire, una de las videntes, fue asesinada durante el genocidio de 1994. El santuario de Kibeho se erige hoy como un memorial de reconciliaciÃƒÆ’Ã‚Â³n.'},
 {title:'Virgen del Rosario de San NicolÃƒÆ’Ã‚Â¡s',year:'1983',loc:'San NicolÃƒÆ’Ã‚Â¡s, Argentina',img:'assets/aparicion_sannicolas_1776720226848.png',
-historia:'El 25 de septiembre de 1983, Gladys Quiroga de Motta, una mujer sencilla de San NicolÃƒÆ’Ã‚Â¡s de los Arroyos, Buenos Aires, comenzÃƒÆ’Ã‚Â³ a recibir apariciones de la Virgen MarÃƒÆ’Ã‚Â¡a con el NiÃƒÆ’Ã‚Â±o JesÃƒÆ’Ã‚Âºs en brazos. MarÃƒÆ’Ã‚Â¡a se identificÃƒÆ’Ã‚Â³ como "MarÃƒÆ’Ã‚Â¡a del Rosario de San NicolÃƒÆ’Ã‚Â¡s". Los mensajes enfatizaban el regreso a las Sagradas Escrituras y la oraciÃƒÆ’Ã‚Â³n del Rosario.',
-legado:'El santuario de Nuestra SeÃƒÆ’Ã‚Â±ora del Rosario de San NicolÃƒÆ’Ã‚Â¡s se convirtiÃƒÆ’Ã‚Â³ en uno de los centros de peregrinaciÃƒÆ’Ã‚Â³n mÃƒÆ’Ã‚Â¡s importantes de Argentina y del Cono Sur, recibiendo mÃƒÆ’Ã‚Â¡s de 3 millones de peregrinos al aÃƒÆ’Ã‚Â±o.'}
+historia:'El 25 de septiembre de 1983, Gladys Quiroga de Motta, una mujer sencilla de San NicolÃƒÆ’Ã‚Â¡s de los Arroyos, Buenos Aires, comenzÃƒÆ’Ã‚Â³ a recibir apariciones de la Virgen María con el Niño Jesús en brazos. María se identificÃƒÆ’Ã‚Â³ como "María del Rosario de San NicolÃƒÆ’Ã‚Â¡s". Los mensajes enfatizaban el regreso a las Sagradas Escrituras y la oración del Rosario.',
+legado:'El santuario de Nuestra SeÃƒÆ’Ã‚Â±ora del Rosario de San NicolÃƒÆ’Ã‚Â¡s se convirtiÃƒÆ’Ã‚Â³ en uno de los centros de peregrinaciÃƒÆ’Ã‚Â³n más importantes de Argentina y del Cono Sur, recibiendo más de 3 millones de peregrinos al año.'}
 ];
 function openAparicion(i) {
     var d = aparicionesData[i]; if (!d) return;
@@ -9517,6 +9517,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
 
