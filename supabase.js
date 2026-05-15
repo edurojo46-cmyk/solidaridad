@@ -541,12 +541,20 @@ var db = {
         if (!sbClient) return null;
         return sbClient.channel('user-messages-' + userId)
             .on('postgres_changes', {
-                event: 'INSERT',
+                event: '*',
                 schema: 'public',
                 table: 'messages',
                 filter: 'to_id=eq.' + userId
             }, function(payload) {
-                callback(payload.new);
+                callback(payload.new, payload.eventType);
+            })
+            .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'messages',
+                filter: 'from_id=eq.' + userId
+            }, function(payload) {
+                callback(payload.new, payload.eventType);
             })
             .subscribe();
     },
@@ -581,7 +589,27 @@ var db = {
         if (error) { console.error('[Chat] Media message insert error:', error.message); return null; }
         return data;
     },
-
+    async reactToMessage(msgId, userId, emoji) {
+        if (!sbClient) return null;
+        try {
+            const { data, error } = await sbClient.from('messages').select('reactions').eq('id', msgId).single();
+            if (error) return null;
+            let reactions = data.reactions || {};
+            if (!reactions[emoji]) reactions[emoji] = [];
+            const idx = reactions[emoji].indexOf(userId);
+            if (idx !== -1) {
+                reactions[emoji].splice(idx, 1);
+                if (reactions[emoji].length === 0) delete reactions[emoji];
+            } else {
+                reactions[emoji].push(userId);
+            }
+            await sbClient.from('messages').update({ reactions: reactions }).eq('id', msgId);
+            return reactions;
+        } catch (e) {
+            console.error('[Chat] React error:', e);
+            return null;
+        }
+    },
     // ==================== IGLESIAS COMUNIDAD ====================
     async addIglesiaComunidad(iglesia) {
         if (!sbClient) { saveLocal('iglesias_comunidad', iglesia); return iglesia; }

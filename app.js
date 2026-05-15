@@ -1817,7 +1817,16 @@ function openChat(partnerId, partnerName) {
 
     if (typeof db !== 'undefined' && db.subscribeToMessages) {
         if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
-        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg) {
+        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType) {
+            if (eventType === 'UPDATE') {
+                var existingWrapper = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
+                if (existingWrapper) {
+                    if (newMsg.reactions) {
+                        _renderReactions(newMsg, existingWrapper);
+                    }
+                }
+                return;
+            }
             if (newMsg.from_id === chatCurrentPartner) {
                 if(msgContainer) {
                     var mDiv = renderChatMsg(newMsg, false);
@@ -1983,6 +1992,10 @@ function renderChatMsg(m, isSent) {
     
     wrapper.appendChild(bubble);
 
+    if (m.reactions && Object.keys(m.reactions).length > 0) {
+        _renderReactions(m, wrapper);
+    }
+
     return wrapper;
 }
 
@@ -2066,7 +2079,19 @@ function _showEmojiBar(m, wrapper) {
     setTimeout(function() { bar.classList.add('wa-emoji-visible'); }, 10);
 }
 
-function _addReaction(m, wrapper, emoji) {
+async function _addReaction(m, wrapper, emoji) {
+    var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
+    if (!cu || typeof db === 'undefined' || !db.reactToMessage || !m.id) return;
+    
+    // DB Call
+    var newReactions = await db.reactToMessage(m.id, cu.id, emoji);
+    if (newReactions) {
+        m.reactions = newReactions;
+        _renderReactions(m, wrapper);
+    }
+}
+
+function _renderReactions(m, wrapper) {
     var target = wrapper.querySelector('.wa-media-wrap') || wrapper.querySelector('.wa-bubble');
     var display = wrapper.querySelector('.wa-reactions');
     if (!display) {
@@ -2074,14 +2099,29 @@ function _addReaction(m, wrapper, emoji) {
         display.className = 'wa-reactions';
         if (wrapper.querySelector('.wa-media-wrap')) {
             display.style.cssText = 'position:absolute; bottom:40px; left:8px; display:flex; gap:4px; z-index:10;';
+        } else {
+            display.style.cssText = 'display:flex; gap:4px; margin-top:2px;';
         }
         target.appendChild(display);
     }
-    var pill = document.createElement('span');
-    pill.className = 'wa-reaction-pill';
-    pill.textContent = emoji;
-    display.appendChild(pill);
-    setTimeout(function() { pill.classList.add('wa-reaction-in'); }, 10);
+    display.innerHTML = '';
+    var hasReactions = false;
+    if (m.reactions) {
+        Object.keys(m.reactions).forEach(function(em) {
+            var arr = m.reactions[em];
+            if (arr && arr.length > 0) {
+                hasReactions = true;
+                var pill = document.createElement('span');
+                pill.className = 'wa-reaction-pill';
+                pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; color:#333;';
+                pill.innerHTML = em + (arr.length > 1 ? '<span style="font-size:0.7rem;font-weight:bold">' + arr.length + '</span>' : '');
+                display.appendChild(pill);
+            }
+        });
+    }
+    if (!hasReactions) {
+        display.remove();
+    }
 }
 
 // ── Responder mensaje ──
