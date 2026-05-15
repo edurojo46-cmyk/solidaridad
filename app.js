@@ -1959,21 +1959,21 @@ function renderChatMsg(m, isSent) {
     actionBar.className = 'wa-inline-actions';
     
     if (m.media_url) {
-        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:8px; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:10px 8px 6px; color:white; z-index:5;';
+        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:16px; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:12px 12px 8px; color:white; z-index:5;';
     } else {
-        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:2px; padding-top:2px;';
+        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:16px; margin-top:4px; padding-top:4px;';
     }
     
     // Botón Emojis
     var btnEmoji = document.createElement('button');
     btnEmoji.innerHTML = '<i class="ri-emotion-line"></i>';
-    btnEmoji.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.1rem; cursor:pointer; padding:0; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
+    btnEmoji.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.4rem; cursor:pointer; padding:4px 8px; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
     btnEmoji.onclick = function(e) { e.stopPropagation(); _showEmojiBar(m, wrapper); };
     
     // Botón Reenviar
     var btnForward = document.createElement('button');
     btnForward.innerHTML = '<i class="ri-share-forward-line"></i>';
-    btnForward.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.1rem; cursor:pointer; padding:0; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
+    btnForward.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.4rem; cursor:pointer; padding:4px 8px; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
     btnForward.onclick = function(e) { e.stopPropagation(); _chatForward(m); };
 
     var footerHtml = document.createElement('div');
@@ -2079,6 +2079,11 @@ function _showEmojiBar(m, wrapper) {
             bar.style.opacity = '0';
             bar.style.pointerEvents = 'none';
             setTimeout(function() { bar.remove(); }, 350);
+        };
+        btn.ontouchend = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (bar.style.opacity !== '0') btn.onclick(e);
         };
         bar.appendChild(btn);
     });
