@@ -2126,6 +2126,17 @@ async function _addReaction(m, wrapper, emoji) {
     var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
     if (!cu || typeof db === 'undefined' || !db.reactToMessage || !m.id) return;
     
+    // Optimistic UI Update
+    if (!m.reactions) m.reactions = {};
+    if (!m.reactions[emoji]) m.reactions[emoji] = [];
+    var idx = m.reactions[emoji].indexOf(cu.id);
+    if (idx === -1) {
+        m.reactions[emoji].push(cu.id);
+    } else {
+        m.reactions[emoji].splice(idx, 1);
+    }
+    _renderReactions(m, wrapper);
+
     // DB Call
     var newReactions = await db.reactToMessage(m.id, cu.id, emoji);
     if (newReactions) {
