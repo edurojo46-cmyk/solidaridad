@@ -364,35 +364,65 @@ window.CustomUI = {
     <!-- 1. SPLASH -->
     <section id="screen-splash" class="screen active splash-bg">
         <div class="splash-header">
-            <!-- hidden splash-beads required by app.js -->
             <div id="splash-beads" style="display:none; position:absolute;"></div>
-            <div class="mary-avatar-container" style="background: none; border: none; box-shadow: none; position: relative;">
-                <div class="mary-avatar" style="background: white; border-radius: 24px; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 32px rgba(231,76,60,0.15);">
-                    <i class="ri-heart-pulse-fill" style="font-size: 4rem; color: #e74c3c; filter: drop-shadow(0 4px 8px rgba(231,76,60,0.3));"></i>
+            <div class="mary-avatar-container" style="position: relative;">
+                <div class="mary-avatar">
+                    <i class="ri-heart-pulse-fill" style="font-size: 3.5rem; color: #6366f1;"></i>
                 </div>
             </div>
-            <h1 class="logo-title" style="font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -1px; color: #222;">SOLIDARIDAD</h1>
-            <p class="logo-subtitle" style="color: #666; font-weight: 500;">Conectando quienes necesitan con quienes pueden ayudar</p>
+            <h1 class="logo-title">SOLIDARIDAD</h1>
+            <p class="logo-subtitle">Conectando quienes necesitan con quienes pueden ayudar</p>
         </div>
         <div class="splash-bottom">
-            <button class="btn btn-primary" onclick="app.navigate('screen-register')">Registrarse</button>
-            <button class="btn btn-secondary glass-btn" onclick="app.navigate('screen-login')">Iniciar Sesión</button>
+            <button class="btn btn-primary" onclick="app.navigate('screen-register')">EMPEZAR AHORA</button>
+            <button class="btn btn-secondary glass-btn" onclick="app.navigate('screen-login')">INICIAR SESIÓN</button>
         </div>
         <div class="splash-extended-content">
-            <h3 class="splash-intro-text">Encuentra personas cerca para rezar el<br>Rosario en plazas públicas</h3>
+            <h3 class="splash-intro-text">Coordina ayuda en tiempo real y colabora con tu comunidad</h3>
             <div class="splash-cards">
-                <div class="glass card feature-card"><div class="feature-icon"><i class="ri-map-pin-2-fill"></i></div><h4>Sumate a un<br>Rosario cercano</h4><p>Descubre dónde se reúnen en tu ciudad.</p></div>
-                <div class="feature-card-center-bg"></div>
-                <div class="glass card feature-card"><div class="feature-icon"><i class="ri-calendar-event-fill"></i></div><h4>Organiza encuentros<br>en plazas</h4><p>Sé voluntario y coordina el rezo.</p></div>
-                <div class="glass card feature-card"><div class="feature-img-wrapper"><img src="assets/wedding_cana.png" alt="Comunidad"/></div><h4>Reza con comunidad<br>y paz</h4><p>La oración en grupo renueva tu alma.</p></div>
+                <div class="glass card feature-card">
+                    <div class="feature-icon"><i class="ri-map-pin-2-fill"></i></div>
+                    <h4>Alertas en<br>tiempo real</h4>
+                    <p>Reporta y encuentra situaciones de calle cerca de ti.</p>
+                </div>
+                <div class="glass card feature-card">
+                    <div class="feature-icon"><i class="ri-hand-heart-line"></i></div>
+                    <h4>Compromisos de ayuda</h4>
+                    <p>Dona abrigo, comida o medicina de forma coordinada.</p>
+                </div>
+                <div class="glass card feature-card">
+                    <div class="feature-icon"><i class="ri-team-fill"></i></div>
+                    <h4>Comunidad Solidaria</h4>
+                    <p>Chatea con otros voluntarios y organiza la logística.</p>
+                </div>
             </div>
-            <h2 class="splash-how-it-works">Cómo Funciona</h2>
-            <div class="how-it-works-steps">
-                <div class="step-item glass card"><div class="step-number">1</div><div class="step-icon"><i class="ri-search-line"></i></div><h4>Busca un Rosario</h4><p>Abre el mapa y encuentra rosarios cercanos.</p></div>
-                <div class="step-connector"><i class="ri-arrow-right-line"></i></div>
-                <div class="step-item glass card"><div class="step-number">2</div><div class="step-icon"><i class="ri-hand-heart-line"></i></div><h4>ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ínete y Reza</h4><p>Confirmá tu asistencia.</p></div>
-                <div class="step-connector"><i class="ri-arrow-right-line"></i></div>
-                <div class="step-item glass card"><div class="step-number">3</div><div class="step-icon"><i class="ri-group-line"></i></div><h4>Reza en Comunidad</h4><p>Participá del rosario en vivo.</p></div>
+            
+            <h2 class="splash-how-it-works" style="text-align:center; margin: 40px 0 20px; font-weight:800; color:#1e293b;">Cómo Funciona</h2>
+            <div class="how-it-works-steps" style="display:flex; flex-direction:column; gap:16px;">
+                <div class="step-item glass card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="ri-search-line"></i></div>
+                    <div style="flex:1">
+                        <h4 style="margin:0; font-weight:700;">Encuentra una Alerta</h4>
+                        <p style="margin:0; font-size:0.85rem; color:#64748b;">Mira el mapa para ver dónde se necesita ayuda hoy.</p>
+                    </div>
+                </div>
+                <div class="step-item glass card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="ri-hand-heart-line"></i></div>
+                    <div style="flex:1">
+                        <h4 style="margin:0; font-weight:700;">Súmate y Ayuda</h4>
+                        <p style="margin:0; font-size:0.85rem; color:#64748b;">Confirma qué puedes aportar (comida, abrigo, etc).</p>
+                    </div>
+                </div>
+                <div class="step-item glass card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="ri-chat-check-line"></i></div>
+                    <div style="flex:1">
+                        <h4 style="margin:0; font-weight:700;">Coordina el Encuentro</h4>
+                        <p style="margin:0; font-size:0.85rem; color:#64748b;">Usa el foro de la alerta para coordinar con otros.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
