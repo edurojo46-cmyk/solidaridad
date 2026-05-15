@@ -2593,13 +2593,30 @@ async function scSubmitAlerta() {
 }
 
 async function scEliminarAlerta(id) {
-    if(!confirm("ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šáÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦á¿Estás seguro de que quieres cerrar y eliminar esta alerta de forma permanente?")) return;
+    // Solo el dueño puede eliminar
+    var uId = null;
+    if (typeof auth !== 'undefined' && auth && auth.getCurrentUser) {
+        var u = auth.getCurrentUser();
+        uId = u ? u.id : null;
+    }
+    if (!uId) { alert('Debes iniciar sesión para eliminar alertas.'); return; }
+    
+    var alerta = scAllAlertas.find(function(x) { return x.id === id; });
+    var isAdmin = (typeof auth !== 'undefined' && auth && auth.isAdmin && auth.isAdmin());
+    var isOwner = alerta && (uId === alerta.user_id || isAdmin);
+    
+    if (!isOwner) { alert('Solo puedes eliminar alertas que hayas creado tú.'); return; }
+    if (!confirm('¿Estás seguro de que quieres eliminar esta alerta de forma permanente?')) return;
+    
     try {
         if (typeof sbClient !== 'undefined' && sbClient) {
-            await sbClient.from('alertas_calle').delete().eq('id', id);
+            var query = sbClient.from('alertas_calle').delete().eq('id', id);
+            if (!isAdmin) query = query.eq('user_id', uId);
+            var result = await query;
+            if (result.error) { alert('No se pudo eliminar. Intenta de nuevo.'); return; }
         }
         scLoadAlertas();
-    } catch(e) {}
+    } catch(e) { alert('Error inesperado al eliminar.'); }
 }
 
 function scEditAlerta(id) {
