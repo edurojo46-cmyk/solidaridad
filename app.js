@@ -1,4 +1,4 @@
-﻿var app = {
+var app = {
     currentScreen: 'screen-splash',
     screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
@@ -1762,6 +1762,13 @@ function showNewChatModal() {
     }
 }
 
+function openChatWith(id, name) {
+    app.navigate('screen-mensajes');
+    setTimeout(function() {
+        if(typeof openChat === 'function') openChat(id, name);
+    }, 100);
+}
+
 function openChat(partnerId, partnerName) {
     chatCurrentPartner = partnerId;
     var contactsView = document.getElementById('chat-contacts-view');
@@ -1800,11 +1807,7 @@ function openChat(partnerId, partnerName) {
                     }
                     
                     var isSent = m.from_id === currentUser.id;
-                    var mDiv = document.createElement('div');
-                    mDiv.className = 'chat-msg ' + (isSent ? 'chat-msg-sent' : 'chat-msg-received');
-                    var timeStr = new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    var statusIcon = isSent ? (m.read ? '<i class="ri-check-double-line"></i>' : '<i class="ri-check-line"></i>') : '';
-                    mDiv.innerHTML = '<div class="chat-msg-text">' + m.text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status">' + statusIcon + '</span></div>';
+                    var mDiv = renderChatMsg(m, isSent);
                     msgContainer.appendChild(mDiv);
                 });
                 msgContainer.scrollTop = msgContainer.scrollHeight;
@@ -1817,10 +1820,7 @@ function openChat(partnerId, partnerName) {
         chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg) {
             if (newMsg.from_id === chatCurrentPartner) {
                 if(msgContainer) {
-                    var mDiv = document.createElement('div');
-                    mDiv.className = 'chat-msg chat-msg-received';
-                    var timeStr = new Date(newMsg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    mDiv.innerHTML = '<div class="chat-msg-text">' + newMsg.text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span></div>';
+                    var mDiv = renderChatMsg(newMsg, false);
                     msgContainer.appendChild(mDiv);
                     msgContainer.scrollTop = msgContainer.scrollHeight;
                 }
@@ -1830,6 +1830,7 @@ function openChat(partnerId, partnerName) {
             }
         });
     }
+    if (typeof checkBlockStatus === 'function') checkBlockStatus();
 }
 
 function closeChat() {
@@ -1875,8 +1876,53 @@ function sendMessage() {
     }
 }
 
+// ── renderChatMsg: burbuja con soporte de texto, imagen y video ──
+function renderChatMsg(m, isSent) {
+    var mDiv = document.createElement('div');
+    mDiv.className = 'chat-msg ' + (isSent ? 'chat-msg-sent' : 'chat-msg-received');
+    var timeStr = m.created_at
+        ? new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        : new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    var statusIcon = isSent
+        ? (m.read ? '<i class="ri-check-double-line" style="color:#53bdeb"></i>' : '<i class="ri-check-line"></i>')
+        : '';
+    var contentHtml = '';
+    if (m.media_url) {
+        if (m.media_type === 'video') {
+            contentHtml = '<video src="' + m.media_url + '" controls playsinline style="max-width:220px;max-height:220px;border-radius:10px;display:block"></video>';
+        } else {
+            contentHtml = '<img src="' + m.media_url + '" style="max-width:220px;max-height:220px;border-radius:10px;display:block;cursor:zoom-in" onclick="chatZoomImg(this.src)" alt="imagen">';
+        }
+    } else {
+        contentHtml = '<div class="chat-msg-text">' + (m.text || '') + '</div>';
+    }
+    mDiv.innerHTML = contentHtml + '<div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status">' + statusIcon + '</span></div>';
+    return mDiv;
+}
+
+function chatZoomImg(src) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
+    overlay.innerHTML = '<img src="' + src + '" style="max-width:94vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6)">';
+    overlay.onclick = function() { overlay.remove(); };
+    document.body.appendChild(overlay);
+}
+
 function chatVideoCall() {
-    alert('Función de videollamada de WhatsApp en desarrollo.');
+    if (!chatCurrentPartner) return;
+    var me = (typeof auth !== 'undefined' && auth.getCurrentUser ? (auth.getCurrentUser() || {}).id : '') || 'anon';
+    var roomId = 'solidaridad-' + [chatCurrentPartner, me].sort().join('-').slice(0, 24);
+    var url = 'https://meet.jit.si/' + roomId;
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center';
+    overlay.innerHTML = '<div style="background:#1a2535;border-radius:20px;padding:32px 28px;max-width:360px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)">' +
+        '<div style="font-size:3rem;margin-bottom:12px">\uD83D\uDCF9</div>' +
+        '<h3 style="color:#fff;margin:0 0 8px;font-size:1.1rem">Videollamada</h3>' +
+        '<p style="color:#8896a4;font-size:0.85rem;margin:0 0 20px">Sala privada en Jitsi Meet.<br>Compartí el enlace con tu contacto.</p>' +
+        '<a href="' + url + '" target="_blank" style="display:block;background:linear-gradient(135deg,#3DA3D4,#2E8BC0);color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-weight:700;font-size:0.9rem;margin-bottom:12px" onclick="this.closest(\'div\').parentElement.remove()">\uD83C\uDF9E Abrir Videollamada</a>' +
+        '<button onclick="this.closest(\'div\').parentElement.remove()" style="background:transparent;border:1px solid #3a4a5c;color:#8896a4;padding:10px 24px;border-radius:12px;cursor:pointer;font-size:0.85rem">Cancelar</button>' +
+        '</div>';
+    document.body.appendChild(overlay);
 }
 
 function toggleChatMenu() {
@@ -1891,16 +1937,68 @@ function closeChatMenu() {
 
 function blockChatUser() {
     closeChatMenu();
-    if (confirm('¿Estás seguro de bloquear este usuario?')) {
-        alert('Usuario bloqueado.');
-        closeChat();
+    if (typeof showWaConfirm === 'function' && chatCurrentPartner) {
+        getChatUserId().then(function(myId) {
+            if (!myId) return;
+            db.isUserBlocked(myId, chatCurrentPartner).then(function(blocked) {
+                showWaConfirm(
+                    blocked ? '\xbfDesbloquear?' : '\xbfBloquear contacto?',
+                    blocked ? 'Podr\xe1s volver a comunicarte.' : 'No podr\xe1 enviarte mensajes.',
+                    blocked ? 'DESBLOQUEAR' : 'BLOQUEAR',
+                    !blocked,
+                    function() {
+                        var fn = blocked ? db.unblockUser : db.blockUser;
+                        fn(myId, chatCurrentPartner).then(function() {
+                            if (typeof showQuickFeedback === 'function') showQuickFeedback(blocked ? '\u2705 Desbloqueado' : '\uD83D\uDEAB Bloqueado');
+                            if (typeof checkBlockStatus === 'function') checkBlockStatus();
+                        });
+                    }
+                );
+            });
+        });
     }
 }
 
 function handleChatFileUpload(input) {
-    if (input.files && input.files.length > 0) {
-        alert('Se seleccionaron ' + input.files.length + ' archivos. Funcionalidad de subida en desarrollo.');
+    if (!input.files || input.files.length === 0) return;
+    var currentUser = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
+    if (!currentUser || !chatCurrentPartner) {
+        if (typeof showQuickFeedback === 'function') showQuickFeedback('Inici\xe1 sesi\xf3n para enviar archivos');
+        return;
     }
+    var msgContainer = document.getElementById('chat-messages');
+    Array.from(input.files).forEach(function(file) {
+        if (file.size > 20 * 1024 * 1024) {
+            if (typeof showQuickFeedback === 'function') showQuickFeedback('\u26a0\uFE0F Archivo muy grande (m\xe1x 20MB)');
+            return;
+        }
+        var isVideo = file.type.startsWith('video/');
+        var loadDiv = document.createElement('div');
+        loadDiv.className = 'chat-msg chat-msg-sent';
+        var thumbHtml = isVideo
+            ? '<div style="width:160px;height:90px;background:#1a2535;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.2rem">\uD83C\uDF9E</div>'
+            : '<img src="' + URL.createObjectURL(file) + '" style="max-width:180px;max-height:180px;border-radius:10px;opacity:0.55;display:block">';
+        loadDiv.innerHTML = thumbHtml + '<div class="chat-msg-meta"><span class="chat-msg-time">subiendo...</span><span class="chat-msg-status"><i class="ri-loader-4-line" style="animation:spin 1s linear infinite"></i></span></div>';
+        if (msgContainer) { msgContainer.appendChild(loadDiv); msgContainer.scrollTop = msgContainer.scrollHeight; }
+        if (typeof db !== 'undefined' && db.uploadChatMedia) {
+            db.uploadChatMedia(currentUser.id, chatCurrentPartner, file).then(function(msg) {
+                if (msg) {
+                    var realDiv = renderChatMsg(msg, true);
+                    if (loadDiv.parentNode) loadDiv.parentNode.replaceChild(realDiv, loadDiv);
+                } else {
+                    var errEl = loadDiv.querySelector('.chat-msg-time');
+                    if (errEl) errEl.textContent = 'error al subir';
+                    loadDiv.style.opacity = '0.4';
+                    if (typeof showQuickFeedback === 'function') showQuickFeedback('\u274C Error al subir. Verific\xe1 el bucket "chat-media" en Supabase.');
+                }
+                if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
+            });
+        } else {
+            if (loadDiv.parentNode) loadDiv.parentNode.removeChild(loadDiv);
+            if (typeof showQuickFeedback === 'function') showQuickFeedback('\u26a0\uFE0F Supabase no disponible');
+        }
+    });
+    input.value = '';
 }
 
 function updateChatBadges() {
@@ -2013,25 +2111,25 @@ window.filterMsgList = function(q) {
 window.openGlobalChat = function(userObj) {
     // 1. Check if chat exists locally
     var existingId = null;
-    for (var k in msgConversations) {
-        if (msgConversations[k].otherUser && msgConversations[k].otherUser.id === userObj.id) {
+    for (var k in chatConversations) {
+        if (chatConversations[k].otherUser && chatConversations[k].otherUser.id === userObj.id) {
             existingId = k; break;
         }
     }
     
     if (existingId) {
-        openChatView(existingId, msgConversations[existingId].otherUser);
+        openChat(existingId, chatConversations[existingId].otherUser.name, chatConversations[existingId].otherUser.color || '#e74c3c');
     } else {
         // Create an optimistic local conversation
         var tempId = 'temp_' + Date.now();
-        msgConversations[tempId] = {
+        chatConversations[tempId] = {
             id: tempId,
             otherUser: userObj,
             messages: [],
             unread: 0,
             lastActivity: new Date().toISOString()
         };
-        openChatView(tempId, userObj);
+        openChat(tempId, userObj.name, userObj.color || '#e74c3c');
     }
     document.getElementById('msg-search-input').value = '';
     filterMsgList('');

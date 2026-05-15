@@ -1,4 +1,4 @@
-﻿// === SUPABASE CONFIG ===
+// === SUPABASE CONFIG ===
 var SUPABASE_URL = 'https://sqimiuwnhecspmugmacu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxaW1pdXduaGVjc3BtdWdtYWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzODg0NjMsImV4cCI6MjA5Mzk2NDQ2M30.Tq0VRRY7yfiubn6ZrInT_iAEogGr0e3R7oll0EPne_c';
 
@@ -551,24 +551,55 @@ var db = {
             .subscribe();
     },
 
-    // ==================== COMEDORES COMUNIDAD ====================
-    async addComedorComunidad(comedor) {
-        if (!sbClient) { saveLocal('iglesias_comunidad', comedor); return comedor; }
-        let payload = Object.assign({}, comedor);
+    // ==================== CHAT MEDIA UPLOAD ====================
+    async uploadChatMedia(fromId, toId, file) {
+        if (!sbClient) return null;
+        const ext = file.name.split('.').pop().toLowerCase();
+        const isVideo = file.type.startsWith('video/');
+        const bucket = 'chat-media';
+        const path = `${fromId}/${toId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: upErr } = await sbClient.storage.from(bucket).upload(path, file, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: file.type
+        });
+        if (upErr) {
+            console.error('[Chat] Upload error:', upErr.message);
+            return null;
+        }
+        const { data: urlData } = sbClient.storage.from(bucket).getPublicUrl(path);
+        const mediaUrl = urlData?.publicUrl || null;
+        if (!mediaUrl) return null;
+        const msgText = isVideo ? '[video]' : '[imagen]';
+        const { data, error } = await sbClient.from('messages').insert({
+            from_id: fromId,
+            to_id: toId,
+            text: msgText,
+            media_url: mediaUrl,
+            media_type: isVideo ? 'video' : 'image'
+        }).select().single();
+        if (error) { console.error('[Chat] Media message insert error:', error.message); return null; }
+        return data;
+    },
+
+    // ==================== IGLESIAS COMUNIDAD ====================
+    async addIglesiaComunidad(iglesia) {
+        if (!sbClient) { saveLocal('iglesias_comunidad', iglesia); return iglesia; }
+        let payload = Object.assign({}, iglesia);
         const { data, error } = await sbClient.from('iglesias_comunidad').insert(payload).select().single();
         if (error) {
-            console.error('[DB] Error inserting comedor:', error.message);
-            saveLocal('iglesias_comunidad', comedor);
-            return comedor;
+            console.error('[DB] Error inserting iglesia:', error.message);
+            saveLocal('iglesias_comunidad', iglesia);
+            return iglesia;
         }
         return data;
     },
 
-    async getComedoresComunidad() {
+    async getIglesiasComunidad() {
         if (!sbClient) return getLocal('iglesias_comunidad');
         const { data, error } = await sbClient.from('iglesias_comunidad').select('*').order('pais', {ascending:true}).order('ciudad', {ascending:true});
         if (error) {
-            console.error('[DB] Error fetching comedores:', error.message);
+            console.error('[DB] Error fetching iglesias:', error.message);
             return getLocal('iglesias_comunidad');
         }
         return data || [];
@@ -633,20 +664,20 @@ document.addEventListener('DOMContentLoaded', function() {
 window.db = db;
 window.sbClient = sbClient;
 
+// ---- BLOCKING SYSTEM ----
+async function blockUser(myId, partnerId) {
+    const { data, error } = await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
+    return { data, error };
+}
+async function unblockUser(myId, partnerId) {
+    const { data, error } = await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
+    return { data, error };
+}
+async function isUserBlocked(myId, partnerId) {
+    const { data } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
+    return data && data.length > 0;
+}
+window.db.blockUser = blockUser;
+window.db.unblockUser = unblockUser;
+window.db.isUserBlocked = isUserBlocked;
 
-// =========== BUSCADOR GLOBAL ===========
-window.db.searchUsersGlobal = async function(query) {
-    if (!sbClient) return [];
-    try {
-        var { data, error } = await sbClient
-            .from('perfiles')
-            .select('id, nombre, color, avatar_url')
-            .ilike('nombre', '%' + query + '%')
-            .limit(10);
-        if (error) throw error;
-        return data || [];
-    } catch (e) {
-        console.error("Global search error:", e);
-        return [];
-    }
-};
