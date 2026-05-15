@@ -2065,18 +2065,45 @@ function _closeChatCtxMenu() {
 var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
 function _showEmojiBar(m, wrapper) {
     var old = wrapper.querySelector('.wa-emoji-bar');
-    if (old) { old.remove(); return; }
+    var forwardBtnEl = null;
+    var forwardBtns = wrapper.querySelectorAll('button');
+    forwardBtns.forEach(function(b) {
+        if (b.innerHTML.indexOf('ri-share-forward-line') !== -1) {
+            forwardBtnEl = b;
+        }
+    });
+
+    if (old) { 
+        old.remove(); 
+        if (forwardBtnEl) forwardBtnEl.style.pointerEvents = 'auto';
+        return; 
+    }
     
+    if (forwardBtnEl) forwardBtnEl.style.pointerEvents = 'none';
     var forwardBtns = wrapper.querySelectorAll('button');
     forwardBtns.forEach(function(b) {
         if (b.innerHTML.indexOf('ri-share-forward-line') !== -1) {
             b.style.pointerEvents = 'none';
-            setTimeout(function() { b.style.pointerEvents = 'auto'; }, 600); // Auto re-enable after 600ms just in case
+            forwardBtnEl = b;
         }
     });
 
     var bar = document.createElement('div');
     bar.className = 'wa-emoji-bar';
+    
+    // Función para cerrar la barra y restaurar botones seguros
+    function closeEmojiBar() {
+        bar.style.opacity = '0';
+        bar.style.pointerEvents = 'none';
+        setTimeout(function() {
+            bar.remove();
+            if (forwardBtnEl) {
+                // Restauramos el botón de reenviar solo 200ms DESPUÉS de que la barra se fue de la pantalla
+                setTimeout(function() { forwardBtnEl.style.pointerEvents = 'auto'; }, 200);
+            }
+        }, 350);
+    }
+
     WA_EMOJIS.forEach(function(emoji) {
         var btn = document.createElement('button');
         btn.className = 'wa-emoji-btn';
@@ -2085,8 +2112,7 @@ function _showEmojiBar(m, wrapper) {
             e.preventDefault();
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
-            bar.style.opacity = '0';
-            setTimeout(function() { bar.remove(); }, 350);
+            closeEmojiBar();
         };
         btn.ontouchend = function(e) {
             e.preventDefault();
