@@ -2077,7 +2077,6 @@ function _showEmojiBar(m, wrapper) {
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
             bar.style.opacity = '0';
-            bar.style.pointerEvents = 'none';
             setTimeout(function() { bar.remove(); }, 350);
         };
         btn.ontouchend = function(e) {
