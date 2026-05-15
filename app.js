@@ -2066,6 +2066,15 @@ var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\u
 function _showEmojiBar(m, wrapper) {
     var old = wrapper.querySelector('.wa-emoji-bar');
     if (old) { old.remove(); return; }
+    
+    var forwardBtns = wrapper.querySelectorAll('button');
+    forwardBtns.forEach(function(b) {
+        if (b.innerHTML.indexOf('ri-share-forward-line') !== -1) {
+            b.style.pointerEvents = 'none';
+            setTimeout(function() { b.style.pointerEvents = 'auto'; }, 600); // Auto re-enable after 600ms just in case
+        }
+    });
+
     var bar = document.createElement('div');
     bar.className = 'wa-emoji-bar';
     WA_EMOJIS.forEach(function(emoji) {
