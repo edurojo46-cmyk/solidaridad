@@ -2081,7 +2081,7 @@ function _showEmojiBarPopup(m, wrapper) {
 
     var bar = document.createElement('div');
     bar.className = 'wa-emoji-bar-popup';
-    bar.style.cssText = 'position:absolute; display:flex; gap:4px; background:white; padding:6px 10px; border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.15); z-index:100; opacity:0; transition:opacity 0.2s; bottom:100%; right:10px; margin-bottom:5px;';
+    bar.style.cssText = 'position:absolute; display:flex; gap:4px; background:white; padding:6px 10px; border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.15); z-index:100; opacity:0; transition:opacity 0.2s; bottom:100%; right:0; margin-bottom:5px;';
     
     WA_EMOJIS.forEach(function(emoji) {
         var btn = document.createElement('button');
@@ -2097,9 +2097,11 @@ function _showEmojiBarPopup(m, wrapper) {
         bar.appendChild(btn);
     });
 
-    wrapper.style.position = 'relative';
-    wrapper.appendChild(bar);
-    setTimeout(function() { bar.style.opacity = '1'; }, 10);
+    var bubble = wrapper.querySelector('.wa-bubble');
+    if (bubble) {
+        bubble.appendChild(bar);
+        setTimeout(function() { bar.style.opacity = '1'; }, 10);
+    }
 }
 async function _addReaction(m, wrapper, emoji) {
     var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
@@ -2513,3 +2515,12 @@ window.openGlobalChat = function(userObj) {
     document.getElementById('msg-search-input').value = '';
     filterMsgList('');
 };
+
+function _escapeHtml(unsafe) {
+    return (unsafe || '').toString()
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
