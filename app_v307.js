@@ -2002,13 +2002,15 @@ function renderChatMsg(m, isSent) {
     setTimeout(function() {
         var btn = wrapper.querySelector('.wa-msg-menu-btn');
         if (btn) {
-            btn.onmousedown = function(e) {
+            btn.onclick = function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 _showWhatsAppDropdown(e, m, wrapper);
             };
             btn.ontouchend = function(e) {
                 e.preventDefault();
-                btn.onclick(e);
+                e.stopPropagation();
+                _showWhatsAppDropdown(e, m, wrapper);
             };
         }
     }, 10);
