@@ -2676,19 +2676,28 @@ async function scEliminarAlerta(id) {
     }
     
     scConfirmDeleteModal(
-        '¿Est' + 'á' + 's seguro de que quieres eliminar esta alerta de forma permanente? Esta acci' + 'ó' + 'n no se puede deshacer.',
+        '¿Estás seguro de que quieres eliminar esta alerta permanentemente?',
         async function() {
             try {
                 if (typeof sbClient !== 'undefined' && sbClient) {
-                    var delQuery = sbClient.from('alertas_calle').delete().eq('id', id);
-                    var result = await delQuery;
+                    console.log('[SC DELETE] Intentando eliminar id:', id);
+                    console.log('[SC DELETE] canDelete era:', canDelete);
+                    console.log('[SC DELETE] alerta.user_id:', alerta.user_id, '| reporter_email:', alerta.reporter_email);
+                    var result = await sbClient.from('alertas_calle').delete().eq('id', id);
+                    console.log('[SC DELETE] Resultado:', JSON.stringify(result));
                     if (result.error) {
-                        alert('Error al eliminar: ' + result.error.message);
+                        alert('❌ Error Supabase: ' + result.error.message + '\nCódigo: ' + result.error.code + '\n\nSolución: ejecuta fix_alertas_rls.sql en el panel de Supabase.');
                         return;
                     }
                 }
-                scLoadAlertas();
-            } catch(e) { alert('Error inesperado al eliminar.'); }
+                // Verificar que se eliminó correctamente
+                scAllAlertas = scAllAlertas.filter(function(x) { return x.id !== id; });
+                scRenderAlertas();
+                setTimeout(scLoadAlertas, 1000);
+            } catch(e) {
+                alert('Error: ' + e.message);
+                console.error('[SC DELETE] Error:', e);
+            }
         }
     );
 }
