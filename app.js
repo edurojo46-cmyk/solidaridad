@@ -1884,6 +1884,7 @@ var _chatCtxMenu = null; // menú contextual activo
 
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
+// ── Construye la burbuja completa con wrapper y acciones ──
 function renderChatMsg(m, isSent) {
     var wrapper = document.createElement('div');
     wrapper.className = 'wa-msg-row ' + (isSent ? 'wa-row-sent' : 'wa-row-recv');
@@ -1891,6 +1892,10 @@ function renderChatMsg(m, isSent) {
 
     var bubble = document.createElement('div');
     bubble.className = 'wa-bubble ' + (isSent ? 'wa-bubble-sent' : 'wa-bubble-recv');
+    if (m.media_url) {
+        bubble.style.padding = '4px'; // Menos padding para imágenes
+        bubble.style.overflow = 'hidden';
+    }
 
     var timeStr = m.created_at
         ? new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
@@ -1901,55 +1906,80 @@ function renderChatMsg(m, isSent) {
             : '<i class="ri-check-line" style="font-size:0.85rem"></i>')
         : '';
 
-    var contentHtml = '';
+    var contentContainer = document.createElement('div');
+    
     if (m.media_url) {
+        contentContainer.className = 'wa-media-wrap';
+        contentContainer.style.position = 'relative';
+        contentContainer.style.display = 'block';
+        contentContainer.style.borderRadius = '8px';
+        contentContainer.style.overflow = 'hidden';
+
         if (m.media_type === 'video') {
-            contentHtml =
-                '<div class="wa-media-wrap">' +
-                  '<video src="' + m.media_url + '" playsinline controls class="wa-media-video" ' +
-                    'style="max-width:240px;max-height:240px;border-radius:10px;display:block">' +
-                  '</video>' +
-                '</div>';
+            var vid = document.createElement('video');
+            vid.src = m.media_url;
+            vid.playsInline = true;
+            vid.controls = true;
+            vid.className = 'wa-media-video';
+            vid.style.cssText = 'max-width:240px;max-height:240px;display:block;width:100%;';
+            contentContainer.appendChild(vid);
         } else {
-            contentHtml =
-                '<div class="wa-media-wrap">' +
-                  '<img src="' + m.media_url + '" class="wa-media-img" ' +
-                    'style="max-width:240px;max-height:280px;border-radius:10px;display:block" alt="">' +
-                '</div>';
+            var img = document.createElement('img');
+            img.src = m.media_url;
+            img.className = 'wa-media-img';
+            img.style.cssText = 'max-width:240px;max-height:280px;display:block;width:100%;';
+            img.alt = '';
+            contentContainer.appendChild(img);
         }
     } else {
-        contentHtml = '<div class="wa-bubble-text">' + _escapeHtml(m.text || '') + '</div>';
+        var textDiv = document.createElement('div');
+        textDiv.className = 'wa-bubble-text';
+        textDiv.innerHTML = _escapeHtml(m.text || '');
+        contentContainer.appendChild(textDiv);
     }
 
-    bubble.innerHTML = contentHtml;
+    bubble.appendChild(contentContainer);
 
     // Barra de acciones inline en lugar del menú contextual (emojis y reenviar)
     var actionBar = document.createElement('div');
     actionBar.className = 'wa-inline-actions';
-    actionBar.style.cssText = 'display:flex; justify-content:flex-end; gap:8px; margin-top:4px; padding-top:4px; border-top:1px solid rgba(0,0,0,0.05);';
+    
+    if (m.media_url) {
+        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:8px; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.7)); padding:10px 8px 6px; color:white; z-index:5;';
+    } else {
+        actionBar.style.cssText = 'display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:2px; padding-top:2px;';
+    }
     
     // Botón Emojis
     var btnEmoji = document.createElement('button');
     btnEmoji.innerHTML = '<i class="ri-emotion-line"></i>';
-    btnEmoji.style.cssText = 'background:none; border:none; color:#555; font-size:1.1rem; cursor:pointer; padding:0;';
+    btnEmoji.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.1rem; cursor:pointer; padding:0; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
     btnEmoji.onclick = function(e) { e.stopPropagation(); _showEmojiBar(m, wrapper); };
     
     // Botón Reenviar
     var btnForward = document.createElement('button');
     btnForward.innerHTML = '<i class="ri-share-forward-line"></i>';
-    btnForward.style.cssText = 'background:none; border:none; color:#555; font-size:1.1rem; cursor:pointer; padding:0;';
+    btnForward.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.1rem; cursor:pointer; padding:0; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
     btnForward.onclick = function(e) { e.stopPropagation(); _chatForward(m); };
 
     var footerHtml = document.createElement('div');
     footerHtml.className = 'wa-bubble-footer';
     footerHtml.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:3px; margin-left:auto;';
-    footerHtml.innerHTML = '<span class="wa-bubble-time">' + timeStr + '</span>' + tickHtml;
+    var timeColor = m.media_url ? 'rgba(255,255,255,0.9)' : '';
+    var tickColor = m.media_url ? (isSent && m.read ? '#53bdeb' : 'white') : '';
+    footerHtml.innerHTML = '<span class="wa-bubble-time" style="color:' + timeColor + '; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';">' + timeStr + '</span>' + 
+        (isSent ? (m.read ? '<i class="ri-check-double-line" style="color:' + (m.media_url ? '#53bdeb' : '#53bdeb') + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>' : '<i class="ri-check-line" style="color:' + tickColor + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>') : '');
 
     actionBar.appendChild(btnEmoji);
     actionBar.appendChild(btnForward);
     actionBar.appendChild(footerHtml);
 
-    bubble.appendChild(actionBar);
+    if (m.media_url) {
+        contentContainer.appendChild(actionBar);
+    } else {
+        bubble.appendChild(actionBar);
+    }
+    
     wrapper.appendChild(bubble);
 
     return wrapper;
