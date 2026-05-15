@@ -468,6 +468,14 @@ var db = {
     },
     async sendMessage(fromId, toId, text, replyTo) {
         if (!sbClient) return null;
+        
+        // Verificar si alguno de los dos está bloqueado
+        const blocked = await this.isUserBlocked(fromId, toId);
+        if (blocked) {
+            console.warn('[Chat] No se puede enviar: Usuario bloqueado');
+            return null;
+        }
+
         const payload = {
             from_id: fromId,
             to_id: toId,
@@ -478,6 +486,20 @@ var db = {
         const { data, error } = await sbClient.from('messages').insert(payload).select().single();
         if (error) { console.error('Error sending message:', error); return null; }
         return data;
+    },
+
+    async blockUser(myId, partnerId) {
+        if (!sbClient) return { error: 'No client' };
+        return await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
+    },
+    async unblockUser(myId, partnerId) {
+        if (!sbClient) return { error: 'No client' };
+        return await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
+    },
+    async isUserBlocked(myId, partnerId) {
+        if (!sbClient) return false;
+        const { data } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
+        return data && data.length > 0;
     },
 
     async getConversations(userId) {
@@ -715,21 +737,4 @@ document.addEventListener('DOMContentLoaded', function() {
 // Ensure global access for inline onclick handlers
 window.db = db;
 window.sbClient = sbClient;
-
-// ---- BLOCKING SYSTEM ----
-async function blockUser(myId, partnerId) {
-    const { data, error } = await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
-    return { data, error };
-}
-async function unblockUser(myId, partnerId) {
-    const { data, error } = await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
-    return { data, error };
-}
-async function isUserBlocked(myId, partnerId) {
-    const { data } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
-    return data && data.length > 0;
-}
-window.db.blockUser = blockUser;
-window.db.unblockUser = unblockUser;
-window.db.isUserBlocked = isUserBlocked;
 

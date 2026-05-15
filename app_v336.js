@@ -1816,6 +1816,7 @@ async function openChat(partnerId, partnerName) {
     
     // Premium status update
     updatePartnerStatus(partnerId);
+    if (typeof checkBlockStatus === 'function') checkBlockStatus();
 
     var msgContainer = document.getElementById('chat-messages');
     if(msgContainer) msgContainer.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;"><i class="ri-loader-4-line" style="animation:spin 1s linear infinite;font-size:1.5rem;"></i></div>';
