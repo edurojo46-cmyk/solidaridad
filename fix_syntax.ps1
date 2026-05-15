@@ -1,0 +1,1 @@
+$lines = Get-Content 'c:\Users\Eduardo\Desktop\solidaridad\index.html'; $lines = $lines[0..9213] + @('};') + $lines[9297..($lines.Length-1)]; Set-Content -Path 'c:\Users\Eduardo\Desktop\solidaridad\index.html' -Value $lines -Encoding UTF8

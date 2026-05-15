@@ -1818,12 +1818,27 @@ function openChat(partnerId, partnerName) {
 
     if (typeof db !== 'undefined' && db.subscribeToMessages) {
         if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
-        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType) {
+        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType, payload) {
+            // Manejar Broadcast manual
+            if (payload && payload.event === 'reaction') {
+                var data = payload.payload;
+                var wrap = document.querySelector('.wa-msg-row[data-msg-id="' + data.msgId + '"]');
+                if (wrap) {
+                    _renderReactions({ id: data.msgId, reactions: data.reactions }, wrap);
+                }
+                return;
+            }
             if (eventType === 'UPDATE') {
+                console.log('[Realtime] UPDATE received for msg:', newMsg.id);
                 var existingWrapper = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
                 if (existingWrapper) {
+                    // Si recibimos un UPDATE pero no vienen las reacciones (Identity issues),
+                    // el objeto m original ya tiene las reacciones optimistas, 
+                    // pero para el otro usuario necesitamos que vengan en newMsg.
                     if (newMsg.reactions) {
                         _renderReactions(newMsg, existingWrapper);
+                    } else {
+                        console.warn('[Realtime] UPDATE received but reactions field is missing in payload');
                     }
                 }
                 return;
@@ -2138,6 +2153,16 @@ async function _addReaction(m, wrapper, emoji) {
     if (newReactions) {
         m.reactions = newReactions;
         _renderReactions(m, wrapper);
+        
+        // BROADCAST FALLBACK: Enviar evento manual por el canal de realtime 
+        // para que llegue instantáneamente si el DB-Realtime falla o es lento.
+        if (chatMessagesSubscription) {
+            chatMessagesSubscription.send({
+                type: 'broadcast',
+                event: 'reaction',
+                payload: { msgId: m.id, reactions: newReactions }
+            });
+        }
     }
 }
 

@@ -1,0 +1,1 @@
+$filtered = Get-Content 'c:\Users\Eduardo\Desktop\solidaridad-nuevo\index.html' | Where-Object { $_ -notmatch 'auth\.js\?v=276' -and $_ -notmatch 'supabase\.js\?v=276' -and $_ -notmatch 'app\.js\?v=276' }; Set-Content -Path 'c:\Users\Eduardo\Desktop\solidaridad\index.html' -Value $filtered -Encoding UTF8

@@ -7,6 +7,7 @@ $rootPath = "c:\Users\Eduardo\Desktop\solidaridad"
 $endpoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Loopback, $port)
 $listener = New-Object System.Net.Sockets.TcpListener($endpoint)
 $listener.Start()
+"SOLIDARIDAD corriendo en http://localhost:$port" | Out-File -FilePath "c:\Users\Eduardo\Desktop\solidaridad\server.log" -Encoding UTF8 -Append
 Write-Host "SOLIDARIDAD corriendo en http://localhost:$port" -ForegroundColor Cyan
 Write-Host "Presiona Ctrl+C para detener" -ForegroundColor Yellow
 
@@ -52,6 +53,7 @@ while ($true) {
     try {
         $client = $listener.AcceptTcpClient()
         $stream = $client.GetStream()
+        $stream.ReadTimeout = 1000
         $reader = New-Object System.IO.StreamReader($stream)
         
         # Read first line (e.g. "GET /index.html HTTP/1.1")

@@ -1,0 +1,1 @@
+$pid_to_kill = (Get-NetTCPConnection -LocalPort 8081 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Select-Object -First 1); if ($pid_to_kill) { Stop-Process -Id $pid_to_kill -Force }

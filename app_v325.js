@@ -1820,10 +1820,16 @@ function openChat(partnerId, partnerName) {
         if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
         chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType) {
             if (eventType === 'UPDATE') {
+                console.log('[Realtime] UPDATE received for msg:', newMsg.id);
                 var existingWrapper = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
                 if (existingWrapper) {
+                    // Si recibimos un UPDATE pero no vienen las reacciones (Identity issues),
+                    // el objeto m original ya tiene las reacciones optimistas, 
+                    // pero para el otro usuario necesitamos que vengan en newMsg.
                     if (newMsg.reactions) {
                         _renderReactions(newMsg, existingWrapper);
+                    } else {
+                        console.warn('[Realtime] UPDATE received but reactions field is missing in payload');
                     }
                 }
                 return;

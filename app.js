@@ -1818,25 +1818,58 @@ function openChat(partnerId, partnerName) {
 
     if (typeof db !== 'undefined' && db.subscribeToMessages) {
         if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
-        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType) {
-            if (eventType === 'UPDATE') {
-                var existingWrapper = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
-                if (existingWrapper) {
-                    if (newMsg.reactions) {
-                        _renderReactions(newMsg, existingWrapper);
-                    }
+        // Canal compartido (usamos "_" porque los UUIDs ya tienen "-")
+        var room = [currentUser.id, partnerId].sort().join('_');
+        chatMessagesSubscription = db.subscribeToMessages(room, function(newMsg, eventType, broadcastPayload) {
+            var statusEl = document.getElementById('chat-realtime-status');
+            if (statusEl) {
+                statusEl.textContent = 'En línea';
+                statusEl.style.color = '#4ade80';
+            }
+            // 1. Manejar Reacciones instantÃ¡neas (Broadcast)
+            if (eventType === 'BROADCAST') {
+                console.log('[Realtime] Broadcast received:', broadcastPayload);
+                // Intentar sacar los datos sea cual sea el formato (a veces viene anidado en payload, a veces directo)
+                var data = broadcastPayload.payload || broadcastPayload;
+                if (!data || !data.msgId) {
+                    console.warn('[Realtime] Invalid broadcast data');
+                    return;
+                }
+                var wrap = document.querySelector('.wa-msg-row[data-msg-id="' + data.msgId + '"]');
+                if (wrap) {
+                    console.log('[Realtime] Updating reactions via broadcast for:', data.msgId);
+                    _renderReactions({ id: data.msgId, reactions: data.reactions }, wrap);
                 }
                 return;
             }
-            if (eventType === 'INSERT' && newMsg.from_id === chatCurrentPartner) {
-                if(msgContainer) {
-                    var mDiv = renderChatMsg(newMsg, false);
-                    msgContainer.appendChild(mDiv);
-                    msgContainer.scrollTop = msgContainer.scrollHeight;
-                }
-                db.markConversationAsRead(currentUser.id, chatCurrentPartner);
-            } else {
-                updateChatBadges();
+
+            if (!newMsg) return;
+
+            // ESTRATEGIA v334: FETCH ON NOTIFY
+            // Para asegurar que tenemos todos los campos (fotos, reacciones),
+            // solicitamos el mensaje completo a la DB cuando recibimos una notificación.
+            if (eventType === 'INSERT' || eventType === 'UPDATE') {
+                db.getMessageById(newMsg.id).then(function(fullMsg) {
+                    if (!fullMsg) return;
+
+                    if (eventType === 'UPDATE') {
+                        var wrap = document.querySelector('.wa-msg-row[data-msg-id="' + fullMsg.id + '"]');
+                        if (wrap) _renderReactions(fullMsg, wrap);
+                    } else if (eventType === 'INSERT') {
+                        if (fullMsg.from_id === currentUser.id) return;
+                        if (document.querySelector('.wa-msg-row[data-msg-id="' + fullMsg.id + '"]')) return;
+                        if (fullMsg.from_id === chatCurrentPartner) {
+                            if (msgContainer) {
+                                var mDiv = renderChatMsg(fullMsg, false);
+                                msgContainer.appendChild(mDiv);
+                                msgContainer.scrollTop = msgContainer.scrollHeight;
+                            }
+                            db.markConversationAsRead(currentUser.id, chatCurrentPartner);
+                        } else {
+                            updateChatBadges();
+                        }
+                    }
+                });
             }
         });
     }
@@ -1865,10 +1898,24 @@ function sendMessage() {
     var currentUser = auth.getCurrentUser();
     if (!currentUser) return;
     
+    var replyData = null;
+    if (window._chatReplyTo) {
+        replyData = {
+            id: window._chatReplyTo.id,
+            text: window._chatReplyTo.text,
+            media_url: window._chatReplyTo.media_url,
+            sender_name: document.getElementById('chat-conv-name') ? document.getElementById('chat-conv-name').textContent : 'Usuario'
+        };
+        var preview = document.getElementById('wa-reply-preview');
+        if (preview) preview.remove();
+        window._chatReplyTo = null;
+    }
+
     var msgContainer = document.getElementById('chat-messages');
     var tempMsg = {
-        id: null,
+        id: 'temp-' + Date.now(),
         text: text,
+        reply_to: replyData,
         created_at: new Date().toISOString(),
         read: false
     };
@@ -1881,7 +1928,7 @@ function sendMessage() {
     input.value = '';
 
     if (typeof db !== 'undefined' && db.sendMessage) {
-        db.sendMessage(currentUser.id, chatCurrentPartner, text).then(function(msg) {
+        db.sendMessage(currentUser.id, chatCurrentPartner, text, replyData).then(function(msg) {
             if (msg && mDiv && mDiv.parentNode) {
                 var realDiv = renderChatMsg(msg, true);
                 mDiv.parentNode.replaceChild(realDiv, mDiv);
@@ -1899,16 +1946,62 @@ var _chatCtxMenu = null; // menú contextual activo
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
-var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
+var WA_EMOJIS = ['❤️','👍','😂','😮','😢','🙏','🔥'];
 
 function renderChatMsg(m, isSent) {
     if (!m) return document.createElement('div');
+
+    // --- Renderizado de Respuesta (Reply) ---
+    var replyBlock = null;
+    if (m.reply_to) {
+        replyBlock = document.createElement('div');
+        replyBlock.className = 'wa-bubble-reply';
+        replyBlock.style.cssText = 'background:rgba(0,0,0,0.05); border-left:4px solid #34b7f1; padding:6px 10px; border-radius:6px; margin-bottom:6px; font-size:0.85rem; display:flex; gap:8px; align-items:center; cursor:pointer;';
+        
+        var replyTextWrap = document.createElement('div');
+        replyTextWrap.style.flex = '1';
+        var replySender = document.createElement('div');
+        replySender.style.fontWeight = '700';
+        replySender.style.color = '#34b7f1';
+        replySender.textContent = m.reply_to.sender_name || 'Usuario';
+        
+        var replyContent = document.createElement('div');
+        replyContent.style.color = '#666';
+        replyContent.style.whiteSpace = 'nowrap';
+        replyContent.style.overflow = 'hidden';
+        replyContent.style.textOverflow = 'ellipsis';
+        replyContent.style.maxWidth = '180px';
+        
+        if (m.reply_to.media_url) {
+            replyContent.innerHTML = '<i class="ri-image-line"></i> Foto';
+        } else {
+            replyContent.textContent = m.reply_to.text || '';
+        }
+        
+        replyTextWrap.appendChild(replySender);
+        replyTextWrap.appendChild(replyContent);
+        replyBlock.appendChild(replyTextWrap);
+        
+        if (m.reply_to.media_url) {
+            var replyImg = document.createElement('img');
+            replyImg.src = m.reply_to.media_url;
+            replyImg.style.cssText = 'width:40px; height:40px; object-fit:cover; border-radius:4px;';
+            replyBlock.appendChild(replyImg);
+        }
+        
+        replyBlock.onclick = function() {
+            var target = document.querySelector('.wa-msg-row[data-msg-id="' + m.reply_to.id + '"]');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.style.background = 'rgba(52, 183, 241, 0.2)';
+                setTimeout(function() { target.style.background = ''; }, 1500);
+            }
+        };
+    }
     
+    // Limpieza de URL de medios (v334)
     if (m.media_url && m.media_url.indexOf('http') !== 0 && m.media_url.indexOf('data:') !== 0) {
-        var path = m.media_url;
-        if (path.indexOf('chat_media/') === 0) path = path.substring(11);
-        if (path.indexOf('/') === 0) path = path.substring(1);
-        m.media_url = 'https://sqimiuwnhecspmugmacu.supabase.co/storage/v1/object/public/chat_media/' + path;
+        m.media_url = SUPABASE_URL + '/storage/v1/object/public/chat-media/' + m.media_url;
     }
     
     var wrapper = document.createElement('div');
@@ -1968,6 +2061,7 @@ function renderChatMsg(m, isSent) {
         contentContainer.appendChild(txt);
     }
 
+    if (replyBlock) bubble.appendChild(replyBlock);
     bubble.appendChild(contentContainer);
 
     var footerHtml = document.createElement('div');
@@ -2023,61 +2117,56 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     var menu = document.createElement('div');
     menu.className = 'wa-dropdown-menu';
     menu.dataset.msgId = m.id || '';
-    menu.style.cssText = 'position:fixed; background:white; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); padding:5px 0; z-index:10000; min-width:160px;';
+    // Estilo mÃƒÂ¡s WhatsApp: fondo blanco, sombra suave, bordes redondeados
+    menu.style.cssText = 'position:fixed; background:white; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.2); z-index:10000; min-width:180px; overflow:hidden;';
     
-    var optReact = document.createElement('div');
-    optReact.style.cssText = 'padding:12px 15px; font-size:1rem; color:#333; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;';
-    optReact.innerHTML = '<i class="ri-emotion-line" style="font-size:1.2rem; color:#555;"></i> Reaccionar';
-    optReact.onmouseover = function() { this.style.background = '#f5f5f5'; };
-    optReact.onmouseout = function() { this.style.background = 'transparent'; };
-    optReact.onclick = function(ev) {
-        ev.stopPropagation();
-        // Cambiar el menú al selector de emojis
-        menu.innerHTML = '';
-        menu.style.display = 'flex';
-        menu.style.gap = '5px';
-        menu.style.padding = '8px 12px';
-        menu.style.borderRadius = '30px';
-        menu.style.minWidth = 'auto';
-        
-        WA_EMOJIS.forEach(function(emoji) {
-            var btn = document.createElement('button');
-            btn.textContent = emoji;
-            btn.style.cssText = 'font-size:1.5rem; background:none; border:none; cursor:pointer; padding:2px; transition:transform 0.1s;';
-            btn.onclick = function(e) {
-                e.stopPropagation();
-                _addReaction(m, wrapper, emoji);
-                menu.remove();
-            };
-            btn.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
-            btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
-            menu.appendChild(btn);
-        });
-    };
+    // 1. BARRA DE EMOJIS (DIRECTA)
+    var emojiBar = document.createElement('div');
+    emojiBar.style.cssText = 'display:flex; justify-content:space-around; padding:10px; border-bottom:1px solid #f0f0f0; background:#fcfcfc;';
+    WA_EMOJIS.forEach(function(emoji) {
+        var btn = document.createElement('button');
+        btn.textContent = emoji;
+        btn.style.cssText = 'font-size:1.6rem; background:none; border:none; cursor:pointer; padding:4px; transition:transform 0.1s;';
+        btn.onclick = function(ev) {
+            ev.stopPropagation();
+            _addReaction(m, wrapper, emoji);
+            menu.remove();
+        };
+        btn.onmouseover = function() { this.style.transform = 'scale(1.3)'; };
+        btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+        emojiBar.appendChild(btn);
+    });
+    menu.appendChild(emojiBar);
 
-    var optFwd = document.createElement('div');
-    optFwd.style.cssText = 'padding:12px 15px; font-size:1rem; color:#333; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;';
-    optFwd.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.2rem; color:#555;"></i> Reenviar';
-    optFwd.onmouseover = function() { this.style.background = '#f5f5f5'; };
-    optFwd.onmouseout = function() { this.style.background = 'transparent'; };
-    optFwd.onclick = function(ev) {
-        ev.stopPropagation();
-        menu.remove();
-        _chatForward(m);
-    };
+    // 2. OPCIONES
+    var options = [
+        { label: 'Responder', icon: 'ri-reply-line', fn: function() { _chatReply(m); } },
+        { label: 'Reenviar', icon: 'ri-share-forward-line', fn: function() { _chatForward(m); } },
+        { label: 'Eliminar', icon: 'ri-delete-bin-line', color: '#ef4444', fn: function() { _deleteMsg(m, wrapper); } }
+    ];
 
-    menu.appendChild(optReact);
-    menu.appendChild(optFwd);
+    options.forEach(function(opt) {
+        var item = document.createElement('div');
+        item.style.cssText = 'padding:12px 16px; font-size:1rem; color:' + (opt.color || '#333') + '; cursor:pointer; display:flex; align-items:center; gap:12px; transition:background 0.2s;';
+        item.innerHTML = '<i class="' + opt.icon + '" style="font-size:1.2rem; opacity:0.8;"></i> ' + opt.label;
+        item.onmouseover = function() { this.style.background = '#f5f5f5'; };
+        item.onmouseout = function() { this.style.background = 'transparent'; };
+        item.onclick = function(ev) {
+            ev.stopPropagation();
+            menu.remove();
+            opt.fn();
+        };
+        menu.appendChild(item);
+    });
 
     var rect = e.target.closest('button').getBoundingClientRect();
-    var topPos = rect.bottom + 5;
-    var leftPos = rect.left - 120;
+    var topPos = rect.bottom + 8;
+    var leftPos = rect.left - 140;
     
-    if (topPos + 100 > window.innerHeight) {
-        topPos = rect.top - 100;
-    }
-    
+    // Ajuste de pantalla
+    if (topPos + 250 > window.innerHeight) topPos = rect.top - 250;
     if (leftPos < 10) leftPos = 10;
+    if (leftPos + 200 > window.innerWidth) leftPos = window.innerWidth - 210;
 
     menu.style.top = topPos + 'px';
     menu.style.left = leftPos + 'px';
@@ -2085,12 +2174,13 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     document.body.appendChild(menu);
 
     setTimeout(function() {
-        document.addEventListener('click', function closeMenu(ev) {
+        var closer = function(ev) {
             if (!menu.contains(ev.target)) {
                 menu.remove();
-                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('click', closer);
             }
-        });
+        };
+        document.addEventListener('click', closer);
     }, 10);
 }
 
@@ -2124,60 +2214,94 @@ function _showEmojiBarPopup(m, wrapper) {
 }
 async function _addReaction(m, wrapper, emoji) {
     var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
-    if (!cu || typeof db === 'undefined' || !db.reactToMessage || !m.id) return;
+    if (!cu || typeof db === 'undefined' || !db.reactToMessage || !m.id) {
+        console.error('[Chat] Missing data for reaction:', { hasCu: !!cu, hasDb: !!db, msgId: m?.id });
+        return;
+    }
     
-    // Optimistic UI Update
+    console.log('[Chat] Reacting to:', m.id, 'with:', emoji);
+
+    // 1. Optimistic Update
     if (!m.reactions) m.reactions = {};
     if (!m.reactions[emoji]) m.reactions[emoji] = [];
     var idx = m.reactions[emoji].indexOf(cu.id);
-    if (idx === -1) {
-        m.reactions[emoji].push(cu.id);
-    } else {
-        m.reactions[emoji].splice(idx, 1);
-    }
+    if (idx === -1) m.reactions[emoji].push(cu.id);
+    else m.reactions[emoji].splice(idx, 1);
+    
     _renderReactions(m, wrapper);
 
-    // DB Call
-    var newReactions = await db.reactToMessage(m.id, cu.id, emoji);
-    if (newReactions) {
-        m.reactions = newReactions;
-        _renderReactions(m, wrapper);
+    // 2. Broadcast INMEDIATO (antes de la DB) para máxima velocidad
+    if (chatMessagesSubscription) {
+        console.log('[Realtime] Sending instant broadcast for:', m.id);
+        chatMessagesSubscription.send({
+            type: 'broadcast',
+            event: 'reaction',
+            payload: { msgId: m.id, reactions: m.reactions, sender: cu.id }
+        });
+    }
+
+    // 3. Persistencia en DB
+    try {
+        var newReactions = await db.reactToMessage(m.id, cu.id, emoji);
+        if (newReactions) {
+            m.reactions = newReactions;
+            _renderReactions(m, wrapper);
+        }
+    } catch(e) {
+        console.error('[Chat] Error saving reaction:', e);
     }
 }
 
 function _renderReactions(m, wrapper) {
-    var target = wrapper.querySelector('.wa-media-wrap') || wrapper.querySelector('.wa-bubble');
-    var display = wrapper.querySelector('.wa-reactions');
-    if (!display) {
-        display = document.createElement('div');
-        display.className = 'wa-reactions';
-        if (wrapper.querySelector('.wa-media-wrap')) {
-            display.style.cssText = 'position:absolute; bottom:8px; left:8px; display:flex; gap:4px; z-index:10;';
-        } else {
-            display.style.cssText = 'display:flex; gap:4px; margin-top:2px;';
+    console.log('[Chat] Rendering reactions for msg:', m.id, m.reactions);
+    
+    // 1. Encontrar el contenedor de contenido (donde estÃƒÂ¡ la foto o el texto)
+    var content = wrapper.querySelector('.wa-media-wrap') || wrapper.querySelector('.wa-msg-text');
+    var bubble = wrapper.querySelector('.wa-bubble');
+    
+    if (!bubble) return;
+
+    // 2. Eliminar si ya existe para redibujar
+    var old = wrapper.querySelector('.wa-reactions');
+    if (old) old.remove();
+
+    // 3. Si no hay reacciones, salir
+    if (!m.reactions || Object.keys(m.reactions).length === 0) return;
+
+    var hasData = false;
+    Object.keys(m.reactions).forEach(function(k) { if(m.reactions[k].length > 0) hasData = true; });
+    if (!hasData) return;
+
+    // 4. Crear el contenedor de reacciones
+    var display = document.createElement('div');
+    display.className = 'wa-reactions';
+    
+    // ESTILO CRÃƒÂTICO: Si es foto, debe ser ABSOLUTO para estar "dentro" del contenedor visualmente
+    if (m.media_url) {
+        display.style.cssText = 'position:absolute; bottom:10px; left:12px; display:flex; gap:5px; z-index:100; pointer-events:none;';
+    } else {
+        display.style.cssText = 'display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;';
+    }
+
+    // 5. Agregar las pÃƒÂ­ldoras
+    Object.keys(m.reactions).forEach(function(em) {
+        var users = m.reactions[em];
+        if (users && users.length > 0) {
+            var pill = document.createElement('div');
+            // Fondo blanco con borde sutil y sombra para que resalte sobre cualquier imagen
+            pill.style.cssText = 'background:white; border:1.5px solid #e9edef; border-radius:20px; padding:2px 8px; font-size:1rem; display:flex; align-items:center; gap:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1);';
+            pill.innerHTML = '<span>' + em + '</span>' + (users.length > 1 ? '<span style="font-size:0.8rem; font-weight:bold; color:#666;">' + users.length + '</span>' : '');
+            display.appendChild(pill);
         }
-        target.appendChild(display);
-    }
-    display.innerHTML = '';
-    var hasReactions = false;
-    if (m.reactions) {
-        Object.keys(m.reactions).forEach(function(em) {
-            // FIX: Filtrar basura de la base de datos para que solo renderice emojis reales
-            // if (typeof WA_EMOJIS !== 'undefined' && WA_EMOJIS.indexOf(em) === -1) return;
-            
-            var arr = m.reactions[em];
-            if (arr && arr.length > 0) {
-                hasReactions = true;
-                var pill = document.createElement('span');
-                pill.className = 'wa-reaction-pill';
-                pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; font-family:"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;';
-                pill.innerHTML = em + (arr.length > 0 ? '<span style="color:#333;font-size:0.8rem;font-weight:bold;margin-left:3px;">' + arr.length + '</span>' : '');
-                display.appendChild(pill);
-            }
-        });
-    }
-    if (!hasReactions) {
-        display.remove();
+    });
+
+    // 6. Inyectar en el lugar correcto
+    if (m.media_url) {
+        // En fotos, inyectamos en el bubble (que tiene position:relative y envuelve a la foto)
+        bubble.style.position = 'relative'; 
+        bubble.appendChild(display);
+    } else {
+        bubble.appendChild(display);
     }
 }
 

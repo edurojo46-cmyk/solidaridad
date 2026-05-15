@@ -1818,25 +1818,45 @@ function openChat(partnerId, partnerName) {
 
     if (typeof db !== 'undefined' && db.subscribeToMessages) {
         if (chatMessagesSubscription) chatMessagesSubscription.unsubscribe();
-        chatMessagesSubscription = db.subscribeToMessages(currentUser.id, function(newMsg, eventType) {
-            if (eventType === 'UPDATE') {
-                var existingWrapper = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
-                if (existingWrapper) {
-                    if (newMsg.reactions) {
-                        _renderReactions(newMsg, existingWrapper);
-                    }
-                }
+        // Canal compartido basado en ambos IDs para que el Broadcast llegue a ambos
+        var room = [currentUser.id, partnerId].sort().join('-');
+        chatMessagesSubscription = db.subscribeToMessages(room, function(newMsg, eventType, broadcastPayload) {
+            // 1. Manejar Reacciones instantÃ¡neas (Broadcast)
+            if (eventType === 'BROADCAST') {
+                var data = broadcastPayload.payload;
+                if (!data || !data.msgId) return;
+                var wrap = document.querySelector('.wa-msg-row[data-msg-id="' + data.msgId + '"]');
+                if (wrap) _renderReactions({ id: data.msgId, reactions: data.reactions }, wrap);
                 return;
             }
-            if (eventType === 'INSERT' && newMsg.from_id === chatCurrentPartner) {
-                if(msgContainer) {
-                    var mDiv = renderChatMsg(newMsg, false);
-                    msgContainer.appendChild(mDiv);
-                    msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            if (!newMsg) return;
+
+            // 2. Manejar Actualizaciones de la DB (Reacciones persistidas)
+            if (eventType === 'UPDATE') {
+                var wrap = document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]');
+                if (wrap && newMsg.reactions) _renderReactions(newMsg, wrap);
+                return;
+            }
+
+            // 3. Manejar Nuevos Mensajes (INSERT)
+            if (eventType === 'INSERT') {
+                // IGNORAR MIS PROPIOS MENSAJES (Ya los manejamos de forma optimista)
+                if (newMsg.from_id === currentUser.id) return;
+                
+                // EVITAR DUPLICADOS: Si el mensaje ya existe en el DOM por algÃºn motivo
+                if (document.querySelector('.wa-msg-row[data-msg-id="' + newMsg.id + '"]')) return;
+
+                if (newMsg.from_id === chatCurrentPartner) {
+                    if (msgContainer) {
+                        var mDiv = renderChatMsg(newMsg, false);
+                        msgContainer.appendChild(mDiv);
+                        msgContainer.scrollTop = msgContainer.scrollHeight;
+                    }
+                    db.markConversationAsRead(currentUser.id, chatCurrentPartner);
+                } else {
+                    updateChatBadges();
                 }
-                db.markConversationAsRead(currentUser.id, chatCurrentPartner);
-            } else {
-                updateChatBadges();
             }
         });
     }
@@ -2138,6 +2158,16 @@ async function _addReaction(m, wrapper, emoji) {
     if (newReactions) {
         m.reactions = newReactions;
         _renderReactions(m, wrapper);
+        
+        // BROADCAST FALLBACK: Enviar evento manual por el canal de realtime 
+        // para que llegue instantáneamente si el DB-Realtime falla o es lento.
+        if (chatMessagesSubscription) {
+            chatMessagesSubscription.send({
+                type: 'broadcast',
+                event: 'reaction',
+                payload: { msgId: m.id, reactions: newReactions }
+            });
+        }
     }
 }
 

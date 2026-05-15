@@ -2142,55 +2142,54 @@ async function _addReaction(m, wrapper, emoji) {
 }
 
 function _renderReactions(m, wrapper) {
-    console.log('[Chat] Rendering reactions for msg:', m.id, m.reactions);
-    
-    // 1. Encontrar el contenedor de contenido (donde estÃƒÂ¡ la foto o el texto)
-    var content = wrapper.querySelector('.wa-media-wrap') || wrapper.querySelector('.wa-msg-text');
+    // Buscar donde poner las reacciones. Preferimos el footer de la burbuja para evitar problemas visuales con fotos.
     var bubble = wrapper.querySelector('.wa-bubble');
+    var footer = wrapper.querySelector('.wa-bubble-footer');
+    var target = footer || bubble;
     
-    if (!bubble) return;
+    if (!target) return;
 
-    // 2. Eliminar si ya existe para redibujar
-    var old = wrapper.querySelector('.wa-reactions');
-    if (old) old.remove();
-
-    // 3. Si no hay reacciones, salir
-    if (!m.reactions || Object.keys(m.reactions).length === 0) return;
-
-    var hasData = false;
-    Object.keys(m.reactions).forEach(function(k) { if(m.reactions[k].length > 0) hasData = true; });
-    if (!hasData) return;
-
-    // 4. Crear el contenedor de reacciones
-    var display = document.createElement('div');
-    display.className = 'wa-reactions';
+    var display = wrapper.querySelector('.wa-reactions');
+    if (!display) {
+        display = document.createElement('div');
+        display.className = 'wa-reactions';
+        // Si es foto, forzamos un estilo que se vea bien arriba del pie
+        if (m.media_url) {
+            display.style.cssText = 'display:flex; gap:4px; margin-bottom:4px; margin-left:4px; flex-wrap:wrap;';
+            // Insertar antes del footer si es multimedia
+            if (footer && footer.parentNode) {
+                footer.parentNode.insertBefore(display, footer);
+            } else {
+                target.appendChild(display);
+            }
+        } else {
+            display.style.cssText = 'display:flex; gap:4px; margin-top:2px; flex-wrap:wrap;';
+            target.appendChild(display);
+        }
+    }
     
-    // ESTILO CRÃƒÂTICO: Si es foto, debe ser ABSOLUTO para estar "dentro" del contenedor visualmente
-    if (m.media_url) {
-        display.style.cssText = 'position:absolute; bottom:10px; left:12px; display:flex; gap:5px; z-index:100; pointer-events:none;';
-    } else {
-        display.style.cssText = 'display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;';
+    display.innerHTML = '';
+    var hasReactions = false;
+    
+    if (m.reactions && typeof m.reactions === 'object') {
+        Object.keys(m.reactions).forEach(function(em) {
+            var userIds = m.reactions[em];
+            if (Array.isArray(userIds) && userIds.length > 0) {
+                hasReactions = true;
+                var pill = document.createElement('span');
+                pill.className = 'wa-reaction-pill';
+                // Estilo "Pill" de WhatsApp: fondo suave, bordes redondeados, sombra leve
+                pill.style.cssText = 'background:#f0f2f5; border:1px solid #d1d7db; border-radius:18px; padding:2px 8px; font-size:0.9rem; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.05);';
+                
+                var countHtml = userIds.length > 1 ? '<span style="font-size:0.75rem; font-weight:bold; color:#54656f">' + userIds.length + '</span>' : '';
+                pill.innerHTML = '<span>' + em + '</span>' + countHtml;
+                display.appendChild(pill);
+            }
+        });
     }
 
-    // 5. Agregar las pÃƒÂ­ldoras
-    Object.keys(m.reactions).forEach(function(em) {
-        var users = m.reactions[em];
-        if (users && users.length > 0) {
-            var pill = document.createElement('div');
-            // Fondo blanco con borde sutil y sombra para que resalte sobre cualquier imagen
-            pill.style.cssText = 'background:white; border:1.5px solid #e9edef; border-radius:20px; padding:2px 8px; font-size:1rem; display:flex; align-items:center; gap:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1);';
-            pill.innerHTML = '<span>' + em + '</span>' + (users.length > 1 ? '<span style="font-size:0.8rem; font-weight:bold; color:#666;">' + users.length + '</span>' : '');
-            display.appendChild(pill);
-        }
-    });
-
-    // 6. Inyectar en el lugar correcto
-    if (m.media_url) {
-        // En fotos, inyectamos en el bubble (que tiene position:relative y envuelve a la foto)
-        bubble.style.position = 'relative'; 
-        bubble.appendChild(display);
-    } else {
-        bubble.appendChild(display);
+    if (!hasReactions && display.parentNode) {
+        display.remove();
     }
 }
 
