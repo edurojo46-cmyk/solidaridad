@@ -2291,21 +2291,68 @@ function scRenderNecesidadesBox(alertaId) {
                      
     return necs.map(function(n) {
         var necName = n.trim();
-        var pledgesCount = msgs.filter(function(m) { return m.necesidad === necName; }).length;
-        var counterHtml = pledgesCount > 0 ? '<span style="background:#e74c3c;color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;margin-left:4px;">' + pledgesCount + '</span>' : '';
-        return '<span style="display:inline-flex;align-items:center;gap:4px;background:white;color:#1e293b;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #cbd5e1;box-shadow:0 1px 3px rgba(0,0,0,0.05);">' +
-            '<i class="' + (necIcons[necName] || 'ri-check-line') + '" style="color:#e74c3c;"></i>' + necName + counterHtml + '</span>';
+        var pledges = msgs.filter(function(m) { return m.necesidad === necName; });
+        var pledgesCount = pledges.length;
+        var dropdownId = 'sc-pledges-' + alertaId + '-' + necName.replace(/\s+/g, '_');
+        
+        // Badge contador
+        var badgeHtml = pledgesCount > 0
+            ? '<span style="background:#e74c3c;color:white;border-radius:50%;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;padding:0 3px;margin-left:4px;">' + pledgesCount + '</span>'
+            : '';
+        
+        // Lista de comprometidos (desplegable)
+        var listHtml = '';
+        if (pledgesCount > 0) {
+            var items = pledges.map(function(p) {
+                var t = p.created_at ? new Date(p.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : '';
+                return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;">'
+                    + '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#e74c3c,#c0392b);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+                    + '<i class="ri-hand-heart-fill" style="color:white;font-size:0.75rem;"></i></div>'
+                    + '<div style="flex:1;min-width:0;">'
+                    + '<div style="font-weight:700;font-size:0.78rem;color:#1e293b;">' + scEscape(p.helper_name || 'Alguien') + '</div>'
+                    + '<div style="font-size:0.7rem;color:#94a3b8;">Se comprometió · ' + t + '</div>'
+                    + '</div></div>';
+            }).join('');
+            listHtml = '<div id="' + dropdownId + '" style="display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:100;background:white;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:1px solid #e2e8f0;padding:10px 12px;min-width:200px;max-width:260px;">'
+                + '<div style="font-size:0.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">'
+                + '<i class="ri-user-heart-line"></i> Comprometidos (' + pledgesCount + ')</div>'
+                + items
+                + '</div>';
+        }
+        
+        var chipStyle = pledgesCount > 0
+            ? 'display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fff5f5,#fff);color:#dc2626;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1.5px solid #fecaca;box-shadow:0 2px 8px rgba(220,38,38,0.12);cursor:pointer;user-select:none;position:relative;transition:all 0.2s;'
+            : 'display:inline-flex;align-items:center;gap:4px;background:white;color:#1e293b;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #cbd5e1;box-shadow:0 1px 3px rgba(0,0,0,0.05);position:relative;';
+        
+        var chevronHtml = pledgesCount > 0
+            ? '<i class="ri-arrow-down-s-line" style="font-size:0.85rem;margin-left:2px;"></i>'
+            : '';
+        
+        var toggleFn = pledgesCount > 0
+            ? 'onclick="event.stopPropagation();var d=document.getElementById(\'' + dropdownId + '\');if(d){d.style.display=d.style.display===\'none\'?\'block\':\'none\';};document.addEventListener(\'click\',function cl(e){if(!e.target.closest(\'#' + dropdownId + '\')){d.style.display=\'none\';document.removeEventListener(\'click\',cl);}},true);"'
+            : '';
+        
+        return '<span style="' + chipStyle + '" ' + toggleFn + '>'
+            + '<i class="' + (necIcons[necName] || 'ri-check-line') + '" style="color:' + (pledgesCount > 0 ? '#e74c3c' : '#64748b') + ';"></i>'
+            + necName + badgeHtml + chevronHtml
+            + listHtml
+            + '</span>';
     }).join('');
 }
 
 function scRenderMensajes(alertaId) {
     var msgs = scMensajes[alertaId] || [];
-    if (msgs.length === 0) return '<div style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:12px 0;"><i class="ri-team-line" style="font-size:1.5rem;display:block;margin-bottom:4px;color:#cbd5e1;"></i>Sé el primero en ofrecer ayuda.</div>';
-    return msgs.map(function(m) {
+    // Filtrar solo mensajes generales (excluir pledges — se muestran en los chips)
+    var generalMsgs = msgs.filter(function(m) { return !m.necesidad || m.necesidad === 'general'; });
+    if (generalMsgs.length === 0) {
+        var hasPledges = msgs.some(function(m) { return m.necesidad && m.necesidad !== 'general'; });
+        var emptyMsg = hasPledges
+            ? '<div style="font-size:0.8rem; color:#94a3b8; text-align:center; padding:8px 0;"><i class="ri-arrow-up-line" style="display:block;margin-bottom:2px;"></i>Ver comprometidos en los chips de arriba</div>'
+            : '<div style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:12px 0;"><i class="ri-team-line" style="font-size:1.5rem;display:block;margin-bottom:4px;color:#cbd5e1;"></i>Sé el primero en ofrecer ayuda.</div>';
+        return emptyMsg;
+    }
+    return generalMsgs.map(function(m) {
         var t = m.created_at ? new Date(m.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : '';
-        if (m.necesidad && m.necesidad !== 'general') {
-            return '<div class="sc-foro-msg" style="background:#fef2f2; border-left:3px solid #e74c3c; padding-left:10px; margin-bottom:8px;"><strong><span><i class="ri-hand-heart-fill" style="color:#e74c3c;margin-right:4px;"></i>' + scEscape(m.helper_name || 'Alguien') + '</span><span class="sc-foro-msg-date">' + t + '</span></strong><span style="color:#b91c1c;font-weight:700;font-size:0.85rem;"><i class="ri-check-line"></i> Se comprometió a llevar: ' + scEscape(m.necesidad) + '</span></div>';
-        }
         return '<div class="sc-foro-msg" style="margin-bottom:8px;"><strong><span><i class="ri-user-smile-line" style="color:#3498db;margin-right:4px;"></i>' + scEscape(m.helper_name || 'Alguien') + '</span><span class="sc-foro-msg-date">' + t + '</span></strong><span style="font-size:0.85rem;">' + scEscape(m.mensaje) + '</span></div>';
     }).join('');
 }
