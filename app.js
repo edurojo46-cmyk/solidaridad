@@ -1927,7 +1927,8 @@ function renderChatMsg(m, isSent) {
             var img = document.createElement('img');
             img.src = m.media_url;
             img.className = 'wa-media-img';
-            img.style.cssText = 'max-width:240px;max-height:280px;display:block;width:100%;';
+            img.style.cssText = 'max-width:240px;max-height:280px;display:block;width:100%;cursor:zoom-in;';
+            img.onclick = function(e) { chatOpenViewer('img', m.media_url); };
             img.alt = '';
             contentContainer.appendChild(img);
         }
@@ -2066,11 +2067,15 @@ function _showEmojiBar(m, wrapper) {
 }
 
 function _addReaction(m, wrapper, emoji) {
+    var target = wrapper.querySelector('.wa-media-wrap') || wrapper.querySelector('.wa-bubble');
     var display = wrapper.querySelector('.wa-reactions');
     if (!display) {
         display = document.createElement('div');
         display.className = 'wa-reactions';
-        wrapper.appendChild(display);
+        if (wrapper.querySelector('.wa-media-wrap')) {
+            display.style.cssText = 'position:absolute; bottom:40px; left:8px; display:flex; gap:4px; z-index:10;';
+        }
+        target.appendChild(display);
     }
     var pill = document.createElement('span');
     pill.className = 'wa-reaction-pill';
