@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=292">
+    <link rel="stylesheet" href="index.css?v=293">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3658,67 +3658,32 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
     function appendMessageBubble(msg, isMe) {
         var msgArea = document.getElementById('chat-messages'); if (!msgArea) return;
-        var div = document.createElement('div');
-        div.className = 'chat-msg ' + (isMe ? 'sent' : '');
-        if (msg.id) div.setAttribute('data-msg-id', msg.id);
-        var time = formatChatTime(msg.created_at);
-        var textContent = msg.text || '';
         
-        if (textContent.indexOf('__VIDEOCALL__|') === 0) {
-            textContent = '<div style="display:flex;align-items:center;gap:6px;font-weight:600"><i class="ri-vidicon-fill" style="font-size:1.1rem"></i> Videollamada</div>';
-        } else if (textContent.indexOf('[VID]') === 0) {
-            var vidSrc = textContent.substring(5);
-            textContent = '<video src="' + vidSrc + '" controls playsinline preload="metadata" style="max-width:100%;border-radius:12px;margin-bottom:4px;max-height:300px"></video>';
-        } else if (textContent.indexOf('[IMG]') === 0) {
-            var imgSrc = textContent.substring(5);
-            textContent = '<img src="' + imgSrc + '" class="chat-img-preview" onclick="openImageViewer(this.src)">';
+        // Compatibility with legacy string formats for media
+        if (msg.text && typeof msg.text === 'string') {
+            if (msg.text.indexOf('[IMG]') === 0) {
+                msg.media_url = msg.text.substring(5);
+                msg.media_type = 'image';
+                msg.text = '';
+            } else if (msg.text.indexOf('[VID]') === 0) {
+                msg.media_url = msg.text.substring(5);
+                msg.media_type = 'video';
+                msg.text = '';
+            }
         }
-
-        var reactHtml = '';
-        if (msg.reactions && typeof msg.reactions === 'object') {
-            Object.entries(msg.reactions).forEach(function(p) {
-                if (p[1] && p[1].length > 0) {
-                    reactHtml += '<span class="msg-reaction-pill" data-emoji="' + p[0] + '">' + p[0] + (p[1].length > 1 ? ' ' + p[1].length : '') + '</span>';
-                }
-            });
-            if (reactHtml) reactHtml = '<div class="msg-reactions-display">' + reactHtml + '</div>';
-        }
-
-        var senderName = isMe ? 'Tú' : (msg.from_id && chatProfiles[msg.from_id] ? chatProfiles[msg.from_id].name : (currentChatPartner ? currentChatPartner.name : ''));
-        var senderHtml = senderName && !isMe ? '<div class="chat-msg-sender">' + senderName + '</div>' : '';
         
-        div.innerHTML = senderHtml + '<div class="chat-msg-text">' + textContent + '</div>' + reactHtml +
-            '<div class="chat-msg-meta">' + time + (isMe ? ' <i class="ri-check-double-fill msg-read-tick" style="color:' + (msg.read ? '#00e676' : 'rgba(255,255,255,0.4)') + ';font-size:0.85rem;margin-left:4px"></i>' : '') + '</div>';
-
-        var emojiBar = document.createElement('div');
-        emojiBar.className = 'msg-emoji-bar';
-        var emojis = ['ðŸ‘','â¤ï¸','ðŸ˜‚','ðŸ˜®','ðŸ™','ðŸ”¥'];
-        emojis.forEach(function(em) {
-            var btn = document.createElement('button');
-            btn.textContent = em;
-            btn.onclick = function(e) { e.stopPropagation(); reactToMsg(div, em); };
-            emojiBar.appendChild(btn);
-        });
-        div.appendChild(emojiBar);
-
-        var actionsDiv = document.createElement('div');
-        actionsDiv.className = 'msg-outer-actions' + (isMe ? ' sent' : '');
-        actionsDiv.innerHTML = '<button class="msg-outer-btn" onclick="copyMsgText(this)" title="Copiar"><i class="ri-file-copy-line"></i></button>' +
-            '<button class="msg-outer-btn" onclick="shareMsgContent(this)" title="Compartir"><i class="ri-share-forward-line"></i></button>';
-
-        div.addEventListener('click', function(e) {
-            if (e.target.closest('.msg-emoji-bar') || e.target.closest('.msg-action-bar') || e.target.tagName === 'IMG') return;
-            document.querySelectorAll('.msg-emoji-bar.visible').forEach(function(b) { b.classList.remove('visible'); });
-            emojiBar.classList.toggle('visible');
-        });
-
-        var wrapper = document.createElement('div');
-        wrapper.className = 'msg-wrapper' + (isMe ? ' sent' : '');
-        wrapper.appendChild(div);
-        wrapper.appendChild(actionsDiv);
-        msgArea.appendChild(wrapper);
+        if (typeof renderChatMsg === 'function') {
+            var wrapper = renderChatMsg(msg, isMe);
+            msgArea.appendChild(wrapper);
+        } else {
+            var div = document.createElement('div');
+            div.className = 'chat-msg ' + (isMe ? 'sent' : '');
+            div.textContent = msg.text || '';
+            msgArea.appendChild(div);
+        }
         msgArea.scrollTop = msgArea.scrollHeight;
     }
+
 
     async function reactToMsg(msgDiv, emoji) {
         var msgId = msgDiv.getAttribute('data-msg-id');
@@ -4687,10 +4652,10 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=292"></script>
-<script src="supabase.js?v=292"></script>
-<script src="app.js?v=292"></script>
-<script src="chat-pro.js?v=292"></script>
+<script src="auth.js?v=293"></script>
+<script src="supabase.js?v=293"></script>
+<script src="app.js?v=293"></script>
+<script src="chat-pro.js?v=293"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
