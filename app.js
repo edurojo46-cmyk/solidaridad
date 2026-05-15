@@ -1883,13 +1883,12 @@ function sendMessage() {
 var _chatCtxMenu = null; // menú contextual activo
 
 // ── Construye la burbuja completa con wrapper y acciones ──
+// ── Construye la burbuja completa con wrapper y acciones ──
 function renderChatMsg(m, isSent) {
-    // Wrapper externo (posición en la fila)
     var wrapper = document.createElement('div');
     wrapper.className = 'wa-msg-row ' + (isSent ? 'wa-row-sent' : 'wa-row-recv');
     wrapper.setAttribute('data-msg-id', m.id || '');
 
-    // Burbuja principal
     var bubble = document.createElement('div');
     bubble.className = 'wa-bubble ' + (isSent ? 'wa-bubble-sent' : 'wa-bubble-recv');
 
@@ -1902,54 +1901,56 @@ function renderChatMsg(m, isSent) {
             : '<i class="ri-check-line" style="font-size:0.85rem"></i>')
         : '';
 
-    // Contenido
     var contentHtml = '';
     if (m.media_url) {
         if (m.media_type === 'video') {
             contentHtml =
                 '<div class="wa-media-wrap">' +
-                  '<video src="' + m.media_url + '" playsinline class="wa-media-video" ' +
-                    'onclick="chatOpenViewer(\'video\',\'' + m.media_url + '\')" ' +
-                    'style="max-width:240px;max-height:240px;border-radius:10px;display:block;cursor:pointer">' +
+                  '<video src="' + m.media_url + '" playsinline controls class="wa-media-video" ' +
+                    'style="max-width:240px;max-height:240px;border-radius:10px;display:block">' +
                   '</video>' +
-                  '<div class="wa-media-play-icon"><i class="ri-play-circle-fill"></i></div>' +
                 '</div>';
         } else {
             contentHtml =
                 '<div class="wa-media-wrap">' +
                   '<img src="' + m.media_url + '" class="wa-media-img" ' +
-                    'onclick="chatOpenViewer(\'img\',\'' + m.media_url + '\')" ' +
-                    'style="max-width:240px;max-height:280px;border-radius:10px;display:block;cursor:zoom-in" alt="">' +
+                    'style="max-width:240px;max-height:280px;border-radius:10px;display:block" alt="">' +
                 '</div>';
         }
     } else {
         contentHtml = '<div class="wa-bubble-text">' + _escapeHtml(m.text || '') + '</div>';
     }
 
-    bubble.innerHTML =
-        contentHtml +
-        '<div class="wa-bubble-footer">' +
-          '<span class="wa-bubble-time">' + timeStr + '</span>' +
-          tickHtml +
-        '</div>';
+    bubble.innerHTML = contentHtml;
 
-    // Botón "▾" que aparece al hover (chevron de menú)
-    var chevron = document.createElement('button');
-    chevron.className = 'wa-chevron';
-    chevron.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
-    chevron.title = 'Opciones';
-    chevron.onclick = function(e) { e.stopPropagation(); _showChatCtxMenu(e, m, isSent, wrapper); };
-    bubble.appendChild(chevron);
+    // Barra de acciones inline en lugar del menú contextual (emojis y reenviar)
+    var actionBar = document.createElement('div');
+    actionBar.className = 'wa-inline-actions';
+    actionBar.style.cssText = 'display:flex; justify-content:flex-end; gap:8px; margin-top:4px; padding-top:4px; border-top:1px solid rgba(0,0,0,0.05);';
+    
+    // Botón Emojis
+    var btnEmoji = document.createElement('button');
+    btnEmoji.innerHTML = '<i class="ri-emotion-line"></i>';
+    btnEmoji.style.cssText = 'background:none; border:none; color:#555; font-size:1.1rem; cursor:pointer; padding:0;';
+    btnEmoji.onclick = function(e) { e.stopPropagation(); _showEmojiBar(m, wrapper); };
+    
+    // Botón Reenviar
+    var btnForward = document.createElement('button');
+    btnForward.innerHTML = '<i class="ri-share-forward-line"></i>';
+    btnForward.style.cssText = 'background:none; border:none; color:#555; font-size:1.1rem; cursor:pointer; padding:0;';
+    btnForward.onclick = function(e) { e.stopPropagation(); _chatForward(m); };
 
+    var footerHtml = document.createElement('div');
+    footerHtml.className = 'wa-bubble-footer';
+    footerHtml.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:3px; margin-left:auto;';
+    footerHtml.innerHTML = '<span class="wa-bubble-time">' + timeStr + '</span>' + tickHtml;
+
+    actionBar.appendChild(btnEmoji);
+    actionBar.appendChild(btnForward);
+    actionBar.appendChild(footerHtml);
+
+    bubble.appendChild(actionBar);
     wrapper.appendChild(bubble);
-
-    // Long-press para móvil
-    var _lpTimer = null;
-    bubble.addEventListener('touchstart', function(e) {
-        _lpTimer = setTimeout(function() { _showChatCtxMenu(e.touches[0], m, isSent, wrapper); }, 500);
-    }, {passive: true});
-    bubble.addEventListener('touchend', function() { clearTimeout(_lpTimer); });
-    bubble.addEventListener('touchmove', function() { clearTimeout(_lpTimer); });
 
     return wrapper;
 }

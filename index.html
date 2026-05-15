@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=294">
+    <link rel="stylesheet" href="index.css?v=295">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3429,26 +3429,24 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
         <!-- Chat Conversation -->
         <div class="chat-conversation-view" id="chat-conversation-view" style="display:none">
-            <div class="chat-conv-header glass" id="chat-conv-header">
-                <button class="icon-btn" onclick="closeChat()"><i class="ri-arrow-left-line"></i></button>
-                <div class="chat-conv-user" onclick="closeChat()">
-                    <div class="chat-conv-avatar-wrap">
-                        <div class="chat-conv-avatar" id="chat-conv-avatar">M</div>
-                        <span class="chat-conv-online-dot" id="chat-conv-online"></span>
+            <div class="chat-conv-header glass" id="chat-conv-header" style="display:flex; align-items:center; padding:10px 16px; background:#075E54; color:white;">
+                <button class="icon-btn" onclick="closeChat()" style="color:white; margin-right:8px;"><i class="ri-arrow-left-line"></i></button>
+                <div class="chat-conv-user" onclick="closeChat()" style="display:flex; align-items:center; flex:1; gap:12px; cursor:pointer;">
+                    <div class="chat-conv-avatar-wrap" style="position:relative;">
+                        <div class="chat-conv-avatar" id="chat-conv-avatar" style="width:40px; height:40px; border-radius:50%; background:#ccc; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:bold;">M</div>
                     </div>
-                    <div class="chat-conv-user-info">
-                        <h4 id="chat-conv-name">María</h4>
-                        <span class="chat-conv-status" id="chat-conv-status">en línea</span>
+                    <div class="chat-conv-user-info" style="display:flex; flex-direction:column;">
+                        <h4 id="chat-conv-name" style="margin:0; font-size:1.1rem; color:white; font-weight:600;">Usuario</h4>
+                        <span class="chat-conv-status" id="chat-conv-status" style="font-size:0.8rem; color:rgba(255,255,255,0.8);">en línea</span>
                     </div>
                 </div>
-                <div class="chat-conv-actions">
-                    <button class="icon-btn" onclick="chatVideoCall()" title="Videollamada"><i class="ri-vidicon-fill"></i></button>
-                    <div class="chat-more-menu-wrap">
-                        <button class="icon-btn" onclick="toggleChatMenu()" title="Más"><i class="ri-more-2-fill"></i></button>
-                        <div class="chat-more-menu" id="chat-more-menu" style="display:none">
-                            <button id="chat-block-btn" onclick="blockChatUser()"><i class="ri-forbid-line"></i> Bloquear usuario</button>
-                            <button onclick="closeChatMenu(); alert('Perfil del usuario')"><i class="ri-user-line"></i> Ver perfil</button>
-                            <button onclick="closeChatMenu(); alert('Chat silenciado')"><i class="ri-notification-off-line"></i> Silenciar</button>
+                <div class="chat-conv-actions" style="display:flex; align-items:center; gap:16px;">
+                    <div class="chat-more-menu-wrap" style="position:relative;">
+                        <button class="icon-btn" onclick="toggleChatMenu()" title="Más" style="color:white;"><i class="ri-more-2-fill"></i></button>
+                        <div class="chat-more-menu" id="chat-more-menu" style="display:none; position:absolute; right:0; top:40px; background:white; border-radius:4px; box-shadow:0 2px 10px rgba(0,0,0,0.2); width:200px; z-index:100; overflow:hidden;">
+                            <button id="chat-block-btn" onclick="blockChatUser()" style="display:flex; align-items:center; gap:12px; width:100%; padding:14px 16px; background:transparent; border:none; text-align:left; cursor:pointer; color:#111; font-size:1rem; border-bottom:1px solid #eee;">
+                                <i class="ri-forbid-line" style="font-size:1.2rem;"></i> Bloquear usuario
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -4652,10 +4650,10 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=294"></script>
-<script src="supabase.js?v=294"></script>
-<script src="app.js?v=294"></script>
-<script src="chat-pro.js?v=294"></script>
+<script src="auth.js?v=295"></script>
+<script src="supabase.js?v=295"></script>
+<script src="app.js?v=295"></script>
+<script src="chat-pro.js?v=295"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {
