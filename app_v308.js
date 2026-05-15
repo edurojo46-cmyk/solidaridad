@@ -1899,6 +1899,13 @@ var _chatCtxMenu = null; // menú contextual activo
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
 function renderChatMsg(m, isSent) {
+    if (m.media_url && m.media_url.indexOf('http') !== 0 && m.media_url.indexOf('data:') !== 0) {
+        var path = m.media_url;
+        if (path.indexOf('chat_media/') === 0) path = path.substring(11);
+        if (path.indexOf('/') === 0) path = path.substring(1);
+        m.media_url = 'https://sqimiuwnhecspmugmacu.supabase.co/storage/v1/object/public/chat_media/' + path;
+    }
+    
     var wrapper = document.createElement('div');
     wrapper.className = 'wa-msg-row ' + (isSent ? 'wa-row-sent' : 'wa-row-recv');
     wrapper.setAttribute('data-msg-id', m.id || '');
@@ -2173,10 +2180,9 @@ function _renderReactions(m, wrapper) {
             if (arr && arr.length > 0) {
                 hasReactions = true;
                 var pill = document.createElement('span');
-                pill.style.fontFamily = '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
                 pill.className = 'wa-reaction-pill';
-                pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; color:#333;';
-                pill.innerHTML = em + (arr.length > 1 ? '<span style="font-size:0.7rem;font-weight:bold">' + arr.length + '</span>' : '');
+                pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; font-family:"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;';
+                pill.innerHTML = em + (arr.length > 1 ? '<span style="color:#333;font-size:0.7rem;font-weight:bold">' + arr.length + '</span>' : '');
                 display.appendChild(pill);
             }
         });
