@@ -5,7 +5,7 @@
 if(navigator.serviceWorker){navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(reg){reg.unregister();});});}
 if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.delete(k);});});}
 </script>
-    <!-- deploy-v94-20260505 -->
+    <!-- deploy-v337-20260515 -->
     
     <script>
     // Force unregister ALL service workers on every page load
@@ -112,6 +112,15 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
 .cd-btn-cancel:hover { background: #e2e8f0; }
 .cd-btn-confirm { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
 .cd-btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4); }
+
+@keyframes scFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 
 <script>
@@ -1281,7 +1290,7 @@ window.CustomUI = {
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Alimento')" data-val="Alimento"><i class="ri-restaurant-line"></i> Alimento</button>
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Abrigo')" data-val="Abrigo"><i class="ri-windy-line"></i> Abrigo</button>
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Manta')" data-val="Manta"><i class="ri-hotel-bed-line"></i> Manta / Frazada</button>
-                        <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Atención Médica')" data-val="Atención Médica"><i class="ri-heart-pulse-line"></i> Médico</button>
+                        <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Atenci�n M�dica')" data-val="Atenci�n M�dica"><i class="ri-heart-pulse-line"></i> Médico</button>
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Agua')" data-val="Agua"><i class="ri-drop-line"></i> Agua</button>
                         <button type="button" class="sc-nec-chip" onclick="scToggleNec(this,'Otro')" data-val="Otro"><i class="ri-more-line"></i> Otro</button>
                     </div>
@@ -1611,7 +1620,7 @@ var zonasData = [
     {n:"Comedor El Refugio II",d:"Constitución 1500, Constitución",h:"Lun, Mie y Vie 19:00",tel:"",red:"@elrefugioconstitucion",lat:-34.6251,lng:-58.3842},
     {n:"Olla Popular Pompeya",d:"Amancio Alcorta 3000, Nueva Pompeya",h:"Sáb 12:00",tel:"",red:"@ollapompeya",lat:-34.6461,lng:-58.4111},
     {n:"Merendero Los Pekes",d:"Manzana 15, Villa 21-24, Barracas",h:"L-V 17:00",tel:"",red:"@lospekes.v2124",lat:-34.6531,lng:-58.3955},
-    {n:"Comedor Nueva Esperanza",d:"Av. Riestra 2000, Bajo Flores",h:"L-V 12:30",tel:"",red:"@nuevaesperanza_flores",lat:-34.6472,lng:-58.4411},
+{n:"Comedor Nueva Esperanza",d:"Av. Riestra 2000, Bajo Flores",h:"L-V 12:30",tel:"",red:"@nuevaesperanza_flores",lat:-34.6472,lng:-58.4411},
     {n:"Comedor Comunitario Padre Pepe",d:"Osvaldo Cruz 3000, Barracas",h:"L-S 12:00",tel:"",red:"@comedorpadrepepe",lat:-34.6511,lng:-58.3900},
     {n:"Olla Popular Parque Avellaneda",d:"Directorio 4000, Parque Avellaneda",h:"Jue 20:00",tel:"",red:"@ollaparqueavellaneda",lat:-34.6453,lng:-58.4764},
     {n:"Comedor La Amistad II",d:"Av. Escalada 2500, Villa Lugano",h:"L-V 12:00",tel:"",red:"@laamistadlugano",lat:-34.6711,lng:-58.4633},
@@ -2183,7 +2192,7 @@ function scRenderAlertas() {
     }
 
     var necIcons = { 'Ropa':'ri-t-shirt-line', 'Abrigo':'ri-windy-line', 'Manta':'ri-hotel-bed-line',
-                     'Atención Médica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
+                     'Atenci�n M�dica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
 
     list.innerHTML = filtered.map(function(a) {
         if (!scMensajes[a.id]) { scMensajes[a.id] = []; scLoadMensajes(a.id); }
@@ -2223,7 +2232,7 @@ function scRenderAlertas() {
                         '<i class="ri-map-pin-2-fill" style="color:' + iconColor + ';font-size:1.1rem;margin-top:-1px;"></i>' +
                         '<span>' + dispDir + '</span>' +
                     '</div>' +
-                    '<div style="font-size:0.75rem;color:#64748b;margin-top:6px;margin-left:22px;">Reportado por <strong>' + scEscape(a.reporter_name || 'Anónimo') + '</strong> · ' + fecha + '</div>' +
+                    '<div style="font-size:0.75rem;color:#64748b;margin-top:6px;margin-left:22px;">Reportado por <strong>' + scEscape(scFormatName(a.reporter_name)) + '</strong> · ' + fecha + '</div>' +
                 '</div>' +
                 '<span class="sc-badge ' + estado + '" style="flex-shrink:0;">' + badgeText + '</span>' +
             '</div>' +
@@ -2279,6 +2288,8 @@ async function scLoadMensajes(alertaId) {
     } catch(e) {}
 }
 
+function scFormatName(name) { if (!name) return 'Anónimo'; return name.split('@')[0]; }
+
 function scRenderNecesidadesBox(alertaId) {
     var a = scAllAlertas.find(function(x) { return x.id === alertaId; });
     if (!a) return '';
@@ -2287,73 +2298,50 @@ function scRenderNecesidadesBox(alertaId) {
     
     var msgs = scMensajes[alertaId] || [];
     var necIcons = { 'Ropa':'ri-t-shirt-line', 'Abrigo':'ri-windy-line', 'Manta':'ri-hotel-bed-line',
-                     'Atención Médica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
+                     'AtenciÃ³n MÃ©dica':'ri-heart-pulse-line', 'Alimento':'ri-restaurant-line', 'Agua':'ri-drop-line', 'Otro':'ri-more-line' };
                      
     return necs.map(function(n) {
         var necName = n.trim();
         var pledges = msgs.filter(function(m) { return m.necesidad === necName; });
         var pledgesCount = pledges.length;
-        var dropdownId = 'sc-pledges-' + alertaId + '-' + necName.replace(/\s+/g, '_');
         
-        // Badge contador
-        var badgeHtml = pledgesCount > 0
-            ? '<span style="background:#e74c3c;color:white;border-radius:50%;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;padding:0 3px;margin-left:4px;">' + pledgesCount + '</span>'
-            : '';
+        var counterHtml = '';
+        var namesDropdown = '';
         
-        // Lista de comprometidos (desplegable)
-        var listHtml = '';
         if (pledgesCount > 0) {
-            var items = pledges.map(function(p) {
-                var t = p.created_at ? new Date(p.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : '';
-                return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;">'
-                    + '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#e74c3c,#c0392b);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
-                    + '<i class="ri-hand-heart-fill" style="color:white;font-size:0.75rem;"></i></div>'
-                    + '<div style="flex:1;min-width:0;">'
-                    + '<div style="font-weight:700;font-size:0.78rem;color:#1e293b;">' + scEscape(p.helper_name || 'Alguien') + '</div>'
-                    + '<div style="font-size:0.7rem;color:#94a3b8;">Se comprometió · ' + t + '</div>'
-                    + '</div></div>';
+            counterHtml = '<span class="sc-pledge-counter" style="background:#e74c3c;color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;margin-left:6px;cursor:pointer;box-shadow:0 2px 4px rgba(231,76,60,0.3);" onclick="var d=this.closest(\'div\').querySelector(\'.sc-names-dropdown\'); d.style.display=(d.style.display===\'none\'?\'block\':\'none\'); event.stopPropagation();"><i class="ri-arrow-down-s-line" style="font-size:0.6rem;margin-right:-2px;"></i>' + pledgesCount + '</span>';
+            
+            var namesHtml = pledges.map(function(p) { 
+                return '<div style="padding:6px 0;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:6px;color:#1e293b;">' +
+                       '<i class="ri-user-heart-line" style="color:#e74c3c;font-size:0.9rem;"></i> ' + scEscape(scFormatName(p.helper_name)) + '</div>'; 
             }).join('');
-            listHtml = '<div id="' + dropdownId + '" style="display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:100;background:white;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:1px solid #e2e8f0;padding:10px 12px;min-width:200px;max-width:260px;">'
-                + '<div style="font-size:0.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">'
-                + '<i class="ri-user-heart-line"></i> Comprometidos (' + pledgesCount + ')</div>'
-                + items
-                + '</div>';
+            
+            namesDropdown = '<div class="sc-names-dropdown" style="display:none;position:absolute;top:110%;left:0;background:white;border:1px solid #cbd5e1;border-radius:12px;padding:12px;font-size:0.8rem;z-index:100;box-shadow:0 10px 25px rgba(0,0,0,0.15);min-width:160px;animation:scFadeIn 0.2s ease;">' +
+                '<div style="font-weight:800;color:#64748b;margin-bottom:8px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1.5px solid #f1f5f9;padding-bottom:4px;">Comprometidos:</div>' + 
+                '<div style="max-height:160px;overflow-y:auto;padding-right:4px;">' + namesHtml + '</div>' +
+                '</div>';
         }
-        
-        var chipStyle = pledgesCount > 0
-            ? 'display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fff5f5,#fff);color:#dc2626;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1.5px solid #fecaca;box-shadow:0 2px 8px rgba(220,38,38,0.12);cursor:pointer;user-select:none;position:relative;transition:all 0.2s;'
-            : 'display:inline-flex;align-items:center;gap:4px;background:white;color:#1e293b;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #cbd5e1;box-shadow:0 1px 3px rgba(0,0,0,0.05);position:relative;';
-        
-        var chevronHtml = pledgesCount > 0
-            ? '<i class="ri-arrow-down-s-line" style="font-size:0.85rem;margin-left:2px;"></i>'
-            : '';
-        
-        var toggleFn = pledgesCount > 0
-            ? 'onclick="event.stopPropagation();var d=document.getElementById(\'' + dropdownId + '\');if(d){d.style.display=d.style.display===\'none\'?\'block\':\'none\';};document.addEventListener(\'click\',function cl(e){if(!e.target.closest(\'#' + dropdownId + '\')){d.style.display=\'none\';document.removeEventListener(\'click\',cl);}},true);"'
-            : '';
-        
-        return '<span style="' + chipStyle + '" ' + toggleFn + '>'
-            + '<i class="' + (necIcons[necName] || 'ri-check-line') + '" style="color:' + (pledgesCount > 0 ? '#e74c3c' : '#64748b') + ';"></i>'
-            + necName + badgeHtml + chevronHtml
-            + listHtml
-            + '</span>';
+
+        return '<div style="position:relative;display:inline-block;margin-right:6px;margin-bottom:6px;">' +
+            '<span style="display:inline-flex;align-items:center;gap:4px;background:white;color:#1e293b;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1.5px solid #cbd5e1;box-shadow:0 2px 5px rgba(0,0,0,0.05);">' +
+            '<i class="' + (necIcons[necName] || 'ri-check-line') + '" style="color:#e74c3c;"></i>' + necName + counterHtml + '</span>' +
+            namesDropdown + '</div>';
     }).join('');
 }
 
 function scRenderMensajes(alertaId) {
     var msgs = scMensajes[alertaId] || [];
-    // Filtrar solo mensajes generales (excluir pledges — se muestran en los chips)
-    var generalMsgs = msgs.filter(function(m) { return !m.necesidad || m.necesidad === 'general'; });
-    if (generalMsgs.length === 0) {
-        var hasPledges = msgs.some(function(m) { return m.necesidad && m.necesidad !== 'general'; });
-        var emptyMsg = hasPledges
-            ? '<div style="font-size:0.8rem; color:#94a3b8; text-align:center; padding:8px 0;"><i class="ri-arrow-up-line" style="display:block;margin-bottom:2px;"></i>Ver comprometidos en los chips de arriba</div>'
-            : '<div style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:12px 0;"><i class="ri-team-line" style="font-size:1.5rem;display:block;margin-bottom:4px;color:#cbd5e1;"></i>Sé el primero en ofrecer ayuda.</div>';
-        return emptyMsg;
-    }
-    return generalMsgs.map(function(m) {
+    var chatMsgs = msgs.filter(function(m) { 
+        return !m.necesidad || m.necesidad === 'general'; 
+    });
+    
+    if (chatMsgs.length === 0) return '<div style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:12px 0;"><i class="ri-team-line" style="font-size:1.5rem;display:block;margin-bottom:4px;color:#cbd5e1;"></i>SÃ© el primero en ofrecer ayuda.</div>';
+    
+    return chatMsgs.map(function(m) {
         var t = m.created_at ? new Date(m.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : '';
-        return '<div class="sc-foro-msg" style="margin-bottom:8px;"><strong><span><i class="ri-user-smile-line" style="color:#3498db;margin-right:4px;"></i>' + scEscape(m.helper_name || 'Alguien') + '</span><span class="sc-foro-msg-date">' + t + '</span></strong><span style="font-size:0.85rem;">' + scEscape(m.mensaje) + '</span></div>';
+        return '<div class="sc-foro-msg" style="margin-bottom:8px;">' +
+               '<strong><span><i class="ri-user-smile-line" style="color:#3498db;margin-right:4px;"></i>' + scEscape(scFormatName(m.helper_name)) + '</span><span class="sc-foro-msg-date">' + t + '</span></strong>' +
+               '<span style="font-size:0.85rem;">' + scEscape(m.mensaje) + '</span></div>';
     }).join('');
 }
 
@@ -2365,7 +2353,7 @@ async function scSubmitPledge(alertaId, necesidad) {
     
     var u = auth.getCurrentUser();
     var isValidUUID = u && u.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u.id);
-    var name = u ? (u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0]) : 'Anónimo';
+    var name = u ? scFormatName(u.name || u.email) : 'Anónimo';
     var text = "Se comprometió a llevar: " + necesidad;
     
     var payload = { alerta_id: alertaId, mensaje: text, helper_name: name, user_id: isValidUUID ? u.id : null, necesidad: necesidad };
@@ -2393,7 +2381,7 @@ async function scSubmitMensaje(alertaId) {
     
     var u = auth.getCurrentUser();
     var isValidUUID = u && u.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(u.id);
-    var name = u ? (u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0]) : 'Anónimo';
+    var name = u ? scFormatName(u.name || u.email) : 'Anónimo';
     
     input.value = '';
     
@@ -2420,7 +2408,7 @@ function scRenderMapPins() {
         
         var popupContent = '<div style="min-width:220px;">' +
             '<div style="font-weight:800; font-size:1.05rem; color:#1a1a2e; margin-bottom:4px; line-height:1.2;">' + scEscape(a.direccion) + '</div>' +
-            '<div style="font-size:0.75rem; color:#64748b; margin-bottom:8px;"><i class="ri-user-smile-fill" style="color:#3b82f6;"></i> Reportado por <strong>' + scEscape(a.reporter_name || 'Anónimo') + '</strong></div>' +
+            '<div style="font-size:0.75rem; color:#64748b; margin-bottom:8px;"><i class="ri-user-smile-fill" style="color:#3b82f6;"></i> Reportado por <strong>' + scEscape(scFormatName(a.reporter_name)) + '</strong></div>' +
             '<span style="display:inline-block; margin-bottom:12px; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; background:' + (isActiva ? '#fee2e2; color:#dc2626' : '#dcfce7; color:#16a34a') + '; text-transform:uppercase;">' + (isActiva ? 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Alerta Activa' : 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…áÃƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦áÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ Atendida') + '</span>';
         
         if (necs) {

@@ -1,1 +1,0 @@
-$content = Get-Content 'c:\Users\Eduardo\Desktop\solidaridad\index.html'; Set-Content -Path 'c:\Users\Eduardo\Desktop\solidaridad\index.html' -Value $content -Encoding UTF8
