@@ -1970,12 +1970,6 @@ function renderChatMsg(m, isSent) {
     btnEmoji.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.4rem; cursor:pointer; padding:4px 8px; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
     btnEmoji.onclick = function(e) { e.stopPropagation(); _showEmojiBar(m, wrapper); };
     
-    // Botón Reenviar
-    var btnForward = document.createElement('button');
-    btnForward.innerHTML = '<i class="ri-share-forward-line"></i>';
-    btnForward.style.cssText = 'background:none; border:none; color:' + (m.media_url ? 'white' : '#555') + '; font-size:1.4rem; cursor:pointer; padding:4px 8px; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';';
-    btnForward.onclick = function(e) { e.stopPropagation(); _chatForward(m); };
-
     var footerHtml = document.createElement('div');
     footerHtml.className = 'wa-bubble-footer';
     footerHtml.style.cssText = 'display:flex; align-items:center; justify-content:flex-end; gap:3px; margin-left:auto;';
@@ -1985,7 +1979,6 @@ function renderChatMsg(m, isSent) {
         (isSent ? (m.read ? '<i class="ri-check-double-line" style="color:' + (m.media_url ? '#53bdeb' : '#53bdeb') + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>' : '<i class="ri-check-line" style="color:' + tickColor + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>') : '');
 
     actionBar.appendChild(btnEmoji);
-    actionBar.appendChild(btnForward);
     actionBar.appendChild(footerHtml);
 
     if (m.media_url) {
@@ -2121,6 +2114,25 @@ function _showEmojiBar(m, wrapper) {
         };
         bar.appendChild(btn);
     });
+
+    // Add Forward button to the emoji bar
+    var fwdBtnInside = document.createElement('button');
+    fwdBtnInside.className = 'wa-emoji-btn';
+    fwdBtnInside.innerHTML = '<i class="ri-share-forward-line"></i>';
+    fwdBtnInside.style.color = '#075E54';
+    fwdBtnInside.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeEmojiBar();
+        _chatForward(m);
+    };
+    fwdBtnInside.ontouchend = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (bar.style.opacity !== '0') fwdBtnInside.onclick(e);
+    };
+    bar.appendChild(fwdBtnInside);
+
     wrapper.appendChild(bar);
     setTimeout(function() { bar.classList.add('wa-emoji-visible'); }, 10);
 }
