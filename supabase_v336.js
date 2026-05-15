@@ -490,15 +490,25 @@ var db = {
 
     async blockUser(myId, partnerId) {
         if (!sbClient) return { error: 'No client' };
-        return await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
+        console.log('[DB] Blocking:', myId, '->', partnerId);
+        const { data, error } = await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
+        if (error) console.error('[DB] Block error:', error.message);
+        return { data, error };
     },
     async unblockUser(myId, partnerId) {
         if (!sbClient) return { error: 'No client' };
-        return await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
+        console.log('[DB] Unblocking:', myId, '->', partnerId);
+        const { data, error } = await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
+        if (error) console.error('[DB] Unblock error:', error.message);
+        return { data, error };
     },
     async isUserBlocked(myId, partnerId) {
         if (!sbClient) return false;
-        const { data } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
+        const { data, error } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
+        if (error) {
+            console.error('[DB] isUserBlocked error:', error.message);
+            return false;
+        }
         return data && data.length > 0;
     },
 

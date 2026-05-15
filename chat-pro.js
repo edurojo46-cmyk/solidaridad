@@ -24,9 +24,14 @@ async function checkBlockStatus() {
     if (!chatCurrentPartner) return;
     if (typeof auth === 'undefined' || !auth.isAuthenticated()) return;
     var mySbId = await getChatUserId();
-    if (!mySbId) return;
+    console.log('[Chat] checkBlockStatus for:', chatCurrentPartner, 'myId:', mySbId);
+    if (!mySbId) {
+        console.warn('[Chat] No mySbId found, skipping block check');
+        return;
+    }
 
     var isBlocked = await db.isUserBlocked(mySbId, chatCurrentPartner);
+    console.log('[Chat] isBlocked result:', isBlocked);
     var btn = document.getElementById('chat-block-btn');
     var input = document.getElementById('chat-input');
     var sendBtn = document.querySelector('.chat-send-btn');
