@@ -1865,11 +1865,15 @@ function sendMessage() {
     if (!currentUser) return;
     
     var msgContainer = document.getElementById('chat-messages');
+    var tempMsg = {
+        id: null,
+        text: text,
+        created_at: new Date().toISOString(),
+        read: false
+    };
+    var mDiv = null;
     if(msgContainer) {
-        var mDiv = document.createElement('div');
-        mDiv.className = 'chat-msg chat-msg-sent';
-        var timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        mDiv.innerHTML = '<div class="chat-msg-text">' + text + '</div><div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status"><i class="ri-time-line"></i></span></div>';
+        mDiv = renderChatMsg(tempMsg, true);
         msgContainer.appendChild(mDiv);
         msgContainer.scrollTop = msgContainer.scrollHeight;
     }
@@ -1877,9 +1881,9 @@ function sendMessage() {
 
     if (typeof db !== 'undefined' && db.sendMessage) {
         db.sendMessage(currentUser.id, chatCurrentPartner, text).then(function(msg) {
-            if (msg && mDiv) {
-                var statusEl = mDiv.querySelector('.chat-msg-status');
-                if(statusEl) statusEl.innerHTML = '<i class="ri-check-line"></i>';
+            if (msg && mDiv && mDiv.parentNode) {
+                var realDiv = renderChatMsg(msg, true);
+                mDiv.parentNode.replaceChild(realDiv, mDiv);
             }
         });
     }
