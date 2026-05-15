@@ -1876,37 +1876,312 @@ function sendMessage() {
     }
 }
 
-// ── renderChatMsg: burbuja con soporte de texto, imagen y video ──
+// ══════════════════════════════════════════════════════════════
+//  SISTEMA DE MENSAJES ESTILO WHATSAPP
+// ══════════════════════════════════════════════════════════════
+
+var _chatCtxMenu = null; // menú contextual activo
+
+// ── Construye la burbuja completa con wrapper y acciones ──
 function renderChatMsg(m, isSent) {
-    var mDiv = document.createElement('div');
-    mDiv.className = 'chat-msg ' + (isSent ? 'chat-msg-sent' : 'chat-msg-received');
+    // Wrapper externo (posición en la fila)
+    var wrapper = document.createElement('div');
+    wrapper.className = 'wa-msg-row ' + (isSent ? 'wa-row-sent' : 'wa-row-recv');
+    wrapper.setAttribute('data-msg-id', m.id || '');
+
+    // Burbuja principal
+    var bubble = document.createElement('div');
+    bubble.className = 'wa-bubble ' + (isSent ? 'wa-bubble-sent' : 'wa-bubble-recv');
+
     var timeStr = m.created_at
-        ? new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-        : new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    var statusIcon = isSent
-        ? (m.read ? '<i class="ri-check-double-line" style="color:#53bdeb"></i>' : '<i class="ri-check-line"></i>')
+        ? new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+        : new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    var tickHtml = isSent
+        ? (m.read
+            ? '<i class="ri-check-double-line" style="color:#53bdeb;font-size:0.85rem"></i>'
+            : '<i class="ri-check-line" style="font-size:0.85rem"></i>')
         : '';
+
+    // Contenido
     var contentHtml = '';
     if (m.media_url) {
         if (m.media_type === 'video') {
-            contentHtml = '<video src="' + m.media_url + '" controls playsinline style="max-width:220px;max-height:220px;border-radius:10px;display:block"></video>';
+            contentHtml =
+                '<div class="wa-media-wrap">' +
+                  '<video src="' + m.media_url + '" playsinline class="wa-media-video" ' +
+                    'onclick="chatOpenViewer(\'video\',\'' + m.media_url + '\')" ' +
+                    'style="max-width:240px;max-height:240px;border-radius:10px;display:block;cursor:pointer">' +
+                  '</video>' +
+                  '<div class="wa-media-play-icon"><i class="ri-play-circle-fill"></i></div>' +
+                '</div>';
         } else {
-            contentHtml = '<img src="' + m.media_url + '" style="max-width:220px;max-height:220px;border-radius:10px;display:block;cursor:zoom-in" onclick="chatZoomImg(this.src)" alt="imagen">';
+            contentHtml =
+                '<div class="wa-media-wrap">' +
+                  '<img src="' + m.media_url + '" class="wa-media-img" ' +
+                    'onclick="chatOpenViewer(\'img\',\'' + m.media_url + '\')" ' +
+                    'style="max-width:240px;max-height:280px;border-radius:10px;display:block;cursor:zoom-in" alt="">' +
+                '</div>';
         }
     } else {
-        contentHtml = '<div class="chat-msg-text">' + (m.text || '') + '</div>';
+        contentHtml = '<div class="wa-bubble-text">' + _escapeHtml(m.text || '') + '</div>';
     }
-    mDiv.innerHTML = contentHtml + '<div class="chat-msg-meta"><span class="chat-msg-time">' + timeStr + '</span><span class="chat-msg-status">' + statusIcon + '</span></div>';
-    return mDiv;
+
+    bubble.innerHTML =
+        contentHtml +
+        '<div class="wa-bubble-footer">' +
+          '<span class="wa-bubble-time">' + timeStr + '</span>' +
+          tickHtml +
+        '</div>';
+
+    // Botón "▾" que aparece al hover (chevron de menú)
+    var chevron = document.createElement('button');
+    chevron.className = 'wa-chevron';
+    chevron.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
+    chevron.title = 'Opciones';
+    chevron.onclick = function(e) { e.stopPropagation(); _showChatCtxMenu(e, m, isSent, wrapper); };
+    bubble.appendChild(chevron);
+
+    wrapper.appendChild(bubble);
+
+    // Long-press para móvil
+    var _lpTimer = null;
+    bubble.addEventListener('touchstart', function(e) {
+        _lpTimer = setTimeout(function() { _showChatCtxMenu(e.touches[0], m, isSent, wrapper); }, 500);
+    }, {passive: true});
+    bubble.addEventListener('touchend', function() { clearTimeout(_lpTimer); });
+    bubble.addEventListener('touchmove', function() { clearTimeout(_lpTimer); });
+
+    return wrapper;
 }
 
-function chatZoomImg(src) {
+function _escapeHtml(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Menú contextual flotante ──
+function _showChatCtxMenu(e, m, isSent, wrapper) {
+    _closeChatCtxMenu();
+    var menu = document.createElement('div');
+    menu.className = 'wa-ctx-menu';
+
+    var isMedia = !!m.media_url;
+    var items = [
+        { icon:'ri-corner-up-left-line', label:'Responder',  fn: function(){ _chatReply(m); } },
+        { icon:'ri-share-forward-line',  label:'Reenviar',   fn: function(){ _chatForward(m); } },
+    ];
+    if (!isMedia) {
+        items.push({ icon:'ri-file-copy-line', label:'Copiar', fn: function(){
+            navigator.clipboard && navigator.clipboard.writeText(m.text || '');
+            if(typeof showQuickFeedback==='function') showQuickFeedback('\u2705 Copiado');
+        }});
+    }
+    if (isMedia) {
+        items.push({ icon:'ri-download-line', label:'Descargar', fn: function(){ _downloadMedia(m.media_url); } });
+        items.push({ icon:'ri-share-line',    label:'Compartir',  fn: function(){ _shareMedia(m.media_url, m.text); } });
+    }
+    items.push({ icon:'ri-emotion-line', label:'Reaccionar', fn: function(){ _showEmojiBar(m, wrapper); } });
+    if (isSent) {
+        items.push({ icon:'ri-delete-bin-line', label:'Eliminar', danger:true, fn: function(){ _deleteMsg(m, wrapper); } });
+    }
+
+    items.forEach(function(item) {
+        var btn = document.createElement('button');
+        btn.className = 'wa-ctx-item' + (item.danger ? ' wa-ctx-danger' : '');
+        btn.innerHTML = '<i class="' + item.icon + '"></i><span>' + item.label + '</span>';
+        btn.onclick = function(ev) { ev.stopPropagation(); menu.remove(); _chatCtxMenu = null; item.fn(); };
+        menu.appendChild(btn);
+    });
+
+    document.body.appendChild(menu);
+    _chatCtxMenu = menu;
+
+    // Posicionar cerca del cursor/touch
+    var x = (e.clientX || e.pageX || window.innerWidth/2);
+    var y = (e.clientY || e.pageY || window.innerHeight/2);
+    var mw = 190, mh = items.length * 44 + 12;
+    if (x + mw > window.innerWidth)  x = window.innerWidth - mw - 8;
+    if (y + mh > window.innerHeight) y = y - mh - 8;
+    menu.style.left = Math.max(8, x) + 'px';
+    menu.style.top  = Math.max(8, y) + 'px';
+
+    setTimeout(function() { menu.classList.add('wa-ctx-visible'); }, 10);
+    setTimeout(function() { document.addEventListener('click', _closeChatCtxMenu, {once:true}); }, 50);
+}
+
+function _closeChatCtxMenu() {
+    if (_chatCtxMenu) { _chatCtxMenu.remove(); _chatCtxMenu = null; }
+}
+
+// ── Barra de emojis de reacción ──
+var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
+function _showEmojiBar(m, wrapper) {
+    var old = wrapper.querySelector('.wa-emoji-bar');
+    if (old) { old.remove(); return; }
+    var bar = document.createElement('div');
+    bar.className = 'wa-emoji-bar';
+    WA_EMOJIS.forEach(function(emoji) {
+        var btn = document.createElement('button');
+        btn.className = 'wa-emoji-btn';
+        btn.textContent = emoji;
+        btn.onclick = function(e) {
+            e.stopPropagation();
+            _addReaction(m, wrapper, emoji);
+            bar.remove();
+        };
+        bar.appendChild(btn);
+    });
+    wrapper.appendChild(bar);
+    setTimeout(function() { bar.classList.add('wa-emoji-visible'); }, 10);
+}
+
+function _addReaction(m, wrapper, emoji) {
+    var display = wrapper.querySelector('.wa-reactions');
+    if (!display) {
+        display = document.createElement('div');
+        display.className = 'wa-reactions';
+        wrapper.appendChild(display);
+    }
+    var pill = document.createElement('span');
+    pill.className = 'wa-reaction-pill';
+    pill.textContent = emoji;
+    display.appendChild(pill);
+    setTimeout(function() { pill.classList.add('wa-reaction-in'); }, 10);
+}
+
+// ── Responder mensaje ──
+function _chatReply(m) {
+    var input = document.getElementById('chat-input');
+    var bar = document.getElementById('chat-input-bar') || document.querySelector('.chat-input-bar');
+    if (!bar || !input) return;
+    var old = document.getElementById('wa-reply-preview');
+    if (old) old.remove();
+    var preview = document.createElement('div');
+    preview.id = 'wa-reply-preview';
+    preview.className = 'wa-reply-preview';
+    var snippet = m.media_url ? (m.media_type === 'video' ? '\uD83C\uDF9E Video' : '\uD83D\uDCF7 Imagen') : (m.text || '').slice(0, 60);
+    preview.innerHTML =
+        '<div class="wa-reply-line"></div>' +
+        '<div class="wa-reply-text">' + _escapeHtml(snippet) + '</div>' +
+        '<button class="wa-reply-close" onclick="document.getElementById(\'wa-reply-preview\').remove()"><i class="ri-close-line"></i></button>';
+    bar.insertBefore(preview, bar.firstChild);
+    input.focus();
+    window._chatReplyTo = m;
+}
+
+// ── Reenviar ──
+function _chatForward(m) {
+    var allUsers = window._chatAllContacts || [];
     var overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.94);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out';
-    overlay.innerHTML = '<img src="' + src + '" style="max-width:94vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6)">';
-    overlay.onclick = function() { overlay.remove(); };
+    overlay.className = 'wa-forward-overlay';
+    var snippet = m.media_url ? '\uD83D\uDCF7 Multimedia' : '\u201C' + (m.text||'').slice(0,40) + '\u2026\u201D';
+    var listHtml = allUsers.length
+        ? allUsers.map(function(u) {
+            return '<label class="wa-forward-item"><input type="checkbox" value="' + u.id + '"> ' +
+                   '<span class="wa-forward-avatar">' + (u.name||'?').charAt(0).toUpperCase() + '</span>' +
+                   '<span>' + _escapeHtml(u.name||u.username||u.email||'Usuario') + '</span></label>';
+          }).join('')
+        : '<p style="color:#8896a4;padding:20px;text-align:center">No hay contactos disponibles</p>';
+    overlay.innerHTML =
+        '<div class="wa-forward-card">' +
+          '<div class="wa-forward-header"><h4>\uD83D\uDD01 Reenviar mensaje</h4>' +
+            '<button onclick="this.closest(\'.wa-forward-overlay\').remove()" class="wa-forward-close"><i class="ri-close-line"></i></button>' +
+          '</div>' +
+          '<div class="wa-forward-snippet">' + _escapeHtml(snippet) + '</div>' +
+          '<div class="wa-forward-list">' + listHtml + '</div>' +
+          '<button class="wa-forward-send" onclick="_doForward(this, \'' + (m.text||'') + '\', \'' + (m.media_url||'') + '\', \'' + (m.media_type||'') + '\')">Reenviar</button>' +
+        '</div>';
     document.body.appendChild(overlay);
 }
+
+function _doForward(btn, text, mediaUrl, mediaType) {
+    var checks = btn.closest('.wa-forward-card').querySelectorAll('input[type=checkbox]:checked');
+    if (!checks.length) { if(typeof showQuickFeedback==='function') showQuickFeedback('\u26a0\uFE0F Seleccion\xe1 al menos un contacto'); return; }
+    var cu = typeof auth!=='undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
+    if (!cu || typeof db==='undefined') return;
+    checks.forEach(function(c) {
+        db.sendMessage(cu.id, c.value, (mediaUrl ? (mediaType==='video'?'[video]':'[imagen]') : text) || '');
+    });
+    btn.closest('.wa-forward-overlay').remove();
+    if(typeof showQuickFeedback==='function') showQuickFeedback('\u2705 Reenviado a ' + checks.length + ' contacto(s)');
+}
+
+// ── Eliminar ──
+function _deleteMsg(m, wrapper) {
+    if (!m.id) { wrapper.remove(); return; }
+    if (typeof showWaConfirm === 'function') {
+        showWaConfirm('Eliminar mensaje', '\xbfEliminarlo para todos?', 'ELIMINAR', true, function() {
+            if (typeof db!=='undefined' && db.deleteMessage) {
+                db.deleteMessage(m.id).then(function() { wrapper.remove(); });
+            } else {
+                wrapper.style.opacity = '0.3';
+                wrapper.querySelector('.wa-bubble-text') && (wrapper.querySelector('.wa-bubble-text').textContent = 'Mensaje eliminado');
+            }
+        });
+    } else {
+        wrapper.remove();
+    }
+}
+
+// ── Descargar media ──
+function _downloadMedia(url) {
+    var a = document.createElement('a');
+    a.href = url; a.download = 'chat-media-' + Date.now();
+    a.target = '_blank'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+// ── Compartir ──
+function _shareMedia(url, text) {
+    if (navigator.share) {
+        navigator.share({ title: 'Solidaridad', text: text || '', url: url }).catch(function(){});
+    } else {
+        navigator.clipboard && navigator.clipboard.writeText(url);
+        if(typeof showQuickFeedback==='function') showQuickFeedback('\uD83D\uDD17 Enlace copiado');
+    }
+}
+
+// ── Visor de foto/video premium ──
+function chatOpenViewer(type, src) {
+    _closeChatCtxMenu();
+    var ov = document.createElement('div');
+    ov.className = 'wa-viewer-overlay';
+    ov.innerHTML =
+        '<div class="wa-viewer-topbar">' +
+          '<button class="wa-viewer-btn" onclick="this.closest(\'.wa-viewer-overlay\').remove()">' +
+            '<i class="ri-arrow-left-line"></i>' +
+          '</button>' +
+          '<span style="color:white;font-weight:600;flex:1;text-align:center">Vista previa</span>' +
+          '<button class="wa-viewer-btn" onclick="_shareMedia(\'' + src + '\')"><i class="ri-share-line"></i></button>' +
+          '<button class="wa-viewer-btn" onclick="_downloadMedia(\'' + src + '\')"><i class="ri-download-line"></i></button>' +
+        '</div>' +
+        '<div class="wa-viewer-body">' +
+          (type === 'video'
+            ? '<video src="' + src + '" controls autoplay playsinline class="wa-viewer-media"></video>'
+            : '<img src="' + src + '" class="wa-viewer-media wa-viewer-img" id="wa-viewer-img" alt="">') +
+        '</div>' +
+        (type !== 'video' ? '<div class="wa-viewer-footer">' +
+          '<button class="wa-viewer-action" onclick="waImgZoom(1)"><i class="ri-zoom-in-line"></i></button>' +
+          '<button class="wa-viewer-action" onclick="waImgZoom(-1)"><i class="ri-zoom-out-line"></i></button>' +
+          '<button class="wa-viewer-action" onclick="_downloadMedia(\'' + src + '\')"><i class="ri-download-2-line"></i></button>' +
+          '<button class="wa-viewer-action" onclick="_shareMedia(\'' + src + '\')"><i class="ri-share-forward-line"></i></button>' +
+        '</div>' : '');
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function(e){ if(e.target===ov) ov.remove(); });
+    setTimeout(function(){ ov.classList.add('wa-viewer-in'); }, 10);
+}
+
+// Alias para compatibilidad con llamadas previas
+function chatZoomImg(src) { chatOpenViewer('img', src); }
+
+var _viewerScale = 1;
+function waImgZoom(dir) {
+    _viewerScale = Math.min(4, Math.max(0.5, _viewerScale + dir * 0.5));
+    var img = document.getElementById('wa-viewer-img');
+    if (img) img.style.transform = 'scale(' + _viewerScale + ')';
+}
+
+
+// chatZoomImg → delegado a chatOpenViewer (definido arriba en el sistema WA)
+
 
 function chatVideoCall() {
     if (!chatCurrentPartner) return;
