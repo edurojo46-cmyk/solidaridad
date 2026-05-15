@@ -2003,6 +2003,7 @@ function renderChatMsg(m, isSent) {
     return wrapper;
 }
 
+var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
 function openActionSheet(m, wrapper) {
     if (document.querySelector('.wa-action-sheet-overlay')) return;
     
