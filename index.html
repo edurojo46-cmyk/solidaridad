@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index.css?v=289">
+    <link rel="stylesheet" href="index.css?v=290">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -3880,6 +3880,20 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             obs.observe(s, { attributes: true });
         }
     });
+    // ── openMensajesPanel: navega a la pantalla de mensajes e inicia el chat ──
+    function openMensajesPanel() {
+        if (typeof app !== 'undefined' && app.navigate) {
+            app.navigate('screen-mensajes');
+        }
+        // Iniciar chat real con pequeño delay para que la pantalla se active
+        setTimeout(function() {
+            if (typeof initRealChat === 'function') {
+                initRealChat();
+            } else if (typeof loadChatContacts === 'function') {
+                loadChatContacts();
+            }
+        }, 150);
+    }
     </script>
 
 
@@ -4673,9 +4687,10 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=289"></script>
-<script src="supabase.js?v=289"></script>
-<script src="app.js?v=289"></script>
+<script src="auth.js?v=290"></script>
+<script src="supabase.js?v=290"></script>
+<script src="app.js?v=290"></script>
+<script src="chat-pro.js?v=290"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
     function updateAuthOnlyLinks() {

@@ -1937,9 +1937,11 @@ function closeChatMenu() {
 
 function blockChatUser() {
     closeChatMenu();
-    if (typeof showWaConfirm === 'function' && chatCurrentPartner) {
-        getChatUserId().then(function(myId) {
-            if (!myId) return;
+    var currentUser = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
+    if (!currentUser || !chatCurrentPartner) return;
+    var myId = currentUser.id;
+    if (typeof showWaConfirm === 'function') {
+        if (typeof db !== 'undefined' && db.isUserBlocked) {
             db.isUserBlocked(myId, chatCurrentPartner).then(function(blocked) {
                 showWaConfirm(
                     blocked ? '\xbfDesbloquear?' : '\xbfBloquear contacto?',
@@ -1955,9 +1957,10 @@ function blockChatUser() {
                     }
                 );
             });
-        });
+        }
     }
 }
+
 
 function handleChatFileUpload(input) {
     if (!input.files || input.files.length === 0) return;
