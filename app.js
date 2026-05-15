@@ -2073,9 +2073,12 @@ function _showEmojiBar(m, wrapper) {
         btn.className = 'wa-emoji-btn';
         btn.textContent = emoji;
         btn.onclick = function(e) {
+            e.preventDefault();
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
-            bar.remove();
+            bar.style.opacity = '0';
+            bar.style.pointerEvents = 'none';
+            setTimeout(function() { bar.remove(); }, 350);
         };
         bar.appendChild(btn);
     });
