@@ -2032,8 +2032,27 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     optReact.onmouseout = function() { this.style.background = 'transparent'; };
     optReact.onclick = function(ev) {
         ev.stopPropagation();
-        menu.remove();
-        _showEmojiBarPopup(m, wrapper);
+        // Cambiar el menú al selector de emojis
+        menu.innerHTML = '';
+        menu.style.display = 'flex';
+        menu.style.gap = '5px';
+        menu.style.padding = '8px 12px';
+        menu.style.borderRadius = '30px';
+        menu.style.minWidth = 'auto';
+        
+        WA_EMOJIS.forEach(function(emoji) {
+            var btn = document.createElement('button');
+            btn.textContent = emoji;
+            btn.style.cssText = 'font-size:1.5rem; background:none; border:none; cursor:pointer; padding:2px; transition:transform 0.1s;';
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                _addReaction(m, wrapper, emoji);
+                menu.remove();
+            };
+            btn.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
+            btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+            menu.appendChild(btn);
+        });
     };
 
     var optFwd = document.createElement('div');
