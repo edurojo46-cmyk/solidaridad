@@ -2137,7 +2137,7 @@ function _renderReactions(m, wrapper) {
         display = document.createElement('div');
         display.className = 'wa-reactions';
         if (wrapper.querySelector('.wa-media-wrap')) {
-            display.style.cssText = 'position:absolute; bottom:40px; left:8px; display:flex; gap:4px; z-index:10;';
+            display.style.cssText = 'position:absolute; bottom:8px; left:8px; display:flex; gap:4px; z-index:10;';
         } else {
             display.style.cssText = 'display:flex; gap:4px; margin-top:2px;';
         }
@@ -2156,7 +2156,7 @@ function _renderReactions(m, wrapper) {
                 var pill = document.createElement('span');
                 pill.className = 'wa-reaction-pill';
                 pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; font-family:"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;';
-                pill.innerHTML = em + (arr.length > 1 ? '<span style="color:#333;font-size:0.7rem;font-weight:bold">' + arr.length + '</span>' : '');
+                pill.innerHTML = em + (arr.length > 0 ? '<span style="color:#333;font-size:0.8rem;font-weight:bold;margin-left:3px;">' + arr.length + '</span>' : '');
                 display.appendChild(pill);
             }
         });
