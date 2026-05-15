@@ -1674,6 +1674,7 @@ function loadChatContacts() {
             loading.style.display = 'none';
             // Also get all users to find names
             db.getAllUsers().then(function(users) {
+                window._chatAllContacts = users;
                 var usersMap = {};
                 users.forEach(function(u) { usersMap[u.id] = u; });
                 
@@ -1918,7 +1919,7 @@ function renderChatMsg(m, isSent) {
     bubble.className = 'wa-bubble ' + (isSent ? 'wa-bubble-sent' : 'wa-bubble-recv');
     if (m.media_url) {
         bubble.style.padding = '4px';
-        bubble.style.overflow = 'hidden';
+        // bubble.style.overflow = 'hidden'; removed to fix popup
     }
 
     var timeStr = m.created_at
@@ -2001,9 +2002,13 @@ function renderChatMsg(m, isSent) {
     setTimeout(function() {
         var btn = wrapper.querySelector('.wa-msg-menu-btn');
         if (btn) {
-            btn.onclick = function(e) {
+            btn.onmousedown = function(e) {
                 e.stopPropagation();
                 _showWhatsAppDropdown(e, m, wrapper);
+            };
+            btn.ontouchend = function(e) {
+                e.preventDefault();
+                btn.onclick(e);
             };
         }
     }, 10);
@@ -2028,10 +2033,14 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     optReact.innerHTML = '<i class="ri-emotion-line" style="font-size:1.2rem; color:#555;"></i> Reaccionar';
     optReact.onmouseover = function() { this.style.background = '#f5f5f5'; };
     optReact.onmouseout = function() { this.style.background = 'transparent'; };
-    optReact.onclick = function(ev) {
+    optReact.onmousedown = function(ev) {
         ev.stopPropagation();
         menu.remove();
         _showEmojiBarPopup(m, wrapper);
+    };
+    optReact.ontouchend = function(ev) {
+        ev.preventDefault();
+        optReact.onclick(ev);
     };
 
     var optFwd = document.createElement('div');
@@ -2039,10 +2048,14 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     optFwd.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.2rem; color:#555;"></i> Reenviar';
     optFwd.onmouseover = function() { this.style.background = '#f5f5f5'; };
     optFwd.onmouseout = function() { this.style.background = 'transparent'; };
-    optFwd.onclick = function(ev) {
+    optFwd.onmousedown = function(ev) {
         ev.stopPropagation();
         menu.remove();
         _chatForward(m);
+    };
+    optFwd.ontouchend = function(ev) {
+        ev.preventDefault();
+        optFwd.onclick(ev);
     };
 
     menu.appendChild(optReact);
@@ -2085,22 +2098,23 @@ function _showEmojiBarPopup(m, wrapper) {
         var btn = document.createElement('button');
         btn.textContent = emoji;
         btn.style.cssText = 'font-size:1.5rem; background:none; border:none; cursor:pointer; padding:2px; transition:transform 0.1s;';
-        btn.onclick = function(e) {
+        btn.onmousedown = function(e) {
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
             bar.remove();
+        };
+        btn.ontouchend = function(e) {
+            e.preventDefault();
+            btn.onclick(e);
         };
         btn.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
         btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
         bar.appendChild(btn);
     });
 
-    var bubble = wrapper.querySelector('.wa-bubble');
-    if (bubble) {
-        bubble.style.position = 'relative';
-        bubble.appendChild(bar);
-        setTimeout(function() { bar.style.opacity = '1'; }, 10);
-    }
+    wrapper.style.position = 'relative';
+    wrapper.appendChild(bar);
+    setTimeout(function() { bar.style.opacity = '1'; }, 10);
 }
 async function _addReaction(m, wrapper, emoji) {
     var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
