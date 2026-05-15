@@ -1940,13 +1940,13 @@ function renderChatMsg(m, isSent) {
             playIcon.innerHTML = '<i class="ri-play-circle-fill"></i>';
             playIcon.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:rgba(255,255,255,0.8); pointer-events:none;';
             mediaWrap.appendChild(playIcon);
-            mediaWrap.onclick = function(e) { chatOpenViewer('vid', m.media_url); };
+            
         } else {
             var img = document.createElement('img');
             img.src = m.media_url;
             img.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
             mediaWrap.appendChild(img);
-            mediaWrap.onclick = function(e) { chatOpenViewer('img', m.media_url); };
+            
         }
         contentContainer.appendChild(mediaWrap);
         
@@ -1996,7 +1996,6 @@ function renderChatMsg(m, isSent) {
     // ACTION SHEET TRIGGER
     wrapper.onclick = function(e) {
         if (e.target.closest('.wa-reaction-pill')) return;
-        if (e.target.tagName.toLowerCase() === 'img' && m.media_url) return;
         e.stopPropagation();
         openActionSheet(m, wrapper);
     };
@@ -2030,6 +2029,20 @@ function openActionSheet(m, wrapper) {
         emojiRow.appendChild(btn);
     });
     
+    var extraRow = '';
+    if (m.media_url) {
+        var isVid = m.media_type === 'video';
+        var viewerRow = document.createElement('div');
+        viewerRow.style.cssText = 'display:flex; align-items:center; gap:15px; padding:15px 10px; font-size:1.1rem; color:#333; cursor:pointer; border-radius:10px; border-bottom:1px solid #f0f0f0;';
+        viewerRow.innerHTML = isVid ? '<i class="ri-play-circle-line" style="font-size:1.5rem; color:#3b82f6;"></i> Reproducir video' : '<i class="ri-image-line" style="font-size:1.5rem; color:#3b82f6;"></i> Ver imagen en grande';
+        viewerRow.onclick = function(e) {
+            e.stopPropagation();
+            closeSheet();
+            setTimeout(function() { chatOpenViewer(isVid ? 'vid' : 'img', m.media_url); }, 300);
+        };
+        sheet.appendChild(viewerRow);
+    }
+
     var fwdRow = document.createElement('div');
     fwdRow.style.cssText = 'display:flex; align-items:center; gap:15px; padding:15px 10px; font-size:1.1rem; color:#333; cursor:pointer; border-radius:10px; transition:background 0.2s;';
     fwdRow.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.5rem; color:#00a884;"></i> Reenviar mensaje';
@@ -2209,7 +2222,7 @@ function _shareMedia(url, text) {
 
 // ── Visor de foto/video premium ──
 function chatOpenViewer(type, src) {
-    _closeChatCtxMenu();
+    // _closeChatCtxMenu(); removed
     var ov = document.createElement('div');
     ov.className = 'wa-viewer-overlay';
     ov.innerHTML =
