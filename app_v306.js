@@ -2166,10 +2166,14 @@ function _renderReactions(m, wrapper) {
     var hasReactions = false;
     if (m.reactions) {
         Object.keys(m.reactions).forEach(function(em) {
+            // FIX: Filtrar basura de la base de datos para que solo renderice emojis reales
+            if (typeof WA_EMOJIS !== 'undefined' && WA_EMOJIS.indexOf(em) === -1) return;
+            
             var arr = m.reactions[em];
             if (arr && arr.length > 0) {
                 hasReactions = true;
                 var pill = document.createElement('span');
+                pill.style.fontFamily = '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
                 pill.className = 'wa-reaction-pill';
                 pill.style.cssText = 'background:rgba(255,255,255,0.9); border-radius:12px; padding:2px 6px; font-size:0.85rem; box-shadow:0 1px 3px rgba(0,0,0,0.15); display:inline-flex; align-items:center; gap:3px; color:#333;';
                 pill.innerHTML = em + (arr.length > 1 ? '<span style="font-size:0.7rem;font-weight:bold">' + arr.length + '</span>' : '');
