@@ -2,10 +2,10 @@
 if (typeof window.showQuickFeedback !== 'function') {
     window.showQuickFeedback = function(msg) {
         var toast = document.createElement('div');
-        toast.style = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:white;padding:8px 16px;border-radius:20px;font-size:0.85rem;z-index:10000;animation:scFadeIn 0.3s ease;";
+        toast.style = "position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(17, 27, 33, 0.9);backdrop-filter:blur(10px);color:white;padding:12px 24px;border-radius:30px;font-size:0.9rem;font-weight:600;z-index:100000;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:scFadeIn 0.3s ease;border:1px solid rgba(255,255,255,0.1);";
         toast.textContent = msg;
         document.body.appendChild(toast);
-        setTimeout(function(){ toast.style.opacity='0'; setTimeout(function(){toast.remove();},300); }, 2000);
+        setTimeout(function(){ toast.style.opacity='0'; toast.style.transform='translateX(-50%) translateY(10px)'; toast.style.transition='0.3s'; setTimeout(function(){toast.remove();},300); }, 2500);
     };
 }
 
