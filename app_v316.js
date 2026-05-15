@@ -2007,11 +2007,6 @@ function renderChatMsg(m, isSent) {
                 e.stopPropagation();
                 _showWhatsAppDropdown(e, m, wrapper);
             };
-            btn.ontouchend = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                _showWhatsAppDropdown(e, m, wrapper);
-            };
         }
     }, 10);
 
@@ -2035,14 +2030,10 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     optReact.innerHTML = '<i class="ri-emotion-line" style="font-size:1.2rem; color:#555;"></i> Reaccionar';
     optReact.onmouseover = function() { this.style.background = '#f5f5f5'; };
     optReact.onmouseout = function() { this.style.background = 'transparent'; };
-    optReact.onmousedown = function(ev) {
+    optReact.onclick = function(ev) {
         ev.stopPropagation();
         menu.remove();
         _showEmojiBarPopup(m, wrapper);
-    };
-    optReact.ontouchend = function(ev) {
-        ev.preventDefault();
-        optReact.onclick(ev);
     };
 
     var optFwd = document.createElement('div');
@@ -2050,14 +2041,10 @@ function _showWhatsAppDropdown(e, m, wrapper) {
     optFwd.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.2rem; color:#555;"></i> Reenviar';
     optFwd.onmouseover = function() { this.style.background = '#f5f5f5'; };
     optFwd.onmouseout = function() { this.style.background = 'transparent'; };
-    optFwd.onmousedown = function(ev) {
+    optFwd.onclick = function(ev) {
         ev.stopPropagation();
         menu.remove();
         _chatForward(m);
-    };
-    optFwd.ontouchend = function(ev) {
-        ev.preventDefault();
-        optFwd.onclick(ev);
     };
 
     menu.appendChild(optReact);
@@ -2100,14 +2087,10 @@ function _showEmojiBarPopup(m, wrapper) {
         var btn = document.createElement('button');
         btn.textContent = emoji;
         btn.style.cssText = 'font-size:1.5rem; background:none; border:none; cursor:pointer; padding:2px; transition:transform 0.1s;';
-        btn.onmousedown = function(e) {
+        btn.onclick = function(e) {
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
             bar.remove();
-        };
-        btn.ontouchend = function(e) {
-            e.preventDefault();
-            btn.onclick(e);
         };
         btn.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
         btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
