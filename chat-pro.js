@@ -1,4 +1,13 @@
 // ── SISTEMA DE MODALES Y BLOQUEO PREMIUM (Carpeta Nuevo) ──
+if (typeof window.showQuickFeedback !== 'function') {
+    window.showQuickFeedback = function(msg) {
+        var toast = document.createElement('div');
+        toast.style = "position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:white;padding:8px 16px;border-radius:20px;font-size:0.85rem;z-index:10000;animation:scFadeIn 0.3s ease;";
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function(){ toast.style.opacity='0'; setTimeout(function(){toast.remove();},300); }, 2000);
+    };
+}
 
 function showWaConfirm(title, body, confirmText, isDanger, onConfirm) {
     var overlay = document.createElement('div');
@@ -73,13 +82,13 @@ async function blockChatUser() {
     if (isBlocked) {
         showWaConfirm('¿Desbloquear?', 'Podrás volver a enviar y recibir mensajes de este contacto.', 'DESBLOQUEAR', false, async () => {
             await db.unblockUser(mySbId, chatCurrentPartner);
-            showQuickFeedback('✅ Usuario desbloqueado');
+            if (typeof showQuickFeedback === 'function') showQuickFeedback('✅ Usuario desbloqueado');
             checkBlockStatus();
         });
     } else {
         showWaConfirm('¿Bloquear contacto?', 'Los contactos bloqueados no podrán enviarte mensajes ni llamarte.', 'BLOQUEAR', true, async () => {
             await db.blockUser(mySbId, chatCurrentPartner);
-            showQuickFeedback('🚫 Usuario bloqueado');
+            if (typeof showQuickFeedback === 'function') showQuickFeedback('🚫 Usuario bloqueado');
             checkBlockStatus();
         });
     }
