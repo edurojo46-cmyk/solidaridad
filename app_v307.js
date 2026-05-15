@@ -1898,6 +1898,8 @@ var _chatCtxMenu = null; // menú contextual activo
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
 // ── Construye la burbuja completa con wrapper y acciones ──
+var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
+
 function renderChatMsg(m, isSent) {
     if (!m) return document.createElement('div');
     
@@ -1931,7 +1933,8 @@ function renderChatMsg(m, isSent) {
         mediaWrap.className = 'wa-media-wrap';
         mediaWrap.style.cssText = 'position:relative; width:260px; height:260px; border-radius:8px; overflow:hidden; background:#e0e0e0; cursor:pointer;';
         
-        if (m.media_type === 'video') {
+        var isVid = m.media_type === 'video';
+        if (isVid) {
             var vid = document.createElement('video');
             vid.src = m.media_url;
             vid.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
@@ -1940,14 +1943,13 @@ function renderChatMsg(m, isSent) {
             playIcon.innerHTML = '<i class="ri-play-circle-fill"></i>';
             playIcon.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:3rem; color:rgba(255,255,255,0.8); pointer-events:none;';
             mediaWrap.appendChild(playIcon);
-            
         } else {
             var img = document.createElement('img');
             img.src = m.media_url;
             img.style.cssText = 'width:100%; height:100%; object-fit:cover; display:block;';
             mediaWrap.appendChild(img);
-            
         }
+        mediaWrap.onclick = function(e) { chatOpenViewer(isVid ? 'vid' : 'img', m.media_url); };
         contentContainer.appendChild(mediaWrap);
         
         if (m.text && m.text.trim().length > 0) {
@@ -1978,8 +1980,11 @@ function renderChatMsg(m, isSent) {
     var timeColor = m.media_url ? 'rgba(255,255,255,0.9)' : '';
     var tickColor = m.media_url ? (isSent && m.read ? '#53bdeb' : 'white') : '';
     
+    var menuBtnStr = '<button class="wa-msg-menu-btn" style="background:none; border:none; color:' + (m.media_url ? 'white' : '#999') + '; font-size:1.2rem; padding:0 2px; cursor:pointer; margin-left:2px; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';"><i class="ri-arrow-down-s-line"></i></button>';
+
     footerHtml.innerHTML = '<span class="wa-bubble-time" style="color:' + timeColor + '; text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + ';">' + timeStr + '</span>' + 
-        (isSent ? (m.read ? '<i class="ri-check-double-line" style="color:' + (m.media_url ? '#53bdeb' : '#53bdeb') + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>' : '<i class="ri-check-line" style="color:' + tickColor + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>') : '');
+        (isSent ? (m.read ? '<i class="ri-check-double-line" style="color:' + (m.media_url ? '#53bdeb' : '#53bdeb') + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>' : '<i class="ri-check-line" style="color:' + tickColor + ';font-size:0.85rem;text-shadow:' + (m.media_url ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '"></i>') : '') +
+        menuBtnStr;
 
     if (m.media_url) {
         contentContainer.appendChild(footerHtml);
@@ -1993,94 +1998,109 @@ function renderChatMsg(m, isSent) {
         _renderReactions(m, wrapper);
     }
 
-    // ACTION SHEET TRIGGER
-    wrapper.onclick = function(e) {
-        if (e.target.closest('.wa-reaction-pill')) return;
-        e.stopPropagation();
-        openActionSheet(m, wrapper);
-    };
+    setTimeout(function() {
+        var btn = wrapper.querySelector('.wa-msg-menu-btn');
+        if (btn) {
+            btn.onclick = function(e) {
+                e.stopPropagation();
+                _showWhatsAppDropdown(e, m, wrapper);
+            };
+        }
+    }, 10);
 
     return wrapper;
 }
 
-var WA_EMOJIS = ['\u2764\uFE0F','\uD83D\uDC4D','\uD83D\uDE02','\uD83D\uDE2E','\uD83D\uDE22','\uD83D\uDE4F','\uD83D\uDD25'];
-function openActionSheet(m, wrapper) {
-    if (document.querySelector('.wa-action-sheet-overlay')) return;
+function _showWhatsAppDropdown(e, m, wrapper) {
+    var existing = document.querySelector('.wa-dropdown-menu');
+    if (existing) {
+        existing.remove();
+        if (existing.dataset.msgId === m.id) return;
+    }
+
+    var menu = document.createElement('div');
+    menu.className = 'wa-dropdown-menu';
+    menu.dataset.msgId = m.id || '';
+    menu.style.cssText = 'position:fixed; background:white; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); padding:5px 0; z-index:10000; min-width:160px;';
     
-    var overlay = document.createElement('div');
-    overlay.className = 'wa-action-sheet-overlay';
-    overlay.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:999999; display:flex; flex-direction:column; justify-content:flex-end; opacity:0; transition:opacity 0.3s;';
+    var optReact = document.createElement('div');
+    optReact.style.cssText = 'padding:12px 15px; font-size:1rem; color:#333; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;';
+    optReact.innerHTML = '<i class="ri-emotion-line" style="font-size:1.2rem; color:#555;"></i> Reaccionar';
+    optReact.onmouseover = function() { this.style.background = '#f5f5f5'; };
+    optReact.onmouseout = function() { this.style.background = 'transparent'; };
+    optReact.onclick = function(ev) {
+        ev.stopPropagation();
+        menu.remove();
+        _showEmojiBarPopup(m, wrapper);
+    };
+
+    var optFwd = document.createElement('div');
+    optFwd.style.cssText = 'padding:12px 15px; font-size:1rem; color:#333; cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.2s;';
+    optFwd.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.2rem; color:#555;"></i> Reenviar';
+    optFwd.onmouseover = function() { this.style.background = '#f5f5f5'; };
+    optFwd.onmouseout = function() { this.style.background = 'transparent'; };
+    optFwd.onclick = function(ev) {
+        ev.stopPropagation();
+        menu.remove();
+        _chatForward(m);
+    };
+
+    menu.appendChild(optReact);
+    menu.appendChild(optFwd);
+
+    var rect = e.target.closest('button').getBoundingClientRect();
+    var topPos = rect.bottom + 5;
+    var leftPos = rect.left - 120;
     
-    var sheet = document.createElement('div');
-    sheet.className = 'wa-action-sheet';
-    sheet.style.cssText = 'background:white; border-radius:20px 20px 0 0; padding:20px; transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1); padding-bottom:env(safe-area-inset-bottom, 20px);';
+    if (topPos + 100 > window.innerHeight) {
+        topPos = rect.top - 100;
+    }
     
-    var emojiRow = document.createElement('div');
-    emojiRow.style.cssText = 'display:flex; justify-content:space-between; padding:10px 0 20px; border-bottom:1px solid #f0f0f0; margin-bottom:10px;';
+    if (leftPos < 10) leftPos = 10;
+
+    menu.style.top = topPos + 'px';
+    menu.style.left = leftPos + 'px';
+
+    document.body.appendChild(menu);
+
+    setTimeout(function() {
+        document.addEventListener('click', function closeMenu(ev) {
+            if (!menu.contains(ev.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }, 10);
+}
+
+function _showEmojiBarPopup(m, wrapper) {
+    var old = wrapper.querySelector('.wa-emoji-bar-popup');
+    if (old) { old.remove(); return; }
+
+    var bar = document.createElement('div');
+    bar.className = 'wa-emoji-bar-popup';
+    bar.style.cssText = 'position:absolute; display:flex; gap:4px; background:white; padding:6px 10px; border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.15); z-index:100; opacity:0; transition:opacity 0.2s; bottom:100%; right:10px; margin-bottom:5px;';
     
     WA_EMOJIS.forEach(function(emoji) {
         var btn = document.createElement('button');
         btn.textContent = emoji;
-        btn.style.cssText = 'font-size:1.8rem; background:none; border:none; cursor:pointer; padding:5px; transition:transform 0.1s;';
+        btn.style.cssText = 'font-size:1.5rem; background:none; border:none; cursor:pointer; padding:2px; transition:transform 0.1s;';
         btn.onclick = function(e) {
             e.stopPropagation();
             _addReaction(m, wrapper, emoji);
-            closeSheet();
+            bar.remove();
         };
-        emojiRow.appendChild(btn);
+        btn.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
+        btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
+        bar.appendChild(btn);
     });
-    
-    var extraRow = '';
-    if (m.media_url) {
-        var isVid = m.media_type === 'video';
-        var viewerRow = document.createElement('div');
-        viewerRow.style.cssText = 'display:flex; align-items:center; gap:15px; padding:15px 10px; font-size:1.1rem; color:#333; cursor:pointer; border-radius:10px; border-bottom:1px solid #f0f0f0;';
-        viewerRow.innerHTML = isVid ? '<i class="ri-play-circle-line" style="font-size:1.5rem; color:#3b82f6;"></i> Reproducir video' : '<i class="ri-image-line" style="font-size:1.5rem; color:#3b82f6;"></i> Ver imagen en grande';
-        viewerRow.onclick = function(e) {
-            e.stopPropagation();
-            closeSheet();
-            setTimeout(function() { chatOpenViewer(isVid ? 'vid' : 'img', m.media_url); }, 300);
-        };
-        sheet.appendChild(viewerRow);
-    }
 
-    var fwdRow = document.createElement('div');
-    fwdRow.style.cssText = 'display:flex; align-items:center; gap:15px; padding:15px 10px; font-size:1.1rem; color:#333; cursor:pointer; border-radius:10px; transition:background 0.2s;';
-    fwdRow.innerHTML = '<i class="ri-share-forward-line" style="font-size:1.5rem; color:#00a884;"></i> Reenviar mensaje';
-    fwdRow.onclick = function(e) {
-        e.stopPropagation();
-        closeSheet();
-        setTimeout(function() { _chatForward(m); }, 300);
-    };
-    
-    var cancelRow = document.createElement('div');
-    cancelRow.style.cssText = 'display:flex; align-items:center; justify-content:center; padding:15px 10px; margin-top:10px; font-size:1.1rem; color:#ef4444; cursor:pointer; font-weight:600;';
-    cancelRow.textContent = 'Cancelar';
-    cancelRow.onclick = function(e) {
-        e.stopPropagation();
-        closeSheet();
-    };
-    
-    sheet.appendChild(emojiRow);
-    sheet.appendChild(fwdRow);
-    sheet.appendChild(cancelRow);
-    overlay.appendChild(sheet);
-    document.body.appendChild(overlay);
-    
-    overlay.onclick = function(e) {
-        if (e.target === overlay) closeSheet();
-    };
-    
-    function closeSheet() {
-        sheet.style.transform = 'translateY(100%)';
-        overlay.style.opacity = '0';
-        setTimeout(function() { overlay.remove(); }, 300);
+    var bubble = wrapper.querySelector('.wa-bubble');
+    if (bubble) {
+        bubble.style.position = 'relative';
+        bubble.appendChild(bar);
+        setTimeout(function() { bar.style.opacity = '1'; }, 10);
     }
-    
-    setTimeout(function() {
-        overlay.style.opacity = '1';
-        sheet.style.transform = 'translateY(0)';
-    }, 10);
 }
 async function _addReaction(m, wrapper, emoji) {
     var cu = typeof auth !== 'undefined' && auth.getCurrentUser ? auth.getCurrentUser() : null;
