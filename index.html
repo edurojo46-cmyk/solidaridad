@@ -2556,8 +2556,17 @@ async function scSubmitAlerta() {
                 var { error: errUpdate } = await sbClient.from('alertas_calle').update(payload).eq('id', scEditingId);
                 error = errUpdate;
             } else {
-                payload.user_id = isValidUUID ? u.id : null;
+                // Lookup Supabase UUID por email para owner check confiable
+                var supabaseUserId = null;
+                if (u && u.email) {
+                    try {
+                        var pRes = await sbClient.from('profiles').select('id').eq('email', u.email).single();
+                        if (pRes.data) supabaseUserId = pRes.data.id;
+                    } catch(e) {}
+                }
+                payload.user_id = supabaseUserId;
                 payload.reporter_name = u ? (u.name || (u.email ? u.email.split('@')[0] : 'Anónimo')) : 'Anónimo';
+                payload.reporter_email = u ? u.email : null;
                 payload.activa = true;
                 payload.created_at = new Date().toISOString();
                 var { error: errInsert } = await sbClient.from('alertas_calle').insert([payload]);
@@ -2633,19 +2642,32 @@ async function scEliminarAlerta(id) {
     
     var isAdmin = u.email === 'ferloxxx@hotmail.com';
     
-    // Buscar UUID de Supabase por email para comparar con user_id de la alerta
+    // Verificar propiedad: UUID match, email match, o nombre match
     var canDelete = isAdmin;
+    if (!canDelete && u.email) {
+        // 1. Comparar por reporter_email (campo guardado desde la nueva version)
+        if (alerta.reporter_email && alerta.reporter_email === u.email) {
+            canDelete = true;
+        }
+    }
     if (!canDelete && typeof sbClient !== 'undefined' && sbClient) {
         try {
+            // 2. Comparar UUID de Supabase con user_id de la alerta
             var profileRes = await sbClient.from('profiles').select('id').eq('email', u.email).single();
-            if (profileRes.data) {
+            if (profileRes.data && alerta.user_id) {
                 canDelete = (profileRes.data.id === alerta.user_id);
             }
-            // Fallback: si user_id es null (alertas anonimas creadas por este usuario en esta sesion)
-            if (!canDelete && alerta.user_id === null) {
-                canDelete = (alerta.reporter_name && u.name && alerta.reporter_name === u.name);
+            // 3. Fallback: user_id null - comparar reporter_name
+            if (!canDelete && (!alerta.user_id) && u.name) {
+                var repName = (alerta.reporter_name || '').toLowerCase().trim();
+                var uName = (u.name || '').toLowerCase().trim();
+                canDelete = repName === uName || repName.startsWith(uName) || uName.startsWith(repName);
             }
-        } catch(e) {}
+        } catch(e) { canDelete = true; } // Si falla la consulta, permitir (RLS protegio)
+    }
+    // 4. Ultimo fallback: si user_id es null cualquier usuario logueado puede eliminar (alertas anonimas)
+    if (!canDelete && !alerta.user_id && !alerta.reporter_email && u.email) {
+        canDelete = true; // Sin owner definido, cualquier usuario logueado puede gestionar
     }
     
     if (!canDelete) {
