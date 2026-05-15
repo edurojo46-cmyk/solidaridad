@@ -1828,7 +1828,7 @@ function openChat(partnerId, partnerName) {
                 }
                 return;
             }
-            if (newMsg.from_id === chatCurrentPartner) {
+            if (eventType === 'INSERT' && newMsg.from_id === chatCurrentPartner) {
                 if(msgContainer) {
                     var mDiv = renderChatMsg(newMsg, false);
                     msgContainer.appendChild(mDiv);
@@ -2152,7 +2152,7 @@ function _renderReactions(m, wrapper) {
     if (m.reactions) {
         Object.keys(m.reactions).forEach(function(em) {
             // FIX: Filtrar basura de la base de datos para que solo renderice emojis reales
-            if (typeof WA_EMOJIS !== 'undefined' && WA_EMOJIS.indexOf(em) === -1) return;
+            // if (typeof WA_EMOJIS !== 'undefined' && WA_EMOJIS.indexOf(em) === -1) return;
             
             var arr = m.reactions[em];
             if (arr && arr.length > 0) {
