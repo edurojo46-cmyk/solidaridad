@@ -1,4 +1,4 @@
-﻿var app = {
+var app = {
     currentScreen: 'screen-splash',
     screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
@@ -381,9 +381,18 @@
                             <div style="font-size:0.72rem;color:#94a3b8;"><i class="ri-calendar-2-line"></i> ${dateStr}</div>
                         </div>
                     </button>
-                    <button style="width:34px;height:34px;border-radius:50%;background:#fff7ed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#f97316;font-size:1rem;" title="Compartir">
-                        <i class="ri-share-forward-line"></i>
-                    </button>
+                    <div style="display:flex;gap:8px;">
+                        <!-- Botón Chat (Flechita de costado) -->
+                        <button onclick="openChatWith('${creatorId}','${creatorEsc}')" 
+                            style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:1.05rem;box-shadow:0 2px 8px rgba(249,115,22,0.35);" title="Enviar mensaje">
+                            <i class="ri-send-plane-2-fill"></i>
+                        </button>
+                        <!-- Botón Compartir -->
+                        <button onclick="app.shareAnuncio('${id}','${(anuncio.title||'').replace(/'/g,"\\'")}','${(desc||'').replace(/'/g,"\\'").substring(0,100)}','${(anuncio.photo_url||'').replace(/'/g,"\\'")}')"
+                            style="width:34px;height:34px;border-radius:50%;background:#fff7ed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#f97316;font-size:1rem;" title="Compartir">
+                            <i class="ri-share-forward-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>`;
             list.appendChild(card);
