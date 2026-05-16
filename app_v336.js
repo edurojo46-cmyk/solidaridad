@@ -1641,8 +1641,17 @@ var app = {
         }
     },
 
-    onAuthSuccess() { this.updateUserUI(); if (typeof loadAvatar === 'function') loadAvatar(); this.navigate('screen-profile'); this.requestGeolocation(); },
-    handleLogout() { auth.logoutUser(); if (typeof setAvatarEverywhere === 'function') setAvatarEverywhere(null); this.navigate('screen-splash'); },
+    onAuthSuccess() { 
+        this.updateUserUI(); 
+        this.loadUserAvatar(); 
+        this.navigate('screen-profile'); 
+        this.requestGeolocation(); 
+    },
+    handleLogout() { 
+        auth.logoutUser(); 
+        this.setUserAvatar(null); 
+        this.navigate('screen-splash'); 
+    },
 
     requestGeolocation() {
         if (!navigator.geolocation) return;
