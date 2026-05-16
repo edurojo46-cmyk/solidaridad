@@ -1,6 +1,6 @@
-var app = {
+﻿var app = {
     currentScreen: 'screen-splash',
-    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios'],
+    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios','screen-voluntarios'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
     detailMap: null,
     buscarMap: null,
@@ -1514,7 +1514,7 @@ var app = {
         if (!this.screens.includes(screenId)) return;
         if (auth.isProtected(screenId) && !auth.isAuthenticated()) screenId = 'screen-login';
         const ac = document.getElementById('app-container');
-        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios'];
+        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios','screen-voluntarios'];
         const isDash = !single.includes(screenId);
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         if (this.isDesktop() && isDash) {
@@ -1530,6 +1530,7 @@ var app = {
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
         if (screenId === 'screen-profile') { setTimeout(function() { if(app.renderVolunteerProfile) app.renderVolunteerProfile(); }, 300); }
+        if (screenId === 'screen-voluntarios') { setTimeout(function() { if(app.loadVoluntarios) app.loadVoluntarios(); }, 200); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
         }
@@ -1860,6 +1861,168 @@ var app = {
         this.renderHabilidades();
     },
     // ── MI CAUSA ACTUAL ──
+
+    // ══════════════════════════════════════════
+    //  BANCO DE VOLUNTARIOS
+    // ══════════════════════════════════════════
+    _volFiltro: null,
+
+    loadVoluntarios: function() {
+        var self = this;
+        var container = document.getElementById('vol-lista');
+        var urgentes = document.getElementById('vol-urgentes');
+        if (!container) return;
+
+        // Recopilar todos los voluntarios desde localStorage
+        var voluntarios = [];
+        var u = auth.getCurrentUser();
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (!key || key.indexOf('redmaria_habilidades_') !== 0) continue;
+            var userId = key.replace('redmaria_habilidades_', '');
+            var habs = [];
+            try { habs = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+            if (habs.length === 0) continue;
+            // Nombre: buscar en session o perfil
+            var nombre = userId;
+            var sessionRaw = localStorage.getItem('redmaria_session');
+            if (sessionRaw) {
+                try {
+                    var sess = JSON.parse(sessionRaw);
+                    if (sess && sess.id === userId) nombre = sess.name || sess.email || userId;
+                } catch(e) {}
+            }
+            // Compromisos activos
+            var compKey = 'redmaria_compromisos_' + userId;
+            var comps = [];
+            try {
+                var rawComps = JSON.parse(localStorage.getItem(compKey) || '[]');
+                var hoy = new Date(); hoy.setHours(0,0,0,0);
+                comps = rawComps.filter(function(c){ return !c.hasta || new Date(c.hasta) >= hoy; });
+            } catch(e) {}
+            // Avatar
+            var avatarKey = 'redmaria_avatar_' + userId;
+            var avatar = localStorage.getItem(avatarKey) || localStorage.getItem('redmaria_avatar') || null;
+            voluntarios.push({ userId: userId, nombre: nombre, habs: habs, comps: comps, avatar: avatar, esYo: (u && u.id === userId) });
+        }
+
+        // Aplicar filtro
+        var filtrados = this._volFiltro
+            ? voluntarios.filter(function(v){ return v.habs.indexOf(self._volFiltro) !== -1; })
+            : voluntarios;
+
+        // Render lista principal
+        container.innerHTML = '';
+        if (filtrados.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:32px 16px;color:#94a3b8;">'
+                + '<div style="font-size:3rem;margin-bottom:12px;">🔍</div>'
+                + '<p style="font-weight:600;margin:0 0 4px;">Aun no hay voluntarios registrados</p>'
+                + '<p style="font-size:0.85rem;margin:0;">Completa tus habilidades en tu perfil para aparecer aqui</p>'
+                + '</div>';
+            return;
+        }
+
+        filtrados.forEach(function(vol) {
+            var card = document.createElement('div');
+            card.style.cssText = 'display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:16px;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:12px;';
+
+            // Avatar
+            var avatarHtml = vol.avatar
+                ? '<img src="' + vol.avatar + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
+                : '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#0ea5e9);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1.2rem;flex-shrink:0;">' + (vol.nombre[0]||'?').toUpperCase() + '</div>';
+
+            // Habilidades pills (max 3)
+            var habsHtml = '';
+            vol.habs.slice(0,3).forEach(function(hId) {
+                var h = self.HABILIDADES_LISTA && self.HABILIDADES_LISTA.find(function(x){return x.id===hId;});
+                if (h) habsHtml += '<span style="display:inline-flex;align-items:center;gap:3px;background:'+h.color+'15;border:1px solid '+h.color+';color:'+h.color+';border-radius:12px;padding:3px 8px;font-size:0.72rem;font-weight:700;">' + h.icon + ' ' + h.label + '</span>';
+            });
+            if (vol.habs.length > 3) habsHtml += '<span style="font-size:0.72rem;color:#94a3b8;padding:3px 6px;">+' + (vol.habs.length-3) + ' más</span>';
+
+            // Compromiso activo (el más próximo a vencer)
+            var compHtml = '';
+            if (vol.comps.length > 0) {
+                var c = vol.comps[0];
+                var cat = self.COMPROMISO_CATEGORIAS && self.COMPROMISO_CATEGORIAS.find(function(x){return x.id===c.catId;});
+                if (cat) compHtml = '<div style="margin-top:6px;font-size:0.78rem;color:'+cat.color+';font-weight:700;">' + cat.icon + ' ' + cat.label + (c.desc?' — '+c.desc:'') + '</div>';
+            }
+
+            card.innerHTML = avatarHtml +
+                '<div style="flex:1;min-width:0;">' +
+                  '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+                    '<div>' +
+                      '<div style="font-weight:800;color:#1e293b;font-size:0.95rem;">' + vol.nombre + (vol.esYo?' <span style="font-size:0.7rem;color:#6366f1;font-weight:700;">(vos)</span>':'') + '</div>' +
+                      '<div style="font-size:0.78rem;color:#94a3b8;">' + vol.habs.length + ' habilidad' + (vol.habs.length!==1?'es':'') + (vol.comps.length>0?' · '+vol.comps.length+' compromiso'+(vol.comps.length!==1?'s':''):'') + '</div>' +
+                    '</div>' +
+                    (!vol.esYo ? '<button onclick="openMensajesPanel && openMensajesPanel()" style="background:#6366f1;color:white;border:none;border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:800;cursor:pointer;flex-shrink:0;">Contactar</button>' : '') +
+                  '</div>' +
+                  '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;">' + habsHtml + '</div>' +
+                  compHtml +
+                '</div>';
+            container.appendChild(card);
+        });
+
+        // Urgentes: compromisos que vencen en 48h de cualquier voluntario
+        if (urgentes) {
+            var urgList = [];
+            voluntarios.forEach(function(vol) {
+                vol.comps.forEach(function(c) {
+                    if (!c.hasta) return;
+                    var diff = (new Date(c.hasta) - new Date()) / 3600000;
+                    if (diff <= 48) urgList.push({ vol: vol, comp: c, diff: diff });
+                });
+            });
+            urgList.sort(function(a,b){ return a.diff - b.diff; });
+            if (urgList.length > 0) {
+                urgentes.style.display = 'block';
+                var ul = document.getElementById('vol-urgentes-lista');
+                if (ul) {
+                    ul.innerHTML = '';
+                    urgList.slice(0,5).forEach(function(item) {
+                        var cat = self.COMPROMISO_CATEGORIAS && self.COMPROMISO_CATEGORIAS.find(function(x){return x.id===item.comp.catId;});
+                        var li = document.createElement('div');
+                        li.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(239,68,68,0.05);border-left:3px solid #ef4444;border-radius:10px;margin-bottom:8px;';
+                        li.innerHTML = '<span style="font-size:1.4rem;">' + (cat?cat.icon:'💡') + '</span>'
+                            + '<div style="flex:1"><div style="font-size:0.82rem;font-weight:700;color:#1e293b;">' + item.vol.nombre + '</div>'
+                            + '<div style="font-size:0.78rem;color:#64748b;">' + (cat?cat.label:'') + (item.comp.desc?' — '+item.comp.desc:'') + '</div></div>'
+                            + '<span style="font-size:0.72rem;font-weight:800;color:#ef4444;white-space:nowrap;">' + (item.diff<=1?'Hoy!':Math.ceil(item.diff/24)+'d') + '</span>';
+                        ul.appendChild(li);
+                    });
+                }
+            } else {
+                urgentes.style.display = 'none';
+            }
+        }
+    },
+
+    volFiltrar: function(habilidadId) {
+        this._volFiltro = (this._volFiltro === habilidadId) ? null : habilidadId;
+        // Update active filter buttons
+        document.querySelectorAll('.vol-filtro-btn').forEach(function(btn) {
+            var isActive = btn.dataset.hid === (app._volFiltro||'');
+            btn.style.background = isActive ? btn.dataset.color : 'white';
+            btn.style.color = isActive ? 'white' : btn.dataset.color;
+        });
+        this.loadVoluntarios();
+    },
+
+    volPublicarMiPerfil: function() {
+        // Guarda en localStorage con flag "publicado"
+        var u = auth.getCurrentUser();
+        if (!u) { alert('Debes iniciar sesion primero'); return; }
+        var key = 'redmaria_habilidades_' + u.id;
+        var habs = this.getHabilidades();
+        if (habs.length === 0) {
+            alert('Primero agrega tus habilidades en tu perfil!');
+            app.navigate('screen-profile');
+            return;
+        }
+        // Re-save with user name stored separately so loadVoluntarios can find it
+        localStorage.setItem('redmaria_nombre_' + u.id, u.name || u.email || 'Voluntario');
+        localStorage.setItem(key, JSON.stringify(habs));
+        alert('Tu perfil ya esta visible en el Banco de Voluntarios!');
+        this.loadVoluntarios();
+    },
     CAUSAS: [
         { id: 'comedor',    icon: '🍲', nombre: 'Comedor',           desc: 'Colaboro en un comedor comunitario',         color: '#f97316' },
         { id: 'calle',      icon: '🏠', nombre: 'Situación de Calle', desc: 'Ayudo a personas en situación de calle',     color: '#8b5cf6' },
