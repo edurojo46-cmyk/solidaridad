@@ -1529,7 +1529,7 @@ var app = {
 
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
-        if (screenId === 'screen-profile') { setTimeout(function() { app.renderCausaCard(); }, 300); }
+        if (screenId === 'screen-profile') { setTimeout(function() { if(app.renderVolunteerProfile) app.renderVolunteerProfile(); }, 300); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
         }
@@ -1655,6 +1655,210 @@ var app = {
         this.navigate('screen-splash'); 
     },
 
+
+    // ══ OPCIÓN C: MIS COMPROMISOS ══
+    COMPROMISO_CATEGORIAS: [
+        { id:'comida',     icon:'🍲', label:'Llevar comida',     color:'#f97316' },
+        { id:'ropa',       icon:'🧥', label:'Donar ropa/abrigo', color:'#8b5cf6' },
+        { id:'transporte', icon:'🚗', label:'Dar transporte',    color:'#0ea5e9' },
+        { id:'compania',   icon:'🤝', label:'Acompanar',         color:'#10b981' },
+        { id:'dinero',     icon:'💵', label:'Donar dinero',      color:'#f59e0b' },
+        { id:'tiempo',     icon:'⏰', label:'Dar mi tiempo',     color:'#e74c3c' },
+        { id:'habilidad',  icon:'🛠', label:'Ofrecer habilidad', color:'#6366f1' },
+        { id:'otro',       icon:'💡', label:'Otro',              color:'#64748b' }
+    ],
+    getCompromisosKey: function() { var u=auth.getCurrentUser(); return u?'redmaria_compromisos_'+u.id:null; },
+    getCompromisos: function() {
+        var k=this.getCompromisosKey(); if(!k)return[];
+        try{ var a=JSON.parse(localStorage.getItem(k)||'[]'),hoy=new Date(); hoy.setHours(0,0,0,0);
+            return a.filter(function(c){return !c.hasta||new Date(c.hasta)>=hoy;}); }catch(e){return[];}
+    },
+    renderCompromisos: function() {
+        var lista=document.getElementById('compromisos-lista'),emp=document.getElementById('compromisos-empty-msg');
+        if(!lista)return;
+        var comps=this.getCompromisos(),self=this;
+        Array.from(lista.children).forEach(function(c){if(c.id!=='compromisos-empty-msg')lista.removeChild(c);});
+        if(comps.length===0){if(emp)emp.style.display='block';return;}
+        if(emp)emp.style.display='none';
+        comps.forEach(function(comp){
+            var cat=self.COMPROMISO_CATEGORIAS.find(function(c){return c.id===comp.catId;})||{icon:'💡',label:comp.catId,color:'#64748b'};
+            var ds=''; if(comp.hasta){var df=Math.ceil((new Date(comp.hasta)-new Date())/86400000);ds=df<=1?'Vence hoy':'Vence en '+df+' dias';}
+            var card=document.createElement('div');
+            card.style.cssText='display:flex;align-items:flex-start;gap:12px;border-left:4px solid '+cat.color+';border-radius:12px;padding:12px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.15);margin-bottom:2px;';
+            card.innerHTML='<span style="font-size:1.5rem;flex-shrink:0;">'+cat.icon+'</span>'
+                +'<div style="flex:1"><div style="font-size:0.78rem;font-weight:800;color:'+cat.color+';">'+cat.label+'</div>'
+                +'<div style="font-size:0.87rem;color:#334155;">'+(comp.desc||'')+'</div>'
+                +(ds?'<div style="font-size:0.74rem;color:#94a3b8;">⏱ '+ds+'</div>':'')+'</div>'
+                +'<button onclick="app.eliminarCompromiso(\''+comp.id+'\')" style="background:none;border:none;color:#cbd5e1;cursor:pointer;font-size:1.1rem;">✕</button>';
+            lista.appendChild(card);
+        });
+    },
+    eliminarCompromiso: function(id) {
+        var k=this.getCompromisosKey(); if(!k)return;
+        var a=JSON.parse(localStorage.getItem(k)||'[]');
+        localStorage.setItem(k,JSON.stringify(a.filter(function(c){return c.id!==id;})));
+        this.renderCompromisos();
+    },
+    _compCatSel: null,
+    abrirNuevoCompromiso: function() {
+        var self=this,old=document.getElementById('compromiso-overlay');
+        if(old&&old.parentNode)old.parentNode.removeChild(old);
+        this._compCatSel=null;
+        var overlay=document.createElement('div');
+        overlay.id='compromiso-overlay';
+        overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:flex-end;justify-content:center;';
+        overlay.onclick=function(e){if(e.target===overlay){overlay.parentNode&&overlay.parentNode.removeChild(overlay);}};
+        var sheet=document.createElement('div');
+        sheet.style.cssText='background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;padding:24px 20px 48px;max-height:90vh;overflow-y:auto;';
+        sheet.onclick=function(e){e.stopPropagation();};
+        var hdr=document.createElement('div');
+        hdr.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;';
+        hdr.innerHTML='<h3 style="margin:0;font-size:1rem;font-weight:900;color:#10b981;">Nuevo Compromiso</h3>'
+            +'<button onclick="var o=document.getElementById(\'compromiso-overlay\');if(o&&o.parentNode)o.parentNode.removeChild(o)" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#94a3b8;">&#x2715;</button>';
+        sheet.appendChild(hdr);
+        var grid=document.createElement('div');
+        grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;';
+        this.COMPROMISO_CATEGORIAS.forEach(function(cat){
+            var btn=document.createElement('button');
+            btn.id='comp-cat-'+cat.id;
+            btn.style.cssText='border:2px solid #e2e8f0;background:white;border-radius:10px;padding:10px 8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;';
+            btn.innerHTML='<span style="font-size:1.3rem;">'+cat.icon+'</span><span style="font-size:0.78rem;font-weight:700;color:#475569;">'+cat.label+'</span>';
+            btn.onclick=function(){
+                self._compCatSel=cat.id;
+                self.COMPROMISO_CATEGORIAS.forEach(function(c){
+                    var b=document.getElementById('comp-cat-'+c.id); if(!b)return;
+                    b.style.borderColor=c.id===cat.id?cat.color:'#e2e8f0';
+                    b.style.background=c.id===cat.id?cat.color+'18':'white';
+                });
+            };
+            grid.appendChild(btn);
+        });
+        sheet.appendChild(grid);
+        var di=document.createElement('input');
+        di.id='comp-desc'; di.placeholder='Descripcion breve';
+        di.style.cssText='width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;font-size:0.9rem;font-family:inherit;box-sizing:border-box;margin-bottom:12px;';
+        sheet.appendChild(di);
+        var dr=document.createElement('div');
+        dr.style.cssText='display:flex;gap:10px;align-items:center;margin-bottom:16px;';
+        dr.innerHTML='<label style="font-size:0.82rem;color:#64748b;font-weight:600;flex-shrink:0;">Vence el:</label>'
+            +'<input id="comp-hasta" type="date" style="flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:0.88rem;" />';
+        sheet.appendChild(dr);
+        var d=new Date(); d.setDate(d.getDate()+7);
+        var dInp=sheet.querySelector('#comp-hasta'); if(dInp)dInp.value=d.toISOString().split('T')[0];
+        var sb=document.createElement('button');
+        sb.style.cssText='width:100%;background:#10b981;color:white;border:none;border-radius:12px;padding:13px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;';
+        sb.textContent='Confirmar Compromiso';
+        sb.onclick=function(){self._guardarCompromiso();};
+        sheet.appendChild(sb);
+        overlay.appendChild(sheet);
+        document.body.appendChild(overlay);
+    },
+    _guardarCompromiso: function() {
+        if(!this._compCatSel){alert('Elegi una categoria');return;}
+        var k=this.getCompromisosKey(); if(!k)return;
+        var desc=(document.getElementById('comp-desc')||{}).value||'';
+        var hasta=(document.getElementById('comp-hasta')||{}).value||'';
+        var all=JSON.parse(localStorage.getItem(k)||'[]');
+        all.push({id:Date.now().toString(),catId:this._compCatSel,desc:desc,hasta:hasta,creado:new Date().toISOString()});
+        localStorage.setItem(k,JSON.stringify(all));
+        this._compCatSel=null;
+        var ov=document.getElementById('compromiso-overlay');
+        if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);
+        this.renderCompromisos();
+    },
+
+    // ══ OPCIÓN D: HABILIDADES SOLIDARIAS ══
+    HABILIDADES_LISTA: [
+        {id:'auto',icon:'🚗',label:'Tengo auto',color:'#0ea5e9'},
+        {id:'cocina',icon:'🍳',label:'Se cocinar',color:'#f97316'},
+        {id:'medico',icon:'🩺',label:'Medico/Enf.',color:'#e74c3c'},
+        {id:'juridico',icon:'⚖',label:'Orientacion legal',color:'#8b5cf6'},
+        {id:'tech',icon:'💻',label:'Tecnologia',color:'#6366f1'},
+        {id:'educacion',icon:'📚',label:'Dar clases',color:'#14b8a6'},
+        {id:'fuerza',icon:'💪',label:'Trabajo fisico',color:'#84cc16'},
+        {id:'almacen',icon:'📦',label:'Tengo espacio',color:'#64748b'},
+        {id:'redes',icon:'📢',label:'Redes sociales',color:'#f43f5e'},
+        {id:'fotografia',icon:'📷',label:'Foto/Video',color:'#f59e0b'},
+        {id:'musica',icon:'🎸',label:'Musica/Arte',color:'#a855f7'},
+        {id:'idioma',icon:'🌐',label:'Idiomas',color:'#10b981'},
+        {id:'peluqueria',icon:'✂',label:'Peluqueria',color:'#fb7185'},
+        {id:'otro',icon:'🌟',label:'Otra',color:'#94a3b8'}
+    ],
+    getHabilidadesKey: function(){var u=auth.getCurrentUser();return u?'redmaria_habilidades_'+u.id:null;},
+    getHabilidades: function(){var k=this.getHabilidadesKey();if(!k)return[];try{return JSON.parse(localStorage.getItem(k)||'[]');}catch(e){return[];}},
+    renderHabilidades: function() {
+        var display=document.getElementById('habilidades-display'); if(!display)return;
+        var habs=this.getHabilidades(),self=this;
+        display.innerHTML='';
+        if(habs.length===0){display.innerHTML='<p style="color:#94a3b8;font-size:0.85rem;margin:4px 0;">Que podes ofrecer? Agrega tus habilidades</p>';return;}
+        habs.forEach(function(id){
+            var hab=self.HABILIDADES_LISTA.find(function(h){return h.id===id;}); if(!hab)return;
+            var tag=document.createElement('span');
+            tag.style.cssText='display:inline-flex;align-items:center;gap:5px;background:'+hab.color+'18;border:1.5px solid '+hab.color+';color:'+hab.color+';border-radius:20px;padding:5px 12px;font-size:0.78rem;font-weight:700;';
+            tag.textContent=hab.icon+' '+hab.label;
+            display.appendChild(tag);
+        });
+    },
+    abrirHabilidades: function() {
+        var self=this,old=document.getElementById('habilidades-overlay');
+        if(old&&old.parentNode)old.parentNode.removeChild(old);
+        var actuales=this.getHabilidades().slice();
+        var overlay=document.createElement('div');
+        overlay.id='habilidades-overlay';
+        overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:flex-end;justify-content:center;';
+        overlay.onclick=function(e){if(e.target===overlay){overlay.parentNode&&overlay.parentNode.removeChild(overlay);}};
+        var sheet=document.createElement('div');
+        sheet.style.cssText='background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;padding:24px 20px 48px;max-height:88vh;overflow-y:auto;';
+        sheet.onclick=function(e){e.stopPropagation();};
+        var hdr=document.createElement('div');
+        hdr.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
+        hdr.innerHTML='<h3 style="margin:0;font-size:1rem;font-weight:900;color:#6366f1;">Mis Habilidades</h3>'
+            +'<button onclick="var o=document.getElementById(\'habilidades-overlay\');if(o&&o.parentNode)o.parentNode.removeChild(o)" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#94a3b8;">&#x2715;</button>';
+        sheet.appendChild(hdr);
+        var sub=document.createElement('p');
+        sub.style.cssText='margin:0 0 14px;font-size:0.8rem;color:#94a3b8;';
+        sub.textContent='Toca para agregar o quitar. Son visibles en tu perfil.';
+        sheet.appendChild(sub);
+        var grid=document.createElement('div');
+        grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px;';
+        this.HABILIDADES_LISTA.forEach(function(hab){
+            var sel=actuales.indexOf(hab.id)!==-1;
+            var btn=document.createElement('button');
+            btn.style.cssText='border:2px solid '+(sel?hab.color:'#e2e8f0')+';background:'+(sel?hab.color+'18':'white')+';border-radius:12px;padding:11px 8px;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:inherit;';
+            var lbl=document.createElement('span');
+            lbl.style.cssText='font-size:0.76rem;font-weight:700;color:'+(sel?hab.color:'#475569')+';';
+            lbl.textContent=hab.label;
+            btn.innerHTML='<span style="font-size:1.3rem;flex-shrink:0;">'+hab.icon+'</span>';
+            btn.appendChild(lbl);
+            btn.onclick=function(){
+                var idx=actuales.indexOf(hab.id);
+                if(idx!==-1)actuales.splice(idx,1); else actuales.push(hab.id);
+                var s=actuales.indexOf(hab.id)!==-1;
+                btn.style.borderColor=s?hab.color:'#e2e8f0';
+                btn.style.background=s?hab.color+'18':'white';
+                lbl.style.color=s?hab.color:'#475569';
+            };
+            grid.appendChild(btn);
+        });
+        sheet.appendChild(grid);
+        var sb=document.createElement('button');
+        sb.style.cssText='width:100%;background:#6366f1;color:white;border:none;border-radius:12px;padding:13px;font-size:0.95rem;font-weight:800;cursor:pointer;font-family:inherit;';
+        sb.textContent='Guardar mis habilidades';
+        sb.onclick=function(){
+            var k=self.getHabilidadesKey();
+            if(k)localStorage.setItem(k,JSON.stringify(actuales));
+            var ov=document.getElementById('habilidades-overlay');
+            if(ov&&ov.parentNode)ov.parentNode.removeChild(ov);
+            self.renderHabilidades();
+        };
+        sheet.appendChild(sb);
+        overlay.appendChild(sheet);
+        document.body.appendChild(overlay);
+    },
+    renderVolunteerProfile: function() {
+        this.renderCompromisos();
+        this.renderHabilidades();
+    },
     // ── MI CAUSA ACTUAL ──
     CAUSAS: [
         { id: 'comedor',    icon: '🍲', nombre: 'Comedor',           desc: 'Colaboro en un comedor comunitario',         color: '#f97316' },
