@@ -666,6 +666,48 @@ var db = {
             return null;
         }
     },
+    // ==================== ANUNCIOS ====================
+    async createAnuncio(anuncio) {
+        if (!sbClient) { saveLocal('anuncios', anuncio); return anuncio; }
+        let payload = Object.assign({}, anuncio);
+        // Remove non-UUID id so Supabase auto-generates
+        if (payload.id && !/^[0-9a-f]{8}-/.test(payload.id)) delete payload.id;
+        // Remove creator_id if not a valid UUID
+        if (payload.creator_id && !/^[0-9a-f]{8}-/.test(payload.creator_id)) delete payload.creator_id;
+        const { data, error } = await sbClient.from('anuncios').insert(payload).select().single();
+        if (error) {
+            console.error('[DB] Error inserting anuncio:', error.message);
+            saveLocal('anuncios', anuncio);
+            return anuncio;
+        }
+        return data;
+    },
+
+    async getAnuncios() {
+        if (!sbClient) return getLocal('anuncios');
+        const { data, error } = await sbClient.from('anuncios')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(50);
+        if (error) {
+            console.error('[DB] Error fetching anuncios:', error.message);
+            return getLocal('anuncios');
+        }
+        return data || [];
+    },
+
+    async uploadAnuncioMedia(file) {
+        if (!sbClient) return null;
+        const ext = file.name.split('.').pop().toLowerCase();
+        const path = 'anuncios/' + Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext;
+        const { error: upErr } = await sbClient.storage.from('chat-media').upload(path, file, {
+            cacheControl: '3600', upsert: false, contentType: file.type
+        });
+        if (upErr) { console.error('[Anuncios] Upload error:', upErr.message); return null; }
+        const { data: urlData } = sbClient.storage.from('chat-media').getPublicUrl(path);
+        return urlData?.publicUrl || null;
+    },
+
     // ==================== IGLESIAS COMUNIDAD ====================
     async addIglesiaComunidad(iglesia) {
         if (!sbClient) { saveLocal('iglesias_comunidad', iglesia); return iglesia; }

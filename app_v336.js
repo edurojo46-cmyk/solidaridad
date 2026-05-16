@@ -1,6 +1,6 @@
 var app = {
     currentScreen: 'screen-splash',
-    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'],
+    screens: ['screen-splash','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-rezo','screen-event','screen-live','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios'],
     pickerMap: null, pickerMarker: null, pickerLocation: null,
     detailMap: null,
     buscarMap: null,
@@ -269,6 +269,91 @@ var app = {
             self.leaveRosary(id);
             modal.remove();
         };
+    },
+
+    // ==================== ANUNCIOS ====================
+    anuncioFile: null,
+
+    async loadAnuncios() {
+        const list = document.getElementById('anuncios-list');
+        if (!list) return;
+        list.innerHTML = '<div style="text-align:center;padding:40px 0;"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;color:var(--clr-primary)"></i><p style="margin-top:10px;color:var(--clr-text-muted);">Cargando anuncios...</p></div>';
+        let anuncios = [];
+        if (typeof db !== 'undefined' && db.getAnuncios) {
+            anuncios = await db.getAnuncios();
+        }
+        list.innerHTML = '';
+        if (!anuncios || anuncios.length === 0) {
+            list.innerHTML = '<div style="text-align:center;padding:40px 20px;"><i class="ri-megaphone-line" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i><h4 style="color:#64748b;margin:0 0 8px;">No hay anuncios aún</h4><p style="color:#94a3b8;font-size:0.9rem;margin:0;">Sé el primero en publicar una actividad solidaria.</p></div>';
+            return;
+        }
+        anuncios.forEach(anuncio => {
+            const card = document.createElement('div');
+            card.className = 'glass card';
+            card.style.cssText = 'padding:0;overflow:hidden;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);background:#ffffff;';
+            const dateStr = anuncio.created_at ? new Date(anuncio.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}) : 'Reciente';
+            const creator = anuncio.creator_name || 'Fundaci\u00f3n An\u00f3nima';
+            const photoHtml = anuncio.photo_url ? `<img src="${anuncio.photo_url}" style="width:100%;height:200px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '';
+            card.innerHTML = `${photoHtml}<div style="padding:20px;"><h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;color:#1e293b;">${anuncio.title||'Sin T\u00edtulo'}</h3><p style="margin:0 0 16px;color:#475569;line-height:1.6;font-size:0.95rem;white-space:pre-wrap;">${anuncio.description||''}</p><div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(0,0,0,0.05);"><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:0.8rem;">${creator.charAt(0).toUpperCase()}</div><span style="font-size:0.85rem;font-weight:600;color:#334155;">${creator}</span></div><span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-calendar-line"></i> ${dateStr}</span></div></div>`;
+            list.appendChild(card);
+        });
+    },
+
+    openAnuncioModal() {
+        const form = document.getElementById('form-anuncio');
+        if (form) form.reset();
+        const prev = document.getElementById('anuncio-photo-preview');
+        if (prev) { prev.style.display = 'none'; prev.src = ''; }
+        this.anuncioFile = null;
+        const modal = document.getElementById('anuncio-modal-overlay');
+        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
+    },
+
+    closeAnuncioModal() {
+        const modal = document.getElementById('anuncio-modal-overlay');
+        if (!modal) return;
+        modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300);
+    },
+
+    handleAnuncioPhoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        this.anuncioFile = file;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = document.getElementById('anuncio-photo-preview');
+            if (img) { img.src = ev.target.result; img.style.display = 'block'; }
+        };
+        reader.readAsDataURL(file);
+    },
+
+    async submitAnuncio() {
+        const title = document.getElementById('anuncio-title')?.value.trim();
+        const desc = document.getElementById('anuncio-desc')?.value.trim();
+        if (!title || !desc) return;
+        const btn = document.getElementById('btn-submit-anuncio');
+        const orig = btn ? btn.innerHTML : '';
+        if (btn) { btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Publicando...'; btn.disabled = true; }
+        const user = (typeof auth !== 'undefined' && auth.isAuthenticated()) ? auth.getCurrentUser() : null;
+        let photo_url = null;
+        if (this.anuncioFile && typeof db !== 'undefined' && db.uploadAnuncioMedia) {
+            photo_url = await db.uploadAnuncioMedia(this.anuncioFile);
+        }
+        const payload = {
+            title,
+            description: desc,
+            photo_url,
+            creator_id: user ? (user.id || null) : null,
+            creator_name: user ? (user.name || 'An\u00f3nimo') : 'An\u00f3nimo',
+            created_at: new Date().toISOString()
+        };
+        if (typeof db !== 'undefined' && db.createAnuncio) {
+            await db.createAnuncio(payload);
+        }
+        this.closeAnuncioModal();
+        if (btn) { btn.innerHTML = orig; btn.disabled = false; }
+        this.loadAnuncios();
     },
 
     // Buscar page: filter cards by search text
@@ -915,6 +1000,9 @@ var app = {
 
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
+        if (screenId === 'screen-anuncios') {
+            this.loadAnuncios();
+        }
         if (screenId === 'screen-Comedores') { setTimeout(() => { if (typeof initComedoresGlobalMap === 'function') initComedoresGlobalMap(); if (typeof comedoresGlobalMap !== 'undefined' && comedoresGlobalMap) { comedoresGlobalMap.invalidateSize(); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 500); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 1000); } }, 400); }
         if (screenId === 'screen-rosary-detail' && this.detailMap) setTimeout(() => this.detailMap.invalidateSize(), 350);
         if (screenId === 'screen-rezo') {
