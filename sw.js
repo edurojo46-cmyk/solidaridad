@@ -1,5 +1,5 @@
-// SOLIDARIDAD sw.js - Version 8.0 (Network First - Force Refresh)
-var CACHE_NAME = 'solidaridad-cache-v101';
+// SOLIDARIDAD sw.js - Version 8.1 (Network First - Force Refresh)
+var CACHE_NAME = 'solidaridad-cache-v102';
 
 self.addEventListener('install', function(e) {
     self.skipWaiting(); // Force the waiting service worker to become the active service worker.
