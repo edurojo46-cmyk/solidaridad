@@ -32,7 +32,18 @@ var app = {
         this.setupResetStrengthMeter();
         if (auth.isAuthenticated()) this.updateUserUI();
 
-        this.updateNavVisibility(this.currentScreen);
+        const params = new URLSearchParams(window.location.search);
+        const sharedAnuncio = params.get('anuncio');
+        const sharedRosary = params.get('rosary');
+        
+        if (sharedAnuncio) {
+            console.log('[Init] Shared anuncio detected, navigating...');
+            this.navigate('screen-anuncios');
+        } else if (sharedRosary) {
+            // Handled in DOMContentLoaded
+        } else {
+            this.navigate(this.currentScreen);
+        }
         document.querySelectorAll('.header-nav a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
     },
 
@@ -279,19 +290,72 @@ var app = {
     _anuncioCache: [],
 
     async loadAnuncios() {
+        console.log('[Anuncios] loadAnuncios called');
         this._anuncioActiveCreatorId = null;
         this._anuncioActiveCreatorName = null;
         const list = document.getElementById('anuncios-list');
         if (!list) return;
         list.innerHTML = '<div style="text-align:center;padding:40px 0;"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;color:var(--clr-primary)"></i><p style="margin-top:10px;color:var(--clr-text-muted);">Cargando anuncios...</p></div>';
+        
         let anuncios = [];
         if (typeof db !== 'undefined' && db.getAnuncios) {
             anuncios = await db.getAnuncios();
         }
         this._anuncioCache = anuncios || [];
+        console.log('[Anuncios] Cache size:', this._anuncioCache.length);
+        
+        // If landing from a shared link, filter to show that one first
+        const params = new URLSearchParams(window.location.search);
+        const sharedId = params.get('anuncio');
+        console.log('[Anuncios] sharedId detected:', sharedId);
+
+        if (sharedId) {
+            const shared = this._anuncioCache.filter(a => {
+                const aid = (a.id || a.created_at || '').toString();
+                return aid === sharedId || aid.includes(sharedId) || sharedId.includes(aid);
+            });
+            console.log('[Anuncios] Matching announcements found:', shared.length);
+
+            if (shared.length > 0) {
+                this._renderAnuncioCards(shared);
+                // ...
+                const banner = document.createElement('div');
+                banner.id = 'shared-anuncio-banner';
+                banner.style.cssText = 'background:#fff7ed;border:1px solid #fed7aa;padding:12px 16px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;animation:fadeInDown 0.4s ease;';
+                banner.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:10px;color:#c2410c;font-size:0.9rem;font-weight:600;">
+                        <i class="ri-share-forward-fill" style="font-size:1.2rem;"></i>
+                        <span>Viendo anuncio compartido</span>
+                    </div>
+                    <button onclick="app.clearAnuncioFilters()" style="background:#f97316;color:white;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(249,115,22,0.25);">Ver todos</button>
+                `;
+                list.insertBefore(banner, list.firstChild);
+                
+                this._initAnuncioReactions(shared.map(s => s.id || s.created_at));
+                return;
+            } else {
+                console.warn('[Anuncios] Shared ID not found in cache. IDs available:', this._anuncioCache.map(a => a.id || a.created_at));
+            }
+        }
+
         this._renderAnuncioCards(this._anuncioCache);
         const _ids = this._anuncioCache.map(a => a.id || a.created_at).filter(Boolean);
         this._initAnuncioReactions(_ids);
+    },
+
+    clearAnuncioFilters() {
+        // Remove banner if exists
+        const banner = document.getElementById('shared-anuncio-banner');
+        if (banner) banner.remove();
+        
+        // Clear URL param without reload
+        if (window.location.search.includes('anuncio=')) {
+            const url = new URL(window.location);
+            url.searchParams.delete('anuncio');
+            window.history.replaceState({}, document.title, url.pathname);
+        }
+        
+        this.clearAnuncioUserFilter(); // This handles rendering full cache
     },
 
     _renderAnuncioCards(anuncios) {
@@ -335,7 +399,6 @@ var app = {
                     <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.55);color:white;font-size:0.68rem;padding:3px 10px;border-radius:16px;pointer-events:none;backdrop-filter:blur(4px);">
                         <i class="ri-zoom-in-line"></i> Tocar para agrandar
                     </div>
-                    <div style="position:absolute;top:10px;left:10px;background:#ef4444;color:white;font-size:0.62rem;font-weight:900;padding:3px 9px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;box-shadow:0 2px 8px rgba(239,68,68,0.4);">Novedad</div>
                 </div>`;
             }
 
@@ -563,15 +626,13 @@ var app = {
     },
 
     async shareAnuncio(anuncioId, title, description, photoUrl) {
-        let pageUrl = window.location.href.split('?')[0];
-        // Si estamos en localhost, forzamos la URL pública para que el compartido funcione en WhatsApp
-        if (pageUrl.includes('localhost') || pageUrl.includes('127.0.0.1')) {
-            pageUrl = 'https://edurojo46-cmyk.github.io/solidaridad/';
-        }
+        let pageUrl = 'https://edurojo46-cmyk.github.io/solidaridad/';
+        const shareUrl = pageUrl + '?anuncio=' + anuncioId;
+
         const shareData = {
             title: title || 'Anuncio Solidaridad',
             text: (description || '').substring(0, 120) + (description && description.length > 120 ? '...' : ''),
-            url: pageUrl
+            url: shareUrl
         };
         if (navigator.share) {
             try {
@@ -581,12 +642,11 @@ var app = {
                 if (e.name === 'AbortError') return;
             }
         }
-        const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
         try {
-            await navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(shareUrl);
             this._showShareToast('Enlace copiado al portapapeles \uD83D\uDCCB');
         } catch(e) {
-            this._showShareToast('Compartí este anuncio: ' + pageUrl);
+            this._showShareToast('CompartÃ­ este anuncio: ' + shareUrl);
         }
     },
 
@@ -1997,6 +2057,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 1000);
         }, 300);
+    }
+
+    // Check for shared anuncio in URL
+    var sharedAnuncio = urlParams.get('anuncio');
+    if (sharedAnuncio) {
+        console.log('[DOMContentLoaded] Immediate navigation to screen-anuncios for ID:', sharedAnuncio);
+        app.navigate('screen-anuncios');
     }
 });
 

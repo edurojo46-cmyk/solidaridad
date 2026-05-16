@@ -1483,6 +1483,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1000);
         }, 300);
     }
+
+    // Check for shared anuncio in URL
+    var sharedAnuncio = urlParams.get('anuncio');
+    if (sharedAnuncio) {
+        app.navigate('screen-anuncios');
+    }
 });
 
 // Ensure global access for inline onclick handlers

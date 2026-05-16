@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <script>
@@ -363,8 +363,21 @@ window.CustomUI = {
         </div>
     </header>
 
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            if (params.has('anuncio')) {
+                document.documentElement.setAttribute('data-deep-link', 'anuncio');
+            }
+        })();
+    </script>
+    <style>
+        [data-deep-link="anuncio"] #screen-splash { display: none !important; }
+        [data-deep-link="anuncio"] #screen-anuncios { display: block !important; }
+    </style>
     <!-- 1. SPLASH -->
-    <section id="screen-splash" class="screen active splash-bg">
+    <section id="screen-splash" class="screen splash-bg active">
+        <div style="position:fixed; bottom:10px; left:10px; color:white; z-index:9999; font-size:10px; opacity:0.5;">V349-PRO</div>
         <div class="splash-header">
             <div id="splash-beads" style="display:none; position:absolute;"></div>
             <div class="mary-avatar-container" style="position: relative;">
@@ -595,6 +608,7 @@ window.CustomUI = {
                 <input
                     id="anuncios-user-search"
                     type="text"
+                    protectedScreens: ['screen-map', 'screen-create-rosary', 'screen-rosary-detail', 'screen-rezo', 'screen-event', 'screen-live', 'screen-profile'],
                     placeholder="Buscar por usuario o fundación..."
                     oninput="app.onAnuncioUserSearch(this.value)"
                     autocomplete="off"
@@ -3794,12 +3808,12 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
     async function _initRealChatInner() {
         console.log('=== CHAT INIT START ===');
-        if (!auth.isAuthenticated()) {
+        if (!auth || !auth.isAuthenticated()) {
             showChatEmpty('Iniciá Sesión para chatear');
             return;
         }
         var localUser = auth.getCurrentUser();
-        if (!localUser || !localUser.email) {
+        if (!localUser) {
             showChatEmpty('Iniciá Sesión para chatear');
             return;
         }
@@ -5009,7 +5023,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="auth.js?v=321"></script>
 <script src="supabase_v336.js?v=344"></script>
-<script src="app_v336.js?v=344"></script>
+<script src="app_v336.js?v=349"></script>
 <script src="chat-pro.js?v=321"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
@@ -5347,9 +5361,9 @@ function initRezandoMap() {
 
 // Init map when profile screen is shown
 var origNavigate = app.navigate.bind(app);
-app.navigate = function(screenId) {
-    // AUTH GATE: require login for all screens except login/register, splash, map and anuncios (for sharing)
-    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-map', 'screen-anuncios'];
+    app.navigate = function(screenId) {
+    // AUTH GATE: require login for all screens except login/register, splash and anuncios (for sharing)
+    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-anuncios'];
     if (authScreens.indexOf(screenId) === -1 && typeof auth !== 'undefined' && !auth.isAuthenticated()) {
         origNavigate('screen-login');
         return;
@@ -5379,9 +5393,13 @@ app.navigate = function(screenId) {
 };
 // Force splash screen or allowed public screens on page load if not authenticated
 document.addEventListener('DOMContentLoaded', function() {
-    if (typeof auth !== 'undefined' && !auth.isAuthenticated()) {
-        // Only force login if we are NOT on a public screen already
-        // In this app, the HTML has screen-splash with "active" by default.
+    const isShared = new URLSearchParams(window.location.search).has('anuncio');
+    if (isShared) {
+        console.log('Shared anuncio detected - navigating immediately');
+        if (typeof app !== 'undefined' && app.navigate) {
+            app.navigate('screen-anuncios');
+        }
+    } else if (typeof auth !== 'undefined' && !auth.isAuthenticated()) {
         console.log('Guest user detected - allowing splash/public access');
     } else {
         setTimeout(initRezandoMap, 1000);
