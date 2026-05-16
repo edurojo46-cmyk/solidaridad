@@ -342,12 +342,18 @@ var app = {
                 
                 const topBar = document.querySelector('#screen-anuncios .top-bar');
                 if (topBar) topBar.style.display = 'none';
+                
+                const mainNav = document.getElementById('main-nav');
+                if (mainNav) mainNav.style.display = 'none';
 
                 const scrollArea = document.querySelector('.intenciones-scrollarea');
                 if (scrollArea) {
                     scrollArea.style.paddingTop = '0px';
                     scrollArea.scrollTop = 0;
                 }
+                
+                const listContainer = document.querySelector('.community-intentions');
+                if (listContainer) listContainer.style.paddingBottom = '20px';
 
                 setTimeout(() => { 
                     if (scrollArea) scrollArea.scrollTop = 0;
@@ -373,8 +379,12 @@ var app = {
         if (searchContainer) searchContainer.style.display = 'block';
         const topBar = document.querySelector('#screen-anuncios .top-bar');
         if (topBar) topBar.style.display = 'flex';
+        const mainNav = document.getElementById('main-nav');
+        if (mainNav) mainNav.style.display = 'flex';
         const scrollArea = document.querySelector('.intenciones-scrollarea');
         if (scrollArea) scrollArea.style.paddingTop = '20px';
+        const listContainer = document.querySelector('.community-intentions');
+        if (listContainer) listContainer.style.paddingBottom = '80px';
         
         // Remove banner if exists
         const banner = document.getElementById('shared-anuncio-banner');
@@ -424,9 +434,9 @@ var app = {
             if (anuncio.photo_url) {
                 const safeUrl   = anuncio.photo_url.replace(/'/g, "\\'");
                 const safeTit   = (anuncio.title || '').replace(/'/g, "\\'");
-                photoHtml = `<div style="position:relative;width:100%;background:#0f172a;cursor:zoom-in;min-height:200px;" onclick="app.openAnuncioLightbox('${safeUrl}','${safeTit}')">
+                photoHtml = `<div style="position:relative;width:100%;background:#0f172a;cursor:zoom-in;min-height:180px;" onclick="app.openAnuncioLightbox('${safeUrl}','${safeTit}')">
                     <img src="${anuncio.photo_url}" alt="${anuncio.title || ''}"
-                        style="width:100%;height:auto;display:block;object-fit:contain;"
+                        style="width:100%;height:auto;max-height:40vh;display:block;object-fit:contain;"
                         onerror="this.parentElement.style.display='none'">
                     <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);color:white;font-size:0.7rem;padding:4px 12px;border-radius:20px;pointer-events:none;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);">
                         <i class="ri-zoom-in-line"></i> Pantalla completa
