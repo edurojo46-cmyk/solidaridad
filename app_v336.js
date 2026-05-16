@@ -1687,23 +1687,41 @@ var app = {
 
     openCausaPicker: function() {
         var self = this;
-        var overlay = document.getElementById('causa-picker-overlay');
-        var opciones = document.getElementById('causa-opciones');
-        if (!overlay || !opciones) return;
-        opciones.innerHTML = '';
+        var old = document.getElementById('causa-picker-overlay');
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+
+        var overlay = document.createElement('div');
+        overlay.id = 'causa-picker-overlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:flex-end;justify-content:center;';
+        overlay.onclick = function(e) { if (e.target === overlay) self.closeCausaPicker(); };
+
+        var sheet = document.createElement('div');
+        sheet.style.cssText = 'background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;padding:24px 20px 44px;box-shadow:0 -8px 32px rgba(0,0,0,0.25);';
+        sheet.onclick = function(e) { e.stopPropagation(); };
+
+        var closeBtn = '<button onclick="app.closeCausaPicker()" style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:#94a3b8;line-height:1;">✕</button>';
+        var hdr = document.createElement('div');
+        hdr.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;';
+        hdr.innerHTML = '<h3 style="margin:0;font-size:1.1rem;font-weight:900;color:#1e293b;">¿Cuál es tu causa ahora?</h3>' + closeBtn;
+        sheet.appendChild(hdr);
+
+        var grid = document.createElement('div');
+        grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:12px;';
         this.CAUSAS.forEach(function(c) {
             var btn = document.createElement('button');
-            btn.style.cssText = 'border:2px solid ' + c.color + ';background:white;border-radius:14px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:inherit;transition:all 0.2s;';
-            btn.innerHTML = '<span style="font-size:2rem;">' + c.icon + '</span><span style="font-size:0.82rem;font-weight:800;color:' + c.color + ';">' + c.nombre + '</span>';
+            btn.style.cssText = 'border:2px solid ' + c.color + ';background:#fff;border-radius:14px;padding:16px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit;';
+            btn.innerHTML = '<span style="font-size:2rem;">' + c.icon + '</span><span style="font-size:0.8rem;font-weight:800;color:' + c.color + ';">' + c.nombre + '</span>';
             btn.onclick = function() { self.selectCausa(c.id); };
-            opciones.appendChild(btn);
+            grid.appendChild(btn);
         });
-        overlay.style.display = 'flex';
+        sheet.appendChild(grid);
+        overlay.appendChild(sheet);
+        document.body.appendChild(overlay);
     },
 
     closeCausaPicker: function() {
         var overlay = document.getElementById('causa-picker-overlay');
-        if (overlay) overlay.style.display = 'none';
+        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
     },
 
     renderCausaCard: function() {

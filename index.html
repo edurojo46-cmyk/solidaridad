@@ -5021,16 +5021,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
-            <!-- Modal selector de causa -->
-            <div id="causa-picker-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)app.closeCausaPicker()">
-                <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:540px;padding:24px 20px 40px;box-shadow:0 -8px 32px rgba(0,0,0,0.2);">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                        <h3 style="margin:0;font-size:1.15rem;font-weight:900;color:#1e293b;">¿Cuál es tu causa ahora?</h3>
-                        <button onclick="app.closeCausaPicker()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#94a3b8;">✕</button>
-                    </div>
-                    <div id="causa-opciones" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
-                </div>
-            </div>
+
 
             <button class="btn btn-logout" onclick="app.handleLogout()" style="margin-top:20px;margin-bottom:40px;"><i class="ri-logout-box-r-line"></i> Cerrar Sesión</button>
         </div>
