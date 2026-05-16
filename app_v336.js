@@ -1664,22 +1664,31 @@ var app = {
             },
             function(err) {
                 console.log('Geolocation denied:', err.message);
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
-        );
-    },
+     updateUserUI() {
+        const u = auth.getCurrentUser(); 
+        console.log('[Profile] Updating UI for user:', u);
+        if (!u) {
+            console.warn('[Profile] No user session found');
+            return;
+        }
+        
+        // 1. Nombre y Email (Corrected IDs)
+        const nameEl = document.getElementById('profile-name-main');
+        const emailEl = document.getElementById('profile-email-main');
+        const hn = document.getElementById('header-user-name'); 
+        
+        if (nameEl) nameEl.textContent = u.name || 'Usuario';
+        if (emailEl) emailEl.textContent = u.email ? u.email.split('@')[0] : 'usuario';
+        if (hn) hn.textContent = u.name || 'Usuario';
+        
+        // 2. Avatar
+        this.loadUserAvatar();
 
-    updateUserUI() {
-        const u = auth.getCurrentUser(); if (!u) return;
-        const pn = document.getElementById('profile-user-name'), pc = document.getElementById('profile-user-city'), pa = document.getElementById('profile-avatar-placeholder');
-        if (pn) pn.textContent = u.name; if (pc) pc.textContent = u.city; if (pa) pa.textContent = u.name.charAt(0).toUpperCase();
-        const hn = document.getElementById('header-user-name'); if (hn) hn.textContent = u.name;
-        const hm = document.getElementById('header-avatar-mini'); if (hm) hm.textContent = u.name.charAt(0).toUpperCase();
-        // Restore saved city from geolocation
+        // 3. Ciudad y Bio
+        const pc = document.getElementById('profile-user-city');
         const savedCity = localStorage.getItem('redmaria_user_city');
         if (savedCity && pc) pc.textContent = savedCity;
 
-        // Restore saved bio
         const savedBio = localStorage.getItem('redmaria_user_bio');
         const bioText = document.getElementById('profile-bio-text');
         if (bioText) {
@@ -1688,13 +1697,14 @@ var app = {
                 bioText.style.fontStyle = 'normal';
                 bioText.style.color = 'var(--clr-text-title)';
             } else {
-                bioText.textContent = '"Toca aquá para agregar una frase que te represente..."';
+                bioText.textContent = '"Toca aqu\u00ed para agregar una frase..."';
                 bioText.style.fontStyle = 'italic';
                 bioText.style.color = 'var(--clr-text-muted)';
             }
         }
+
         if (typeof db !== 'undefined' && db.getProfileByEmail) {
-            db.getProfileByEmail(u.email).then(function(p) {
+            db.getProfileByEmail(u.email).then(p => {
                 if (p && p.bio) {
                     localStorage.setItem('redmaria_user_bio', p.bio);
                     if (bioText) {
@@ -1704,35 +1714,64 @@ var app = {
                     }
                 }
                 if (p && p.likes !== undefined) {
-                    var countEl = document.querySelector('.profile-like-count');
+                    const countEl = document.querySelector('.profile-like-count');
                     if (countEl) countEl.textContent = p.likes;
                 }
-                
-                // Restore heart icon state from localStorage
-                var myLiked = localStorage.getItem('redmaria_my_profile_liked') === 'true';
-                var icon = document.querySelector('.profile-like-icon');
-                if (icon) {
-                    if (myLiked) {
-                        icon.classList.add('liked-emoji');
-                        icon.textContent = '­ƒÖÅ';
-                        icon.style.filter = 'none';
-                        icon.style.opacity = '1';
-                        icon.style.transform = 'scale(1.1)';
-                    } else {
-                        icon.classList.remove('liked-emoji');
-                        icon.textContent = '­ƒÖÅ';
-                        icon.style.filter = 'grayscale(80%)';
-                        icon.style.opacity = '0.5';
-                        icon.style.transform = 'scale(1)';
-                    }
-                }
-            }).catch(function(e) { console.warn('[Profile] Error loading profile details:', e); });
+            }).catch(e => console.warn('[Profile] Error loading remote details:', e));
         }
 
-        // Render each section independently so one error doesn't block the rest
-        try { this.renderProfileSlots(); } catch(e) { console.error('[Profile] renderProfileSlots error:', e); }
-        try { this.renderProfileJoined(); } catch(e) { console.error('[Profile] renderProfileJoined error:', e); }
-        try { this.renderProfileMyRosaries(); } catch(e) { console.error('[Profile] renderProfileMyRosaries error:', e); }
+        try { this.renderProfileSlots(); } catch(e) {}
+        try { this.renderProfileJoined(); } catch(e) {}
+        try { this.renderProfileMyRosaries(); } catch(e) {}
+    },
+
+    // ── NUEVA LÃƒâ€œGICA DE AVATAR INTEGRADA ──
+    getAvatarKey() {
+        const u = auth.getCurrentUser();
+        return u ? 'redmaria_avatar_' + u.id : 'redmaria_avatar';
+    },
+
+    handleAvatarUpload(e) {
+        const input = e.target || e;
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        if (!file.type.startsWith('image/')) return;
+        
+        const reader = new FileReader();
+        reader.onload = evt => {
+            const dataUrl = evt.target.result;
+            this.setUserAvatar(dataUrl);
+            localStorage.setItem(this.getAvatarKey(), dataUrl);
+            console.log('[Profile] Avatar uploaded and saved');
+        };
+        reader.readAsDataURL(file);
+    },
+
+    setUserAvatar(dataUrl) {
+        const mainImg = document.getElementById('profile-avatar-img-main');
+        const mainPlace = document.getElementById('profile-avatar-placeholder-main');
+        const miniImg = document.getElementById('header-avatar-mini-img');
+        const miniPlace = document.getElementById('header-avatar-mini');
+
+        if (dataUrl) {
+            if (mainImg) { mainImg.src = dataUrl; mainImg.style.display = 'block'; }
+            if (mainPlace) mainPlace.style.display = 'none';
+            if (miniImg) { miniImg.src = dataUrl; miniImg.style.display = 'block'; }
+            if (miniPlace) miniPlace.style.display = 'none';
+        } else {
+            if (mainImg) { mainImg.src = ''; mainImg.style.display = 'none'; }
+            if (mainPlace) mainPlace.style.display = 'flex';
+            if (miniImg) { miniImg.src = ''; miniImg.style.display = 'none'; }
+            if (miniPlace) miniPlace.style.display = 'flex';
+        }
+    },
+
+    loadUserAvatar() {
+        const key = this.getAvatarKey();
+        const saved = localStorage.getItem(key) || localStorage.getItem('redmaria_avatar');
+        console.log('[Profile] Loading avatar from:', key, 'Success:', !!saved);
+        this.setUserAvatar(saved);
+    },ofileMyRosaries(); } catch(e) { console.error('[Profile] renderProfileMyRosaries error:', e); }
     },
 
     renderProfileSlots() {
