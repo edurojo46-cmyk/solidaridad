@@ -1529,6 +1529,7 @@ var app = {
 
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
+        if (screenId === 'screen-profile') { setTimeout(function() { app.renderCausaCard(); }, 300); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
         }
@@ -1643,7 +1644,8 @@ var app = {
 
     onAuthSuccess: function() { 
         this.updateUserUI(); 
-        this.loadUserAvatar(); 
+        this.loadUserAvatar();
+        setTimeout(function() { app.renderCausaCard(); }, 300);
         this.navigate('screen-profile'); 
         this.requestGeolocation(); 
     },
@@ -1651,6 +1653,133 @@ var app = {
         auth.logoutUser(); 
         this.setUserAvatar(null); 
         this.navigate('screen-splash'); 
+    },
+
+    // ── MI CAUSA ACTUAL ──
+    CAUSAS: [
+        { id: 'comedor',    icon: '🍲', nombre: 'Comedor',           desc: 'Colaboro en un comedor comunitario',         color: '#f97316' },
+        { id: 'calle',      icon: '🏠', nombre: 'Situación de Calle', desc: 'Ayudo a personas en situación de calle',     color: '#8b5cf6' },
+        { id: 'anuncios',   icon: '📢', nombre: 'Difusión',           desc: 'Difundo actividades solidarias',             color: '#0ea5e9' },
+        { id: 'rosario',    icon: '🤝', nombre: 'Rosario/Oración',    desc: 'Organizo momentos comunitarios de oración',  color: '#10b981' },
+        { id: 'voluntario', icon: '🎯', nombre: 'Voluntario General', desc: 'Disponible para ayudar donde se necesite',   color: '#e74c3c' }
+    ],
+
+    getCausaKey: function() {
+        var u = auth.getCurrentUser();
+        return u ? 'redmaria_causa_' + u.id : null;
+    },
+
+    getCausaGuardada: function() {
+        var key = this.getCausaKey();
+        if (!key) return null;
+        try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; }
+    },
+
+    selectCausa: function(causaId) {
+        var key = this.getCausaKey();
+        if (!key) return;
+        var causa = this.CAUSAS.find(function(c) { return c.id === causaId; });
+        if (!causa) return;
+        localStorage.setItem(key, JSON.stringify({ id: causaId, desde: new Date().toISOString() }));
+        this.closeCausaPicker();
+        this.renderCausaCard();
+    },
+
+    openCausaPicker: function() {
+        var self = this;
+        var overlay = document.getElementById('causa-picker-overlay');
+        var opciones = document.getElementById('causa-opciones');
+        if (!overlay || !opciones) return;
+        opciones.innerHTML = '';
+        this.CAUSAS.forEach(function(c) {
+            var btn = document.createElement('button');
+            btn.style.cssText = 'border:2px solid ' + c.color + ';background:white;border-radius:14px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:inherit;transition:all 0.2s;';
+            btn.innerHTML = '<span style="font-size:2rem;">' + c.icon + '</span><span style="font-size:0.82rem;font-weight:800;color:' + c.color + ';">' + c.nombre + '</span>';
+            btn.onclick = function() { self.selectCausa(c.id); };
+            opciones.appendChild(btn);
+        });
+        overlay.style.display = 'flex';
+    },
+
+    closeCausaPicker: function() {
+        var overlay = document.getElementById('causa-picker-overlay');
+        if (overlay) overlay.style.display = 'none';
+    },
+
+    renderCausaCard: function() {
+        var self = this;
+        var data = this.getCausaGuardada();
+        var display = document.getElementById('causa-display');
+        var empty = document.getElementById('causa-empty');
+        if (!display || !empty) return;
+
+        if (data && data.id) {
+            var causa = this.CAUSAS.find(function(c) { return c.id === data.id; });
+            if (causa) {
+                document.getElementById('causa-icon').textContent = causa.icon;
+                document.getElementById('causa-nombre').textContent = causa.nombre;
+                document.getElementById('causa-desc').textContent = causa.desc;
+                var desde = new Date(data.desde);
+                var diffMs = new Date() - desde;
+                var diffDias = Math.floor(diffMs / 86400000);
+                var diffHoras = Math.floor(diffMs / 3600000);
+                var tiempoStr = diffDias > 0 ? 'Activo hace ' + diffDias + ' día' + (diffDias > 1 ? 's' : '') : diffHoras > 0 ? 'Activo hace ' + diffHoras + ' hora' + (diffHoras > 1 ? 's' : '') : 'Recién activado';
+                var desdeEl = document.getElementById('causa-desde');
+                if (desdeEl) desdeEl.innerHTML = '<i class="ri-time-line"></i> ' + tiempoStr;
+                var badge = document.getElementById('causa-badge');
+                if (badge) badge.style.background = 'linear-gradient(135deg,' + causa.color + ',#6366f1)';
+                display.style.display = 'block';
+                empty.style.display = 'none';
+                return;
+            }
+        }
+        display.style.display = 'none';
+        empty.style.display = 'block';
+        this.checkCausaSugerencia();
+    },
+
+    _causaSugerida: null,
+
+    checkCausaSugerencia: function() {
+        var sug = null;
+        var u = auth.getCurrentUser();
+        if (!u) return;
+        var continuo = JSON.parse(localStorage.getItem('redmaria_continuo') || '{}');
+        outerLoop:
+        for (var dateKey in continuo) {
+            for (var h in continuo[dateKey]) {
+                var people = continuo[dateKey][h];
+                if (Array.isArray(people) && people.indexOf(u.name) !== -1) { sug = 'comedor'; break outerLoop; }
+            }
+        }
+        if (!sug) {
+            var rosarios = JSON.parse(localStorage.getItem('redmaria_rosaries') || '[]');
+            if (rosarios.some(function(r) { return r.creatorId === u.id; })) sug = 'rosario';
+        }
+        if (!sug) {
+            var anuncios = JSON.parse(localStorage.getItem('redmaria_anuncios') || '[]');
+            if (anuncios.some(function(a) { return a.creator_email === u.email; })) sug = 'anuncios';
+        }
+        var sugDiv = document.getElementById('causa-sugerencia');
+        var sugText = document.getElementById('causa-sug-text');
+        if (!sugDiv || !sugText) return;
+        if (sug) {
+            var causa = this.CAUSAS.find(function(c) { return c.id === sug; });
+            if (causa) {
+                this._causaSugerida = sug;
+                sugText.textContent = 'basado en tu actividad, ¿tu causa es ' + causa.icon + ' ' + causa.nombre + '?';
+                sugDiv.style.display = 'block';
+                return;
+            }
+        }
+        sugDiv.style.display = 'none';
+    },
+
+    acceptCausaSugerencia: function() {
+        if (this._causaSugerida) {
+            this.selectCausa(this._causaSugerida);
+            this._causaSugerida = null;
+        }
     },
 
     requestGeolocation() {

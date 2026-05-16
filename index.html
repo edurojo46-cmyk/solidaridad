@@ -4978,30 +4978,57 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             }
             </script>
 
-            <!-- Colecta Personal -->
-            <div class="card glass" style="margin-bottom:16px;background:white;color:#e74c3c;position:relative;overflow:hidden;border:3px solid #0ea5e9;box-shadow:0 8px 24px rgba(14, 165, 233, 0.15);">
-                <div style="position:absolute;right:-20px;top:-20px;opacity:0.05;font-size:120px;line-height:1;color:#0ea5e9;"><i class="ri-heart-3-fill"></i></div>
+            <!-- Mi Causa Actual (Sistema Dinámico) -->
+            <div class="card glass" id="causa-card" style="margin-bottom:16px;position:relative;overflow:hidden;border:3px solid #0ea5e9;box-shadow:0 8px 24px rgba(14,165,233,0.15);">
+                <div style="position:absolute;right:-20px;top:-20px;opacity:0.05;font-size:120px;line-height:1;color:#0ea5e9;"><i class="ri-flag-2-fill"></i></div>
                 <div style="position:relative;z-index:1;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                        <div>
-                            <h4 style="margin:0;font-size:1.15rem;font-weight:900;color:#e74c3c;display:flex;align-items:center;gap:6px;"><i class="ri-flag-2-fill" style="color:#e74c3c;"></i> Mi Causa Actual</h4>
-                            <p style="margin:4px 0 0;font-size:0.9rem;color:#e74c3c;font-weight:700;">Juntando frazadas para el invierno</p>
-                        </div>
-                        <button onclick="alert('Función de editar meta en desarrollo')" style="background:rgba(231,76,60,0.1);border:none;color:#e74c3c;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="ri-pencil-fill"></i></button>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <h4 style="margin:0;font-size:1.1rem;font-weight:900;color:#0ea5e9;display:flex;align-items:center;gap:6px;">
+                            <i class="ri-flag-2-fill"></i> Mi Causa Actual
+                        </h4>
+                        <button onclick="app.openCausaPicker()" id="causa-edit-btn" style="background:rgba(14,165,233,0.1);border:none;color:#0ea5e9;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Cambiar causa">
+                            <i class="ri-pencil-fill"></i>
+                        </button>
                     </div>
-                    
-                    <div style="margin-top:16px;">
-                        <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:800;margin-bottom:6px;color:#e74c3c;">
-                            <span>30 donadas</span>
-                            <span style="opacity:0.8;">Meta: 50</span>
+
+                    <!-- Estado: causa seleccionada -->
+                    <div id="causa-display" style="display:none;">
+                        <div id="causa-badge" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white;border-radius:16px;padding:10px 18px;font-weight:800;font-size:1rem;box-shadow:0 4px 14px rgba(14,165,233,0.3);margin-bottom:10px;">
+                            <span id="causa-icon" style="font-size:1.4rem;"></span>
+                            <span id="causa-nombre"></span>
                         </div>
-                        <div style="height:10px;background:rgba(231,76,60,0.15);border-radius:5px;overflow:hidden;margin-bottom:16px;">
-                            <div style="width:60%;height:100%;background:#e74c3c;border-radius:5px;position:relative;">
-                                <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);animation:shimmer 2s infinite;"></div>
-                            </div>
-                        </div>
-                        <button class="btn" style="width:100%;background:#0ea5e9;color:white;font-weight:900;border-radius:12px;padding:12px;box-shadow:0 4px 12px rgba(14, 165, 233, 0.3);" onclick="alert('Integración con pagos/donaciones en desarrollo')"><i class="ri-hand-heart-fill" style="color:white;margin-right:6px;"></i> áYo aporto!</button>
+                        <p id="causa-desc" style="margin:6px 0 0;font-size:0.85rem;color:#64748b;"></p>
+                        <p id="causa-desde" style="margin:4px 0 0;font-size:0.78rem;color:#94a3b8;"><i class="ri-time-line"></i> </p>
                     </div>
+
+                    <!-- Estado: sin causa -->
+                    <div id="causa-empty" style="text-align:center;padding:8px 0;">
+                        <p style="color:#94a3b8;font-size:0.9rem;margin:0 0 10px;">Elegí tu causa solidaria activa</p>
+                        <button onclick="app.openCausaPicker()" class="btn btn-primary" style="padding:10px 24px;border-radius:12px;font-weight:700;">
+                            <i class="ri-add-circle-line"></i> Elegir mi causa
+                        </button>
+                    </div>
+
+                    <!-- Sugerencia automática -->
+                    <div id="causa-sugerencia" style="display:none;margin-top:10px;background:rgba(14,165,233,0.08);border-radius:10px;padding:10px 12px;">
+                        <p style="margin:0;font-size:0.82rem;color:#0ea5e9;font-weight:600;">
+                            <i class="ri-lightbulb-flash-line"></i> Sugerencia: <span id="causa-sug-text"></span>
+                        </p>
+                        <button onclick="app.acceptCausaSugerencia()" style="margin-top:6px;background:#0ea5e9;color:white;border:none;border-radius:8px;padding:5px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;">
+                            Sí, adoptar esta causa
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal selector de causa -->
+            <div id="causa-picker-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)app.closeCausaPicker()">
+                <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:540px;padding:24px 20px 40px;box-shadow:0 -8px 32px rgba(0,0,0,0.2);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h3 style="margin:0;font-size:1.15rem;font-weight:900;color:#1e293b;">¿Cuál es tu causa ahora?</h3>
+                        <button onclick="app.closeCausaPicker()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#94a3b8;">✕</button>
+                    </div>
+                    <div id="causa-opciones" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
                 </div>
             </div>
 
