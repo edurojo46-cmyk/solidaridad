@@ -31,7 +31,7 @@ if(window.caches){caches.keys().then(function(n){n.forEach(function(k){caches.de
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="index_v336.css?v=343">
+    <link rel="stylesheet" href="index_v336.css?v=344">
     <script>
         // FIX: Force unregister service workers on ALL environments to kill aggressive caching
         if ('serviceWorker' in navigator) {
@@ -378,6 +378,7 @@ window.CustomUI = {
         <div class="splash-bottom">
             <button class="btn btn-primary" onclick="app.navigate('screen-register')">EMPEZAR AHORA</button>
             <button class="btn btn-secondary glass-btn" onclick="app.navigate('screen-login')">INICIAR SESIÓN</button>
+            <button class="btn btn-secondary" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);margin-top:8px;" onclick="app.navigate('screen-anuncios')">VER ANUNCIOS SIN REGISTRARME</button>
         </div>
         <div class="splash-extended-content">
             <h3 class="splash-intro-text">Coordina ayuda en tiempo real y colabora con tu comunidad</h3>
@@ -5007,8 +5008,8 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="auth.js?v=321"></script>
-<script src="supabase_v336.js?v=343"></script>
-<script src="app_v336.js?v=343"></script>
+<script src="supabase_v336.js?v=344"></script>
+<script src="app_v336.js?v=344"></script>
 <script src="chat-pro.js?v=321"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
@@ -5347,8 +5348,8 @@ function initRezandoMap() {
 // Init map when profile screen is shown
 var origNavigate = app.navigate.bind(app);
 app.navigate = function(screenId) {
-    // AUTH GATE: require login for all screens except login/register, splash and the map (for sharing)
-    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-map'];
+    // AUTH GATE: require login for all screens except login/register, splash, map and anuncios (for sharing)
+    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-map', 'screen-anuncios'];
     if (authScreens.indexOf(screenId) === -1 && typeof auth !== 'undefined' && !auth.isAuthenticated()) {
         origNavigate('screen-login');
         return;
@@ -5376,17 +5377,12 @@ app.navigate = function(screenId) {
         loadCenaculosFromSupabase();
     }
 };
-// Force login screen on page load if not authenticated
+// Force splash screen or allowed public screens on page load if not authenticated
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof auth !== 'undefined' && !auth.isAuthenticated()) {
-        // Use the proper navigate system (class-based) instead of inline display:none
-        // which conflicts with CSS .screen.active rules
-        document.querySelectorAll('.screen').forEach(function(s) { 
-            s.classList.remove('active');
-            s.style.display = ''; // Clear any leftover inline display
-        });
-        var loginScreen = document.getElementById('screen-login') || document.getElementById('screen-auth');
-        if (loginScreen) loginScreen.classList.add('active');
+        // Only force login if we are NOT on a public screen already
+        // In this app, the HTML has screen-splash with "active" by default.
+        console.log('Guest user detected - allowing splash/public access');
     } else {
         setTimeout(initRezandoMap, 1000);
     }
