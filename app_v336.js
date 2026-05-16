@@ -368,7 +368,7 @@
                 ${anuncio.photo_url ? `<h3 style="margin:0 0 8px;font-size:1.1rem;font-weight:800;color:#1e293b;line-height:1.3;">${anuncio.title || 'Sin T\u00edtulo'}</h3>` : ''}
                 ${desc ? `<p style="margin:0 0 14px;color:#475569;line-height:1.65;font-size:0.93rem;">${desc}</p>` : ''}
                 <!-- Reacciones con emojis -->
-                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">${emojiRow}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;" id="emoji-row-${id}">${emojiRow}</div>
                 <!-- Footer -->
                 <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #f1f5f9;">
                     <button onclick="app.filterAnunciosByCreator('${creatorId}','${creatorEsc}',event)"
@@ -413,6 +413,11 @@
 
     // Carga reacciones desde Supabase y arranca suscripción Realtime
     async _initAnuncioReactions(anuncioIds) {
+        // Load from localStorage first (instant, works offline)
+        try {
+            const stored = JSON.parse(localStorage.getItem('anuncio_reactions') || '{}' );
+            this._anuncioRemoteReactions = Object.assign({}, stored);
+        } catch(e) { this._anuncioRemoteReactions = {}; }
         // Cancelar suscripción anterior
         if (this._anuncioReactionsChannel && typeof sbClient !== 'undefined' && sbClient) {
             try { sbClient.removeChannel(this._anuncioReactionsChannel); } catch(e) {}
@@ -454,29 +459,43 @@
         });
     },
 
-    async _anuncioReact(anuncioId, emoji, btn) {
-        // Animación inmediata
+    _anuncioReact(anuncioId, emoji, btn) {
+        // 1. Animate the tapped button immediately
         btn.style.transform = 'scale(1.4)';
-        setTimeout(() => btn.style.transform = '', 220);
         btn.disabled = true;
-        setTimeout(() => btn.disabled = false, 1500);
+        setTimeout(() => { btn.style.transform = ''; btn.disabled = false; }, 700);
 
-        // Optimistic UI local
+        // 2. Update count locally
+        if (!this._anuncioRemoteReactions) this._anuncioRemoteReactions = {};
         if (!this._anuncioRemoteReactions[anuncioId]) this._anuncioRemoteReactions[anuncioId] = {};
-        const optimistic = (this._anuncioRemoteReactions[anuncioId][emoji] || 0) + 1;
-        this._anuncioRemoteReactions[anuncioId][emoji] = optimistic;
-        this._updateEmojiBtn(anuncioId, emoji, optimistic);
+        const newCount = (this._anuncioRemoteReactions[anuncioId][emoji] || 0) + 1;
+        this._anuncioRemoteReactions[anuncioId][emoji] = newCount;
 
-        // Persistir en Supabase (Realtime enviará la actualización a todos los usuarios)
+        // 3. Update THIS button directly (no DOM search needed)
+        btn.style.background  = '#fff7ed';
+        btn.style.borderColor = '#fed7aa';
+        btn.innerHTML = '<span>' + emoji + '</span><span style="font-size:0.75rem;font-weight:700;color:#f97316;margin-left:3px;">' + newCount + '</span>';
+
+        // 4. Persist to localStorage for offline resilience
+        try { localStorage.setItem('anuncio_reactions', JSON.stringify(this._anuncioRemoteReactions)); } catch(e) {}
+
+        // 5. Non-blocking Supabase sync (real-time for other users)
         if (typeof db !== 'undefined' && db.reactAnuncio) {
-            const realCount = await db.reactAnuncio(anuncioId, emoji);
-            if (realCount !== null && realCount !== undefined) {
-                this._anuncioRemoteReactions[anuncioId][emoji] = realCount;
-                this._updateEmojiBtn(anuncioId, emoji, realCount);
-            }
+            db.reactAnuncio(anuncioId, emoji).then(realCount => {
+                if (realCount && realCount !== newCount) {
+                    this._anuncioRemoteReactions[anuncioId][emoji] = realCount;
+                    // Update via DOM lookup as bonus refresh
+                    const row = document.getElementById('emoji-row-' + anuncioId);
+                    if (row) {
+                        const allBtns = row.querySelectorAll('button[data-emoji]');
+                        allBtns.forEach(b => { if (b.dataset.emoji === emoji) {
+                            b.innerHTML = '<span>' + emoji + '</span><span style="font-size:0.75rem;font-weight:700;color:#f97316;margin-left:3px;">' + realCount + '</span>';
+                        }});
+                    }
+                }
+            }).catch(() => {}); // silent fail - localStorage is enough
         }
     },
-
     async shareAnuncio(anuncioId, title, description, photoUrl) {
         const pageUrl = window.location.href.split('?')[0];
         const shareData = {
