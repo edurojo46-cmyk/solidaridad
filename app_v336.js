@@ -1533,7 +1533,10 @@
         if (screenId === 'screen-voluntarios') { setTimeout(function() { if(app.loadVoluntarios) app.loadVoluntarios(); }, 200); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
-            setTimeout(function() { if(app.loadVolMini) app.loadVolMini(); }, 400);
+            setTimeout(function() {
+                if(app.loadVolMini) app.loadVolMini();
+                if(app.renderAnunciosVolProfile) app.renderAnunciosVolProfile();
+            }, 400);
         }
         if (screenId === 'screen-Comedores') { setTimeout(() => { if (typeof initComedoresGlobalMap === 'function') initComedoresGlobalMap(); if (typeof comedoresGlobalMap !== 'undefined' && comedoresGlobalMap) { comedoresGlobalMap.invalidateSize(); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 500); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 1000); } }, 400); }
         if (screenId === 'screen-rosary-detail' && this.detailMap) setTimeout(() => this.detailMap.invalidateSize(), 350);
@@ -2052,6 +2055,63 @@
             more.onclick = function(){ app.navigate('screen-voluntarios'); };
             more.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:900;color:#6366f1;margin-bottom:4px;">+' + (voluntarios.length-5) + '</div><div style="font-size:0.68rem;color:#94a3b8;font-weight:600;">Ver todos</div>';
             miniLista.appendChild(more);
+        }
+    },
+
+    renderAnunciosVolProfile: function() {
+        var self = this;
+        var isAuth = auth.isAuthenticated();
+
+        // ── COMPROMISOS ──
+        var lista = document.getElementById('anuncios-compromisos-lista');
+        var empty = document.getElementById('anuncios-compromisos-empty');
+        if (lista) {
+            if (!isAuth) {
+                lista.innerHTML = '<p style="color:#94a3b8;font-size:0.82rem;text-align:center;margin:6px 0;"><a href="#" onclick="app.navigate(\'screen-login\')" style="color:#10b981;font-weight:700;">Inicia sesion</a> para agregar compromisos</p>';
+            } else {
+                var comps = this.getCompromisos ? this.getCompromisos() : [];
+                if (empty) empty.style.display = comps.length === 0 ? 'block' : 'none';
+                // Remove old cards
+                Array.from(lista.children).forEach(function(c){ if(c.id!=='anuncios-compromisos-empty') lista.removeChild(c); });
+                comps.forEach(function(comp) {
+                    var cat = self.COMPROMISO_CATEGORIAS && self.COMPROMISO_CATEGORIAS.find(function(c){ return c.id===comp.catId; });
+                    if (!cat) cat = { icon:'💡', label: comp.catId, color:'#64748b' };
+                    var ds = '';
+                    if (comp.hasta) { var df=Math.ceil((new Date(comp.hasta)-new Date())/86400000); ds=df<=1?'Vence hoy':'Vence en '+df+' dias'; }
+                    var card = document.createElement('div');
+                    card.style.cssText = 'display:flex;align-items:flex-start;gap:10px;border-left:3px solid '+cat.color+';border-radius:10px;padding:10px;background:rgba(16,185,129,0.03);border:1px solid rgba(16,185,129,0.12);';
+                    card.innerHTML = '<span style="font-size:1.3rem;flex-shrink:0;">'+cat.icon+'</span>'
+                        +'<div style="flex:1"><div style="font-size:0.76rem;font-weight:800;color:'+cat.color+';">'+cat.label+'</div>'
+                        +'<div style="font-size:0.83rem;color:#334155;">'+(comp.desc||'')+'</div>'
+                        +(ds?'<div style="font-size:0.72rem;color:#94a3b8;">⏱ '+ds+'</div>':'')+'</div>'
+                        +'<button onclick="app.eliminarCompromiso(\''+comp.id+'\');app.renderAnunciosVolProfile();" style="background:none;border:none;color:#cbd5e1;cursor:pointer;font-size:1rem;">✕</button>';
+                    lista.appendChild(card);
+                });
+            }
+        }
+
+        // ── HABILIDADES ──
+        var display = document.getElementById('anuncios-habilidades-display');
+        var habEmpty = document.getElementById('anuncios-habilidades-empty');
+        if (display) {
+            if (!isAuth) {
+                display.innerHTML = '<p style="color:#94a3b8;font-size:0.82rem;margin:4px 0;"><a href="#" onclick="app.navigate(\'screen-login\')" style="color:#6366f1;font-weight:700;">Inicia sesion</a> para agregar tus habilidades</p>';
+            } else {
+                var habs = this.getHabilidades ? this.getHabilidades() : [];
+                display.innerHTML = '';
+                if (habs.length === 0) {
+                    display.innerHTML = '<p style="color:#94a3b8;font-size:0.82rem;margin:4px 0;">Que podes ofrecer? Agrega tus habilidades</p>';
+                } else {
+                    habs.forEach(function(id) {
+                        var hab = self.HABILIDADES_LISTA && self.HABILIDADES_LISTA.find(function(h){ return h.id===id; });
+                        if (!hab) return;
+                        var tag = document.createElement('span');
+                        tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:'+hab.color+'14;border:1.5px solid '+hab.color+';color:'+hab.color+';border-radius:16px;padding:4px 10px;font-size:0.76rem;font-weight:700;';
+                        tag.textContent = hab.icon + ' ' + hab.label;
+                        display.appendChild(tag);
+                    });
+                }
+            }
         }
     },
 

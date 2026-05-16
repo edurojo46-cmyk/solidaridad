@@ -4415,8 +4415,47 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </p>
             </div>
 
+            <!-- ══ MIS COMPROMISOS (inline, anuncios screen) ══ -->
+            <div class="card glass" id="anuncios-compromisos-card" style="margin-bottom:14px;border:1.5px solid rgba(16,185,129,0.3);box-shadow:0 4px 16px rgba(16,185,129,0.08);position:relative;overflow:hidden;padding:14px 16px;">
+                <div style="position:absolute;right:-10px;top:-10px;opacity:0.06;font-size:80px;color:#10b981;">&#129306;</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <h4 style="margin:0;font-size:0.9rem;font-weight:900;color:#10b981;display:flex;align-items:center;gap:5px;">
+                        <i class="ri-hand-heart-fill"></i> Mis Compromisos
+                    </h4>
+                    <button onclick="auth.isAuthenticated() ? app.abrirNuevoCompromiso() : app.navigate('screen-login')"
+                        style="background:#10b981;border:none;color:white;border-radius:16px;padding:4px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:3px;">
+                        <i class="ri-add-line"></i> Nuevo
+                    </button>
+                </div>
+                <div id="anuncios-compromisos-lista" style="display:flex;flex-direction:column;gap:8px;">
+                    <p id="anuncios-compromisos-empty" style="color:#94a3b8;font-size:0.82rem;text-align:center;margin:6px 0;">
+                        &#128587; Levant&aacute; la mano para un compromiso solidario
+                    </p>
+                </div>
+            </div>
+
+            <!-- ══ HABILIDADES SOLIDARIAS (inline, anuncios screen) ══ -->
+            <div class="card glass" id="anuncios-habilidades-card" style="margin-bottom:20px;border:1.5px solid rgba(99,102,241,0.3);box-shadow:0 4px 16px rgba(99,102,241,0.08);position:relative;overflow:hidden;padding:14px 16px;">
+                <div style="position:absolute;right:-10px;top:-10px;opacity:0.06;font-size:80px;color:#6366f1;">&#128295;</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <h4 style="margin:0;font-size:0.9rem;font-weight:900;color:#6366f1;display:flex;align-items:center;gap:5px;">
+                        <i class="ri-tools-fill"></i> Habilidades Solidarias
+                    </h4>
+                    <button onclick="auth.isAuthenticated() ? app.abrirHabilidades() : app.navigate('screen-login')"
+                        style="background:#6366f1;border:none;color:white;border-radius:16px;padding:4px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;">
+                        <i class="ri-pencil-line"></i> Editar
+                    </button>
+                </div>
+                <div id="anuncios-habilidades-display" style="display:flex;flex-wrap:wrap;gap:7px;min-height:30px;">
+                    <p id="anuncios-habilidades-empty" style="color:#94a3b8;font-size:0.82rem;margin:4px 0;">
+                        &iquest;Qu&eacute; pods ofrecer? Agrega tus habilidades
+                    </p>
+                </div>
+            </div>
+
             <!-- Tablón de Avisos / Actividades -->
             <div style="margin-bottom:32px;">
+
 
                 <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 16px 4px;">
                     <h4 style="font-size:1.35rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:8px;">
