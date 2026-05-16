@@ -4380,8 +4380,44 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                 </div>
             </div>
 
+
+            <!-- ══ BANCO DE VOLUNTARIOS (mini, público) ══ -->
+            <div style="margin-bottom:24px;background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(139,92,246,0.05));border:1.5px solid rgba(99,102,241,0.2);border-radius:20px;padding:16px 16px 14px;overflow:hidden;position:relative;">
+                <div style="position:absolute;right:-10px;top:-10px;opacity:0.06;font-size:90px;">🤝</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <h4 style="margin:0;font-size:0.95rem;font-weight:900;color:#6366f1;display:flex;align-items:center;gap:6px;">
+                        <i class="ri-team-fill"></i> Banco de Voluntarios
+                    </h4>
+                    <button onclick="app.navigate('screen-voluntarios')" style="background:#6366f1;color:white;border:none;border-radius:12px;padding:4px 12px;font-size:0.75rem;font-weight:800;cursor:pointer;">Ver todos</button>
+                </div>
+
+                <!-- Filtros rápidos scrollables -->
+                <div style="overflow-x:auto;margin-bottom:12px;padding-bottom:2px;">
+                    <div style="display:flex;gap:6px;white-space:nowrap;">
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #0ea5e9;background:white;color:#0ea5e9;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🚗 Auto</button>
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #f97316;background:white;color:#f97316;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🍳 Cocina</button>
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #e74c3c;background:white;color:#e74c3c;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🩺 Médico</button>
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #6366f1;background:white;color:#6366f1;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💻 Tech</button>
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #14b8a6;background:white;color:#14b8a6;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">📚 Clases</button>
+                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #84cc16;background:white;color:#84cc16;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💪 Físico</button>
+                    </div>
+                </div>
+
+                <!-- Preview de voluntarios -->
+                <div id="vol-mini-lista" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;">
+                    <div style="text-align:center;min-width:80px;padding:10px 8px;background:white;border-radius:14px;border:1px solid #e2e8f0;">
+                        <div style="font-size:1.6rem;margin-bottom:4px;">👤</div>
+                        <div style="font-size:0.7rem;color:#94a3b8;font-weight:600;">Sé el primero<br>en unirte</div>
+                    </div>
+                </div>
+                <p style="margin:10px 0 0;font-size:0.75rem;color:#94a3b8;text-align:center;">
+                    <i class="ri-information-line"></i> Completá tus habilidades en tu perfil para aparecer aquí
+                </p>
+            </div>
+
             <!-- Tablón de Avisos / Actividades -->
             <div style="margin-bottom:32px;">
+
                 <div style="display:flex;align-items:center;justify-content:space-between;margin:0 4px 16px 4px;">
                     <h4 style="font-size:1.35rem;font-weight:900;color:#1a1a2e;margin:0;display:flex;align-items:center;gap:8px;">
                         <i class="ri-megaphone-fill" style="color:#f39c12;font-size:1.5rem;"></i> Tablón de Actividades

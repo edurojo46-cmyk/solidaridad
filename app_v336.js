@@ -1533,6 +1533,7 @@
         if (screenId === 'screen-voluntarios') { setTimeout(function() { if(app.loadVoluntarios) app.loadVoluntarios(); }, 200); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
+            setTimeout(function() { if(app.loadVolMini) app.loadVolMini(); }, 400);
         }
         if (screenId === 'screen-Comedores') { setTimeout(() => { if (typeof initComedoresGlobalMap === 'function') initComedoresGlobalMap(); if (typeof comedoresGlobalMap !== 'undefined' && comedoresGlobalMap) { comedoresGlobalMap.invalidateSize(); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 500); setTimeout(() => { comedoresGlobalMap.invalidateSize(); window.dispatchEvent(new Event('resize')); }, 1000); } }, 400); }
         if (screenId === 'screen-rosary-detail' && this.detailMap) setTimeout(() => this.detailMap.invalidateSize(), 350);
@@ -2004,6 +2005,54 @@
             btn.style.color = isActive ? 'white' : btn.dataset.color;
         });
         this.loadVoluntarios();
+
+        this.loadVolMini();
+    },
+
+    volBuscar: function(query) { this._volQuery = query; this.loadVoluntarios(); },
+
+    loadVolMini: function() {
+        var miniLista = document.getElementById('vol-mini-lista');
+        if (!miniLista) return;
+        var self = this;
+        var voluntarios = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (!key || key.indexOf('redmaria_habilidades_') !== 0) continue;
+            var userId = key.replace('redmaria_habilidades_', '');
+            var habs = []; try { habs = JSON.parse(localStorage.getItem(key)||'[]'); } catch(e){}
+            if (habs.length === 0) continue;
+            var nombre = localStorage.getItem('redmaria_nombre_' + userId) || 'Voluntario';
+            var sessionRaw = localStorage.getItem('redmaria_session');
+            if (sessionRaw) { try { var s=JSON.parse(sessionRaw); if(s&&s.id===userId) nombre=s.name||s.email||nombre; } catch(e){} }
+            var avatar = localStorage.getItem('redmaria_avatar_' + userId) || null;
+            var topHab = (self.HABILIDADES_LISTA && habs.length > 0) ? self.HABILIDADES_LISTA.find(function(h){ return h.id===habs[0]; }) : null;
+            voluntarios.push({ nombre: nombre, avatar: avatar, topHab: topHab });
+        }
+        miniLista.innerHTML = '';
+        if (voluntarios.length === 0) {
+            miniLista.innerHTML = '<div style="text-align:center;min-width:80px;padding:10px 8px;background:white;border-radius:14px;border:1px solid #e2e8f0;"><div style="font-size:1.6rem;margin-bottom:4px;">&#128100;</div><div style="font-size:0.7rem;color:#94a3b8;font-weight:600;">Se el primero en unirte</div></div>';
+            return;
+        }
+        voluntarios.slice(0,5).forEach(function(v) {
+            var card = document.createElement('div');
+            card.style.cssText = 'text-align:center;min-width:72px;padding:10px 8px;background:white;border-radius:14px;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0;';
+            card.onclick = function(){ app.navigate('screen-voluntarios'); };
+            var avatarHtml = v.avatar
+                ? '<img src="' + v.avatar + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-bottom:5px;">'
+                : '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1rem;margin:0 auto 5px;">' + (v.nombre[0]||'?').toUpperCase() + '</div>';
+            var habHtml = v.topHab ? '<div style="font-size:0.85rem;">' + v.topHab.icon + '</div>' : '';
+            var shortName = v.nombre.split(' ')[0];
+            card.innerHTML = avatarHtml + habHtml + '<div style="font-size:0.68rem;color:#475569;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px;">' + shortName + '</div>';
+            miniLista.appendChild(card);
+        });
+        if (voluntarios.length > 5) {
+            var more = document.createElement('div');
+            more.style.cssText = 'text-align:center;min-width:60px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;';
+            more.onclick = function(){ app.navigate('screen-voluntarios'); };
+            more.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:900;color:#6366f1;margin-bottom:4px;">+' + (voluntarios.length-5) + '</div><div style="font-size:0.68rem;color:#94a3b8;font-weight:600;">Ver todos</div>';
+            miniLista.appendChild(more);
+        }
     },
 
     volPublicarMiPerfil: function() {
