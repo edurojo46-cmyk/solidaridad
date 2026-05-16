@@ -350,8 +350,9 @@
 
             // ── EMOJIS de reacci\u00f3n ──
             const emojiRow = EMOJIS.map(em => {
-                const cnt = reactions[id][em] || 0;
+                const cnt = (reactions[id] && reactions[id][em]) ? reactions[id][em] : 0;
                 return `<button onclick="app._anuncioReact('${id}','${em}',this)"
+                    data-emoji="${em}"
                     style="background:${cnt > 0 ? '#fff7ed' : '#f8fafc'};border:1.5px solid ${cnt > 0 ? '#fed7aa' : '#e2e8f0'};border-radius:20px;padding:5px 11px;cursor:pointer;font-size:0.92rem;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;font-family:inherit;">
                     <span>${em}</span>${cnt > 0 ? `<span style="font-size:0.75rem;font-weight:700;color:#f97316;">${cnt}</span>` : ''}
                 </button>`;
