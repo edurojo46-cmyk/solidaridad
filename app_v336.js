@@ -321,15 +321,24 @@ var app = {
                 // ...
                 const banner = document.createElement('div');
                 banner.id = 'shared-anuncio-banner';
-                banner.style.cssText = 'background:#fff7ed;border:1px solid #fed7aa;padding:12px 16px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;animation:fadeInDown 0.4s ease;';
+                banner.style.cssText = 'background:linear-gradient(135deg, #fff7ed, #ffedd5); border:1px solid #fed7aa; padding:10px 14px; border-radius:14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; animation:fadeInDown 0.4s ease; box-shadow:0 4px 12px rgba(251,146,60,0.1);';
                 banner.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:10px;color:#c2410c;font-size:0.9rem;font-weight:600;">
-                        <i class="ri-share-forward-fill" style="font-size:1.2rem;"></i>
-                        <span>Viendo anuncio compartido</span>
+                    <div style="display:flex;align-items:center;gap:8px;color:#c2410c;font-size:0.85rem;font-weight:700;">
+                        <i class="ri-share-forward-fill" style="font-size:1.1rem;"></i>
+                        <span>Anuncio compartido</span>
                     </div>
-                    <button onclick="app.clearAnuncioFilters()" style="background:#f97316;color:white;border:none;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(249,115,22,0.25);">Ver todos</button>
+                    <button onclick="app.navigate('screen-register')" style="background:#f97316;color:white;border:none;padding:5px 12px;border-radius:8px;font-size:0.75rem;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(249,115,22,0.3);text-transform:uppercase;letter-spacing:0.5px;">Registrarse</button>
                 `;
                 list.insertBefore(banner, list.firstChild);
+                
+                // Ocultar el hero para que el anuncio se vea arriba
+                const hero = document.querySelector('.intenciones-hero');
+                if (hero) hero.style.display = 'none';
+
+                setTimeout(() => { 
+                    const container = list.closest('.intenciones-scrollarea') || list;
+                    container.scrollTop = 0; 
+                }, 100);
                 
                 this._initAnuncioReactions(shared.map(s => s.id || s.created_at));
                 return;
@@ -344,6 +353,10 @@ var app = {
     },
 
     clearAnuncioFilters() {
+        // Restaurar hero
+        const hero = document.querySelector('.intenciones-hero');
+        if (hero) hero.style.display = 'flex';
+        
         // Remove banner if exists
         const banner = document.getElementById('shared-anuncio-banner');
         if (banner) banner.remove();
