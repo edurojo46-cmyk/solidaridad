@@ -708,6 +708,63 @@ var db = {
         return urlData?.publicUrl || null;
     },
 
+    // Incremento atómico de reacción (usando la función SQL)
+    async reactAnuncio(anuncioId, emoji) {
+        if (!sbClient) return null;
+        const { data, error } = await sbClient.rpc('increment_reaction', {
+            p_anuncio_id: anuncioId,
+            p_emoji: emoji
+        });
+        if (error) {
+            console.warn('[Reactions] RPC error, fallback to upsert:', error.message);
+            // Fallback manual si la función SQL no existe aún
+            const { data: existing } = await sbClient
+                .from('anuncio_reactions')
+                .select('count')
+                .eq('anuncio_id', anuncioId)
+                .eq('emoji', emoji)
+                .single();
+            const newCount = (existing?.count || 0) + 1;
+            await sbClient.from('anuncio_reactions').upsert({
+                anuncio_id: anuncioId, emoji, count: newCount, updated_at: new Date().toISOString()
+            }, { onConflict: 'anuncio_id,emoji' });
+            return newCount;
+        }
+        return data;
+    },
+
+    // Fetch inicial: devuelve mapa { [anuncioId]: { [emoji]: count } }
+    async getAnuncioReactions(anuncioIds) {
+        if (!sbClient || !anuncioIds || anuncioIds.length === 0) return {};
+        const { data, error } = await sbClient
+            .from('anuncio_reactions')
+            .select('anuncio_id, emoji, count')
+            .in('anuncio_id', anuncioIds);
+        if (error) { console.warn('[Reactions] Fetch error:', error.message); return {}; }
+        const map = {};
+        (data || []).forEach(row => {
+            if (!map[row.anuncio_id]) map[row.anuncio_id] = {};
+            map[row.anuncio_id][row.emoji] = row.count;
+        });
+        return map;
+    },
+
+    // Suscripción Realtime — llama callback({ anuncio_id, emoji, count }) en cada cambio
+    subscribeAnuncioReactions(callback) {
+        if (!sbClient) return null;
+        const channel = sbClient.channel('anuncio-reactions-rt')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'anuncio_reactions'
+            }, payload => {
+                const row = payload.new || payload.old;
+                if (row) callback({ anuncio_id: row.anuncio_id, emoji: row.emoji, count: row.count || 0 });
+            })
+            .subscribe();
+        return channel;
+    },
+
     // ==================== IGLESIAS COMUNIDAD ====================
     async addIglesiaComunidad(iglesia) {
         if (!sbClient) { saveLocal('iglesias_comunidad', iglesia); return iglesia; }
