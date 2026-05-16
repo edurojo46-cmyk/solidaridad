@@ -297,26 +297,90 @@ var app = {
         if (!list) return;
         list.innerHTML = '';
         if (!anuncios || anuncios.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:40px 20px;"><i class="ri-megaphone-line" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i><h4 style="color:#64748b;margin:0 0 8px;">No hay anuncios' + (this._anuncioActiveCreatorName ? ' de ' + this._anuncioActiveCreatorName : ' a\u00fan') + '</h4><p style="color:#94a3b8;font-size:0.9rem;margin:0;">' + (this._anuncioActiveCreatorName ? 'Este usuario no ha publicado nada todav\u00eda.' : 'S\u00e9 el primero en publicar una actividad solidaria.') + '</p></div>';
+            list.innerHTML = `<div style="text-align:center;padding:48px 20px;">
+                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#fde68a,#f59e0b);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 24px rgba(245,158,11,0.25);">
+                    <i class="ri-megaphone-line" style="font-size:2rem;color:white;"></i>
+                </div>
+                <h4 style="color:#64748b;margin:0 0 8px;font-size:1.1rem;">No hay anuncios${this._anuncioActiveCreatorName ? ' de ' + this._anuncioActiveCreatorName : ' a\u00fan'}</h4>
+                <p style="color:#94a3b8;font-size:0.9rem;margin:0;">${this._anuncioActiveCreatorName ? 'Este usuario no ha publicado nada todav\u00eda.' : 'S\u00e9 el primero en publicar una actividad solidaria.'}</p>
+            </div>`;
             return;
         }
         anuncios.forEach(anuncio => {
             const card = document.createElement('div');
-            card.className = 'glass card';
-            card.style.cssText = 'padding:0;overflow:hidden;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);background:#ffffff;';
-            const dateStr = anuncio.created_at ? new Date(anuncio.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}) : 'Reciente';
+            card.style.cssText = 'border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,0.08);margin-bottom:4px;transition:transform 0.2s,box-shadow 0.2s;';
+            card.onmouseover = () => { card.style.transform='translateY(-2px)'; card.style.boxShadow='0 8px 32px rgba(0,0,0,0.13)'; };
+            card.onmouseout  = () => { card.style.transform=''; card.style.boxShadow='0 4px 24px rgba(0,0,0,0.08)'; };
+
             const creator = anuncio.creator_name || 'Fundaci\u00f3n An\u00f3nima';
-            const avatarColor = this._anuncioAvatarColor(creator);
-            const photoHtml = anuncio.photo_url ? `<img src="${anuncio.photo_url}" style="width:100%;height:200px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '';
-            card.innerHTML = `${photoHtml}<div style="padding:20px;">
-                <h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;color:#1e293b;">${anuncio.title||'Sin T\u00edtulo'}</h3>
-                <p style="margin:0 0 16px;color:#475569;line-height:1.6;font-size:0.95rem;white-space:pre-wrap;">${anuncio.description||''}</p>
-                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(0,0,0,0.05);">
-                    <button onclick="app.filterAnunciosByCreator('${anuncio.creator_id||''}','${creator.replace(/'/g,"\\'")}',event)" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0;">
-                        <div style="width:32px;height:32px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:0.8rem;">${creator.charAt(0).toUpperCase()}</div>
-                        <span style="font-size:0.85rem;font-weight:600;color:#3b82f6;text-decoration:underline;">${creator}</span>
+            const avatarGrad = this._anuncioAvatarColor(creator);
+            const dateStr = anuncio.created_at
+                ? new Date(anuncio.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'})
+                : 'Reciente';
+
+            // ── HERO: foto completa o banner de color cálido ──
+            let heroHtml;
+            if (anuncio.photo_url) {
+                heroHtml = `
+                <div style="position:relative;width:100%;aspect-ratio:16/9;background:#f1f5f9;overflow:hidden;">
+                    <img
+                        src="${anuncio.photo_url}"
+                        alt="${anuncio.title||''}"
+                        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;"
+                        onerror="this.parentElement.style.background='linear-gradient(135deg,#f97316,#ea580c)';this.remove();"
+                        onload="this.style.opacity=1"
+                    >
+                    <!-- gradiente inferior para leer el título -->
+                    <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(0,0,0,0.72) 0%,transparent 100%);pointer-events:none;"></div>
+                    <!-- badge -->
+                    <div style="position:absolute;top:12px;left:12px;background:#ef4444;color:white;font-size:0.65rem;font-weight:900;padding:4px 10px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;box-shadow:0 2px 8px rgba(239,68,68,0.45);">Novedad</div>
+                    <!-- título encima de la foto -->
+                    <div style="position:absolute;bottom:0;left:0;right:0;padding:16px 16px 14px;">
+                        <h3 style="margin:0;font-size:1.15rem;font-weight:800;color:white;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,0.5);">${anuncio.title||'Sin T\u00edtulo'}</h3>
+                    </div>
+                </div>`;
+            } else {
+                // banner cálido cuando no hay foto
+                heroHtml = `
+                <div style="position:relative;width:100%;padding:28px 20px 20px;background:linear-gradient(135deg,#f97316 0%,#ea580c 50%,#dc2626 100%);">
+                    <div style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.25);color:white;font-size:0.65rem;font-weight:900;padding:4px 10px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;">Novedad</div>
+                    <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                        <i class="ri-megaphone-fill" style="font-size:1.6rem;color:white;"></i>
+                    </div>
+                    <h3 style="margin:0;font-size:1.2rem;font-weight:800;color:white;line-height:1.3;">${anuncio.title||'Sin T\u00edtulo'}</h3>
+                </div>`;
+            }
+
+            // ── CUERPO ──
+            const desc = (anuncio.description||'').trim();
+            const descHtml = desc
+                ? `<p style="margin:0 0 16px;color:#475569;line-height:1.65;font-size:0.93rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${desc}</p>`
+                : '';
+
+            card.innerHTML = `
+            ${heroHtml}
+            <div style="padding:16px 18px 18px;">
+                ${anuncio.photo_url ? '' : ''}
+                ${descHtml}
+                <!-- Footer: autor + fecha -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #f1f5f9;">
+                    <button onclick="app.filterAnunciosByCreator('${anuncio.creator_id||''}','${creator.replace(/'/g,"\\'")}',event)"
+                        style="display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;text-align:left;">
+                        <div style="width:38px;height:38px;border-radius:50%;background:${avatarGrad};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:0.95rem;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                            ${creator.charAt(0).toUpperCase()}
+                        </div>
+                        <div style="text-align:left;">
+                            <div style="font-size:0.85rem;font-weight:700;color:#f97316;">${creator}</div>
+                            <div style="font-size:0.75rem;color:#94a3b8;margin-top:1px;"><i class="ri-calendar-2-line"></i> ${dateStr}</div>
+                        </div>
                     </button>
-                    <span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-calendar-line"></i> ${dateStr}</span>
+                    <div style="display:flex;gap:8px;">
+                        <button style="width:36px;height:36px;border-radius:50%;background:#fff7ed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#f97316;font-size:1.1rem;transition:all 0.2s;"
+                            onmouseover="this.style.background='#fed7aa'" onmouseout="this.style.background='#fff7ed'"
+                            title="Compartir">
+                            <i class="ri-share-forward-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>`;
             list.appendChild(card);
