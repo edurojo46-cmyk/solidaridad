@@ -562,6 +562,38 @@ var app = {
         }).join('');
     },
 
+    async shareAnuncio(anuncioId, title, description, photoUrl) {
+        const pageUrl = window.location.href.split('?')[0];
+        const shareData = {
+            title: title || 'Anuncio Solidaridad',
+            text: (description || '').substring(0, 120) + (description && description.length > 120 ? '...' : ''),
+            url: pageUrl
+        };
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+                return;
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+            }
+        }
+        const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+        try {
+            await navigator.clipboard.writeText(text);
+            this._showShareToast('Enlace copiado al portapapeles \uD83D\uDCCB');
+        } catch(e) {
+            this._showShareToast('Compartí este anuncio: ' + pageUrl);
+        }
+    },
+
+    _showShareToast(msg) {
+        const t = document.createElement('div');
+        t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:20px;font-size:0.88rem;font-weight:600;z-index:999999;box-shadow:0 4px 16px rgba(0,0,0,0.25);white-space:nowrap;animation:scFadeIn 0.2s ease;';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2800);
+    },
+
     _anuncioAvatarColor(name) {
         const colors = ['linear-gradient(135deg,#3b82f6,#2563eb)','linear-gradient(135deg,#8b5cf6,#6d28d9)','linear-gradient(135deg,#10b981,#059669)','linear-gradient(135deg,#f59e0b,#d97706)','linear-gradient(135deg,#ef4444,#dc2626)','linear-gradient(135deg,#ec4899,#db2777)'];
         let h = 0; for (let i = 0; i < (name||'').length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
