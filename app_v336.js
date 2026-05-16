@@ -295,7 +295,7 @@
     },
 
     _renderAnuncioCards(anuncios) {
-        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4f','\ud83d\ude4c','\ud83c\udf1f','\ud83d\udd25'];
+        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
         const reactions = this._anuncioRemoteReactions || {};
         const list = document.getElementById('anuncios-list');
         if (!list) return;
@@ -439,7 +439,7 @@
     },
 
     _applyRemoteReactionsToUI() {
-        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4f','\ud83d\ude4c','\ud83c\udf1f','\ud83d\udd25'];
+        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
         Object.entries(this._anuncioRemoteReactions || {}).forEach(([anuncioId, emojis]) => {
             this._rebuildEmojiRow(anuncioId, emojis, EMOJIS);
         });
@@ -450,7 +450,7 @@
         if (!this._anuncioRemoteReactions) this._anuncioRemoteReactions = {};
         if (!this._anuncioRemoteReactions[anuncioId]) this._anuncioRemoteReactions[anuncioId] = {};
         this._anuncioRemoteReactions[anuncioId][emoji] = count;
-        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4f','\ud83d\ude4c','\ud83c\udf1f','\ud83d\udd25'];
+        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
         this._rebuildEmojiRow(anuncioId, this._anuncioRemoteReactions[anuncioId], EMOJIS);
     },
 
