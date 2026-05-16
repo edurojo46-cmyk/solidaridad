@@ -321,8 +321,7 @@ var app = {
                 // ...
                 const banner = document.createElement('div');
                 banner.id = 'shared-anuncio-banner';
-                // Banner m\u00e1s llamativo y centrado en registro
-                banner.style.cssText = 'background:linear-gradient(135deg, #fff7ed, #ffedd5); border:2.5px solid #f97316; padding:16px; border-radius:18px; margin-bottom:20px; display:flex; flex-direction:column; align-items:center; gap:12px; animation:fadeInDown 0.4s ease; box-shadow:0 10px 25px rgba(249,115,22,0.2);';
+                banner.style.cssText = 'background:linear-gradient(135deg, #fff7ed, #ffedd5); border:2.5px solid #f97316; padding:16px; border-radius:18px; margin-bottom:15px; display:flex; flex-direction:column; align-items:center; gap:12px; animation:fadeInDown 0.4s ease; box-shadow:0 10px 25px rgba(249,115,22,0.2);';
                 banner.innerHTML = `
                     <div style="display:flex;align-items:center;gap:10px;color:#c2410c;font-size:1rem;font-weight:800;text-align:center;">
                         <i class="ri-error-warning-fill" style="font-size:1.4rem;"></i>
@@ -334,13 +333,25 @@ var app = {
                 `;
                 list.insertBefore(banner, list.firstChild);
                 
+                // HIDE ALL UNNECESSARY UI FOR GUESTS ON DEEP LINK
                 const hero = document.querySelector('.intenciones-hero');
                 if (hero) hero.style.display = 'none';
+                
+                const searchContainer = document.getElementById('anuncios-search-container');
+                if (searchContainer) searchContainer.style.display = 'none';
+                
+                const topBar = document.querySelector('#screen-anuncios .top-bar');
+                if (topBar) topBar.style.display = 'none';
+
+                const scrollArea = document.querySelector('.intenciones-scrollarea');
+                if (scrollArea) {
+                    scrollArea.style.paddingTop = '0px';
+                    scrollArea.scrollTop = 0;
+                }
 
                 setTimeout(() => { 
-                    const scrollArea = document.querySelector('.intenciones-scrollarea');
                     if (scrollArea) scrollArea.scrollTop = 0;
-                }, 150);
+                }, 200);
                 
                 this._initAnuncioReactions(shared.map(s => s.id || s.created_at));
                 return;
@@ -355,9 +366,15 @@ var app = {
     },
 
     clearAnuncioFilters() {
-        // Restaurar hero
+        // Restaurar UI
         const hero = document.querySelector('.intenciones-hero');
         if (hero) hero.style.display = 'flex';
+        const searchContainer = document.getElementById('anuncios-search-container');
+        if (searchContainer) searchContainer.style.display = 'block';
+        const topBar = document.querySelector('#screen-anuncios .top-bar');
+        if (topBar) topBar.style.display = 'flex';
+        const scrollArea = document.querySelector('.intenciones-scrollarea');
+        if (scrollArea) scrollArea.style.paddingTop = '20px';
         
         // Remove banner if exists
         const banner = document.getElementById('shared-anuncio-banner');
