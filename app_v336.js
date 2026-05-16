@@ -321,24 +321,26 @@ var app = {
                 // ...
                 const banner = document.createElement('div');
                 banner.id = 'shared-anuncio-banner';
-                banner.style.cssText = 'background:linear-gradient(135deg, #fff7ed, #ffedd5); border:1px solid #fed7aa; padding:10px 14px; border-radius:14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; animation:fadeInDown 0.4s ease; box-shadow:0 4px 12px rgba(251,146,60,0.1);';
+                // Banner m\u00e1s llamativo y centrado en registro
+                banner.style.cssText = 'background:linear-gradient(135deg, #fff7ed, #ffedd5); border:2.5px solid #f97316; padding:16px; border-radius:18px; margin-bottom:20px; display:flex; flex-direction:column; align-items:center; gap:12px; animation:fadeInDown 0.4s ease; box-shadow:0 10px 25px rgba(249,115,22,0.2);';
                 banner.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:8px;color:#c2410c;font-size:0.85rem;font-weight:700;">
-                        <i class="ri-share-forward-fill" style="font-size:1.1rem;"></i>
-                        <span>Anuncio compartido</span>
+                    <div style="display:flex;align-items:center;gap:10px;color:#c2410c;font-size:1rem;font-weight:800;text-align:center;">
+                        <i class="ri-error-warning-fill" style="font-size:1.4rem;"></i>
+                        <span>Para ver m\u00e1s y participar, necesitas registrarte</span>
                     </div>
-                    <button onclick="app.navigate('screen-register')" style="background:#f97316;color:white;border:none;padding:5px 12px;border-radius:8px;font-size:0.75rem;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(249,115,22,0.3);text-transform:uppercase;letter-spacing:0.5px;">Registrarse</button>
+                    <button onclick="app.navigate('screen-register')" style="width:100%;background:#f97316;color:white;border:none;padding:12px;border-radius:12px;font-size:1rem;font-weight:900;cursor:pointer;box-shadow:0 4px 12px rgba(249,115,22,0.4);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:8px;">
+                        <i class="ri-user-add-fill"></i> REGISTRARSE AHORA
+                    </button>
                 `;
                 list.insertBefore(banner, list.firstChild);
                 
-                // Ocultar el hero para que el anuncio se vea arriba
                 const hero = document.querySelector('.intenciones-hero');
                 if (hero) hero.style.display = 'none';
 
                 setTimeout(() => { 
-                    const container = list.closest('.intenciones-scrollarea') || list;
-                    container.scrollTop = 0; 
-                }, 100);
+                    const scrollArea = document.querySelector('.intenciones-scrollarea');
+                    if (scrollArea) scrollArea.scrollTop = 0;
+                }, 150);
                 
                 this._initAnuncioReactions(shared.map(s => s.id || s.created_at));
                 return;
@@ -405,12 +407,12 @@ var app = {
             if (anuncio.photo_url) {
                 const safeUrl   = anuncio.photo_url.replace(/'/g, "\\'");
                 const safeTit   = (anuncio.title || '').replace(/'/g, "\\'");
-                photoHtml = `<div style="position:relative;width:100%;background:#0f172a;cursor:zoom-in;" onclick="app.openAnuncioLightbox('${safeUrl}','${safeTit}')">
+                photoHtml = `<div style="position:relative;width:100%;background:#0f172a;cursor:zoom-in;min-height:200px;" onclick="app.openAnuncioLightbox('${safeUrl}','${safeTit}')">
                     <img src="${anuncio.photo_url}" alt="${anuncio.title || ''}"
-                        style="width:100%;height:auto;display:block;max-height:500px;object-fit:contain;"
+                        style="width:100%;height:auto;display:block;object-fit:contain;"
                         onerror="this.parentElement.style.display='none'">
-                    <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.55);color:white;font-size:0.68rem;padding:3px 10px;border-radius:16px;pointer-events:none;backdrop-filter:blur(4px);">
-                        <i class="ri-zoom-in-line"></i> Tocar para agrandar
+                    <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);color:white;font-size:0.7rem;padding:4px 12px;border-radius:20px;pointer-events:none;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);">
+                        <i class="ri-zoom-in-line"></i> Pantalla completa
                     </div>
                 </div>`;
             }
@@ -427,7 +429,7 @@ var app = {
             // ── EMOJIS de reacci\u00f3n ──
             const emojiRow = EMOJIS.map(em => {
                 const cnt = (reactions[id] && reactions[id][em]) ? reactions[id][em] : 0;
-                return `<button onclick="app._anuncioReact('${id}','${em}',this)"
+                return `<button onclick="if(auth.isAuthenticated()){app._anuncioReact('${id}','${em}',this)}else{app.navigate('screen-register')}"
                     data-emoji="${em}"
                     style="background:${cnt > 0 ? '#fff7ed' : '#f8fafc'};border:1.5px solid ${cnt > 0 ? '#fed7aa' : '#e2e8f0'};border-radius:20px;padding:5px 11px;cursor:pointer;font-size:0.92rem;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;font-family:inherit;">
                     <span>${em}</span>${cnt > 0 ? `<span style="font-size:0.75rem;font-weight:700;color:#f97316;">${cnt}</span>` : ''}
