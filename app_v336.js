@@ -1771,7 +1771,6 @@ var app = {
         const saved = localStorage.getItem(key) || localStorage.getItem('redmaria_avatar');
         console.log('[Profile] Loading avatar from:', key, 'Success:', !!saved);
         this.setUserAvatar(saved);
-    },ofileMyRosaries(); } catch(e) { console.error('[Profile] renderProfileMyRosaries error:', e); }
     },
 
     renderProfileSlots() {
