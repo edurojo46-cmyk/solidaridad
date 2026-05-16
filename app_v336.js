@@ -469,35 +469,35 @@ var app = {
             card.innerHTML = `
             ${photoHtml}
             ${bannerHtml}
-            <div style="padding:14px 16px 16px;">
-                ${anuncio.photo_url ? `<h3 style="margin:0 0 8px;font-size:1.1rem;font-weight:800;color:#1e293b;line-height:1.3;">${anuncio.title || 'Sin T\u00edtulo'}</h3>` : ''}
-                ${desc ? `<p style="margin:0 0 14px;color:#475569;line-height:1.65;font-size:0.93rem;">${desc}</p>` : ''}
-                <!-- Reacciones con emojis -->
-                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;" id="emoji-row-${id}">${emojiRow}</div>
-                <!-- Footer -->
-                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #f1f5f9;">
-                    <button onclick="app.filterAnunciosByCreator('${creatorId}','${creatorEsc}',event)"
-                        style="display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;text-align:left;">
-                        <div style="width:36px;height:36px;border-radius:50%;background:${avatarGrad};display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:0.9rem;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-                            ${creator.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <div style="font-size:0.83rem;font-weight:700;color:#f97316;">${creator}</div>
-                            <div style="font-size:0.72rem;color:#94a3b8;"><i class="ri-calendar-2-line"></i> ${dateStr}</div>
-                        </div>
-                    </button>
-                    <div style="display:flex;gap:8px;">
-                        <!-- Botón Chat (Flechita de costado) -->
-                        <button onclick="openChatWith('${creatorId}','${creatorEsc}')" 
-                            style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:1.05rem;box-shadow:0 2px 8px rgba(249,115,22,0.35);" title="Enviar mensaje">
-                            <i class="ri-send-plane-2-fill"></i>
-                        </button>
-                        <!-- Botón Compartir -->
-                        <button onclick="app.shareAnuncio('${id}','${(anuncio.title||'').replace(/'/g,"\\'")}','${(desc||'').replace(/'/g,"\\'").substring(0,100)}','${(anuncio.photo_url||'').replace(/'/g,"\\'")}')"
-                            style="width:34px;height:34px;border-radius:50%;background:#fff7ed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#f97316;font-size:1rem;" title="Compartir">
-                            <i class="ri-share-forward-line"></i>
+            <div style="padding:12px 14px 14px; background: #fff;">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:10px;">
+                    <div style="flex:1;">
+                        <h3 style="margin:0 0 4px; font-size:1.05rem; font-weight:800; color:#1e293b; line-height:1.2;">${anuncio.title || 'Sin T\u00edtulo'}</h3>
+                        <button onclick="app.filterAnunciosByCreator('${creatorId}','${creatorEsc}',event)"
+                            style="display:flex; align-items:center; gap:6px; background:none; border:none; cursor:pointer; padding:0; text-align:left;">
+                            <div style="width:24px; height:24px; border-radius:50%; background:${avatarGrad}; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:0.65rem; flex-shrink:0;">
+                                ${creator.charAt(0).toUpperCase()}
+                            </div>
+                            <div style="font-size:0.75rem; font-weight:700; color:#f97316;">${creator}</div>
                         </button>
                     </div>
+                    <div style="font-size:0.65rem; color:#94a3b8; white-space:nowrap; margin-top:4px;">${dateStr}</div>
+                </div>
+
+                <!-- Reacciones con emojis -->
+                <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px;" id="emoji-row-${id}">${emojiRow}</div>
+                
+                ${desc ? `<p style="margin:0; color:#475569; line-height:1.5; font-size:0.88rem; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">${desc}</p>` : ''}
+                
+                <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:8px;">
+                     <button onclick="app.shareAnuncio('${id}','${(anuncio.title||'').replace(/'/g,"\\'")}','','${(anuncio.photo_url||'').replace(/'/g,"\\'")}')"
+                        style="width:34px; height:34px; border-radius:50%; background:#fff7ed; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#f97316;">
+                        <i class="ri-share-forward-line"></i>
+                     </button>
+                     <button onclick="openChatWith('${creatorId}','${creatorEsc}')" 
+                        style="background:linear-gradient(135deg,#f97316,#ea580c); border:none; border-radius:10px; padding:6px 12px; color:white; font-size:0.75rem; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(249,115,22,0.3);">
+                        <i class="ri-chat-3-line"></i> Contactar
+                     </button>
                 </div>
             </div>`;
             list.appendChild(card);
