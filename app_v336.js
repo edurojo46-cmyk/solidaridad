@@ -1671,9 +1671,11 @@ var app = {
                         }
                     }).catch(function(){});
             },
-            function(err) {
-                console.log('Geolocation denied:', err.message);
-     updateUserUI: function() {
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    },
+
+    updateUserUI: function() {
         var u = auth.getCurrentUser(); 
         console.log('[Profile] Updating UI for user:', u);
         if (!u) {
