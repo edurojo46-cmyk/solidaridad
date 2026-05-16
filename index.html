@@ -587,11 +587,40 @@ window.CustomUI = {
             <button class="icon-btn" onclick="app.openAnuncioModal()" title="Publicar Anuncio"><i class="ri-add-circle-fill"></i></button>
         </div>
 
+        <!-- BUSCADOR DE USUARIOS -->
+        <div style="padding:12px 16px 0; position:relative; z-index:50; flex-shrink:0;">
+            <div style="position:relative;">
+                <i class="ri-search-line" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:1.1rem;pointer-events:none;"></i>
+                <input
+                    id="anuncios-user-search"
+                    type="text"
+                    placeholder="Buscar por usuario o fundación..."
+                    oninput="app.onAnuncioUserSearch(this.value)"
+                    autocomplete="off"
+                    style="width:100%;padding:12px 40px 12px 40px;border:1.5px solid #e2e8f0;border-radius:14px;font-size:0.95rem;font-family:inherit;background:white;color:#1e293b;outline:none;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:border-color 0.2s,box-shadow 0.2s;"
+                    onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.12)'"
+                    onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'"
+                >
+                <button id="anuncios-search-clear" onclick="app.clearAnuncioUserFilter()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;font-size:1.2rem;cursor:pointer;padding:4px;"><i class="ri-close-circle-fill"></i></button>
+            </div>
+            <!-- Dropdown sugerencias -->
+            <div id="anuncios-user-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:16px;right:16px;background:white;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,0.12);z-index:200;max-height:240px;overflow-y:auto;"></div>
+        </div>
+
+        <!-- Chip de filtro activo -->
+        <div id="anuncios-filter-chip" style="display:none;padding:8px 16px 0;flex-shrink:0;">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;padding:6px 14px;border-radius:20px;font-size:0.85rem;font-weight:600;">
+                <i class="ri-user-fill"></i>
+                <span id="anuncios-filter-label">Todos</span>
+                <button onclick="app.clearAnuncioUserFilter()" style="background:rgba(255,255,255,0.25);border:none;color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.75rem;padding:0;"><i class="ri-close-line"></i></button>
+            </div>
+        </div>
+
         <div class="intenciones-scrollarea">
-            <div class="intenciones-hero" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
+            <div class="intenciones-hero" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);">
                 <div class="intenciones-hero-icon"><i class="ri-megaphone-fill"></i></div>
                 <h2>Publicaciones de Fundaciones</h2>
-                <p style="color:rgba(255,255,255,0.85);text-align:center;font-size:0.95rem;max-width:300px;margin:0 auto;">Descubre y comparte las últimas actividades solidarias en tu comunidad.</p>
+                <p style="color:rgba(255,255,255,0.85);text-align:center;font-size:0.95rem;max-width:300px;margin:0 auto;">Descubre y comparte las \u00faltimas actividades solidarias en tu comunidad.</p>
             </div>
 
             <!-- List of Anuncios -->
@@ -608,6 +637,7 @@ window.CustomUI = {
             <span>Publicar</span>
         </button>
     </section>
+
 
     <!-- ANUNCIOS MODAL -->
     <div id="anuncio-modal-overlay" class="custom-dialog-overlay" style="display:none;z-index:100000;">

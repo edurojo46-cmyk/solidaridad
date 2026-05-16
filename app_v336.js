@@ -273,8 +273,14 @@ var app = {
 
     // ==================== ANUNCIOS ====================
     anuncioFile: null,
+    _anuncioSearchTimeout: null,
+    _anuncioActiveCreatorId: null,
+    _anuncioActiveCreatorName: null,
+    _anuncioCache: [],
 
     async loadAnuncios() {
+        this._anuncioActiveCreatorId = null;
+        this._anuncioActiveCreatorName = null;
         const list = document.getElementById('anuncios-list');
         if (!list) return;
         list.innerHTML = '<div style="text-align:center;padding:40px 0;"><i class="ri-loader-4-line ri-spin" style="font-size:2rem;color:var(--clr-primary)"></i><p style="margin-top:10px;color:var(--clr-text-muted);">Cargando anuncios...</p></div>';
@@ -282,9 +288,16 @@ var app = {
         if (typeof db !== 'undefined' && db.getAnuncios) {
             anuncios = await db.getAnuncios();
         }
+        this._anuncioCache = anuncios || [];
+        this._renderAnuncioCards(this._anuncioCache);
+    },
+
+    _renderAnuncioCards(anuncios) {
+        const list = document.getElementById('anuncios-list');
+        if (!list) return;
         list.innerHTML = '';
         if (!anuncios || anuncios.length === 0) {
-            list.innerHTML = '<div style="text-align:center;padding:40px 20px;"><i class="ri-megaphone-line" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i><h4 style="color:#64748b;margin:0 0 8px;">No hay anuncios aún</h4><p style="color:#94a3b8;font-size:0.9rem;margin:0;">Sé el primero en publicar una actividad solidaria.</p></div>';
+            list.innerHTML = '<div style="text-align:center;padding:40px 20px;"><i class="ri-megaphone-line" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i><h4 style="color:#64748b;margin:0 0 8px;">No hay anuncios' + (this._anuncioActiveCreatorName ? ' de ' + this._anuncioActiveCreatorName : ' a\u00fan') + '</h4><p style="color:#94a3b8;font-size:0.9rem;margin:0;">' + (this._anuncioActiveCreatorName ? 'Este usuario no ha publicado nada todav\u00eda.' : 'S\u00e9 el primero en publicar una actividad solidaria.') + '</p></div>';
             return;
         }
         anuncios.forEach(anuncio => {
@@ -293,10 +306,147 @@ var app = {
             card.style.cssText = 'padding:0;overflow:hidden;border-radius:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);background:#ffffff;';
             const dateStr = anuncio.created_at ? new Date(anuncio.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}) : 'Reciente';
             const creator = anuncio.creator_name || 'Fundaci\u00f3n An\u00f3nima';
+            const avatarColor = this._anuncioAvatarColor(creator);
             const photoHtml = anuncio.photo_url ? `<img src="${anuncio.photo_url}" style="width:100%;height:200px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '';
-            card.innerHTML = `${photoHtml}<div style="padding:20px;"><h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;color:#1e293b;">${anuncio.title||'Sin T\u00edtulo'}</h3><p style="margin:0 0 16px;color:#475569;line-height:1.6;font-size:0.95rem;white-space:pre-wrap;">${anuncio.description||''}</p><div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(0,0,0,0.05);"><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:0.8rem;">${creator.charAt(0).toUpperCase()}</div><span style="font-size:0.85rem;font-weight:600;color:#334155;">${creator}</span></div><span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-calendar-line"></i> ${dateStr}</span></div></div>`;
+            card.innerHTML = `${photoHtml}<div style="padding:20px;">
+                <h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;color:#1e293b;">${anuncio.title||'Sin T\u00edtulo'}</h3>
+                <p style="margin:0 0 16px;color:#475569;line-height:1.6;font-size:0.95rem;white-space:pre-wrap;">${anuncio.description||''}</p>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(0,0,0,0.05);">
+                    <button onclick="app.filterAnunciosByCreator('${anuncio.creator_id||''}','${creator.replace(/'/g,"\\'")}',event)" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0;">
+                        <div style="width:32px;height:32px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;font-size:0.8rem;">${creator.charAt(0).toUpperCase()}</div>
+                        <span style="font-size:0.85rem;font-weight:600;color:#3b82f6;text-decoration:underline;">${creator}</span>
+                    </button>
+                    <span style="font-size:0.8rem;color:#94a3b8;"><i class="ri-calendar-line"></i> ${dateStr}</span>
+                </div>
+            </div>`;
             list.appendChild(card);
         });
+    },
+
+    _anuncioAvatarColor(name) {
+        const colors = ['linear-gradient(135deg,#3b82f6,#2563eb)','linear-gradient(135deg,#8b5cf6,#6d28d9)','linear-gradient(135deg,#10b981,#059669)','linear-gradient(135deg,#f59e0b,#d97706)','linear-gradient(135deg,#ef4444,#dc2626)','linear-gradient(135deg,#ec4899,#db2777)'];
+        let h = 0; for (let i = 0; i < (name||'').length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+        return colors[Math.abs(h) % colors.length];
+    },
+
+    filterAnunciosByCreator(creatorId, creatorName, evt) {
+        if (evt) evt.stopPropagation();
+        this._anuncioActiveCreatorId = creatorId;
+        this._anuncioActiveCreatorName = creatorName;
+        // Update chip
+        const chip = document.getElementById('anuncios-filter-chip');
+        const label = document.getElementById('anuncios-filter-label');
+        if (chip) chip.style.display = '';
+        if (label) label.textContent = creatorName;
+        // Filter cache
+        let filtered = this._anuncioCache;
+        if (creatorId) {
+            filtered = this._anuncioCache.filter(a => a.creator_id === creatorId || a.creator_name === creatorName);
+        } else {
+            filtered = this._anuncioCache.filter(a => a.creator_name === creatorName);
+        }
+        this._renderAnuncioCards(filtered);
+        // Update search input
+        const inp = document.getElementById('anuncios-user-search');
+        const clr = document.getElementById('anuncios-search-clear');
+        if (inp) inp.value = creatorName;
+        if (clr) clr.style.display = '';
+        const dd = document.getElementById('anuncios-user-dropdown');
+        if (dd) { dd.style.display = 'none'; dd.innerHTML = ''; }
+    },
+
+    clearAnuncioUserFilter() {
+        this._anuncioActiveCreatorId = null;
+        this._anuncioActiveCreatorName = null;
+        const chip = document.getElementById('anuncios-filter-chip');
+        const inp = document.getElementById('anuncios-user-search');
+        const clr = document.getElementById('anuncios-search-clear');
+        const dd = document.getElementById('anuncios-user-dropdown');
+        if (chip) chip.style.display = 'none';
+        if (inp) inp.value = '';
+        if (clr) clr.style.display = 'none';
+        if (dd) { dd.style.display = 'none'; dd.innerHTML = ''; }
+        this._renderAnuncioCards(this._anuncioCache);
+    },
+
+    async onAnuncioUserSearch(query) {
+        const clr = document.getElementById('anuncios-search-clear');
+        if (clr) clr.style.display = query ? '' : 'none';
+        // Clear chip if user is typing again
+        if (this._anuncioActiveCreatorName && query !== this._anuncioActiveCreatorName) {
+            this._anuncioActiveCreatorId = null;
+            this._anuncioActiveCreatorName = null;
+            const chip = document.getElementById('anuncios-filter-chip');
+            if (chip) chip.style.display = 'none';
+            this._renderAnuncioCards(this._anuncioCache);
+        }
+        if (!query || query.trim().length < 2) {
+            const dd = document.getElementById('anuncios-user-dropdown');
+            if (dd) { dd.style.display = 'none'; dd.innerHTML = ''; }
+            return;
+        }
+        clearTimeout(this._anuncioSearchTimeout);
+        this._anuncioSearchTimeout = setTimeout(async () => {
+            await this._fetchAnuncioUserSuggestions(query.trim());
+        }, 280);
+    },
+
+    async _fetchAnuncioUserSuggestions(query) {
+        const dd = document.getElementById('anuncios-user-dropdown');
+        if (!dd) return;
+        dd.innerHTML = '<div style="padding:12px 16px;color:#94a3b8;font-size:0.9rem;"><i class="ri-loader-4-line ri-spin"></i> Buscando...</div>';
+        dd.style.display = '';
+
+        // 1. Search from cached anuncios (local, instant)
+        const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        const q = norm(query);
+        const seen = new Set();
+        const localMatches = [];
+        this._anuncioCache.forEach(a => {
+            const key = a.creator_id || a.creator_name;
+            if (!seen.has(key) && norm(a.creator_name).includes(q)) {
+                seen.add(key);
+                localMatches.push({ id: a.creator_id||null, name: a.creator_name, source: 'anuncio' });
+            }
+        });
+
+        // 2. Also search profiles in Supabase
+        let profileMatches = [];
+        if (typeof db !== 'undefined' && db.searchUsers) {
+            try {
+                const results = await db.searchUsers(query);
+                results.forEach(u => {
+                    if (!seen.has(u.id)) {
+                        seen.add(u.id);
+                        profileMatches.push({ id: u.id, name: u.name, username: u.username, source: 'profile' });
+                    }
+                });
+            } catch(e) {}
+        }
+
+        const all = [...localMatches, ...profileMatches].slice(0, 8);
+        if (all.length === 0) {
+            dd.innerHTML = '<div style="padding:14px 16px;color:#94a3b8;font-size:0.9rem;text-align:center;"><i class="ri-user-search-line" style="font-size:1.5rem;display:block;margin-bottom:6px;"></i>Sin resultados para "' + query + '"</div>';
+            return;
+        }
+        dd.innerHTML = all.map((u, i) => {
+            const avatarColor = app._anuncioAvatarColor(u.name);
+            const badge = u.source === 'anuncio' ? '<span style="background:#eff6ff;color:#3b82f6;font-size:0.7rem;font-weight:700;padding:2px 7px;border-radius:6px;margin-left:4px;">Ha publicado</span>' : '';
+            return `<div onclick="app.selectAnuncioUser('${(u.id||'').replace(/'/g,"\\'")}','${u.name.replace(/'/g,"\\'")}',${i})"
+                style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background 0.15s;border-bottom:${i<all.length-1?'1px solid #f1f5f9':'none'};"
+                onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''"
+                id="anuncio-dd-item-${i}">
+                <div style="width:36px;height:36px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.9rem;flex-shrink:0;">${u.name.charAt(0).toUpperCase()}</div>
+                <div style="min-width:0;">
+                    <div style="font-weight:600;color:#1e293b;font-size:0.9rem;">${u.name}${badge}</div>
+                    ${u.username ? '<div style="font-size:0.8rem;color:#94a3b8;">' + u.username + '</div>' : ''}
+                </div>
+            </div>`;
+        }).join('');
+    },
+
+    selectAnuncioUser(creatorId, creatorName, idx) {
+        this.filterAnunciosByCreator(creatorId, creatorName, null);
     },
 
     openAnuncioModal() {
