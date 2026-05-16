@@ -439,26 +439,38 @@
     },
 
     _applyRemoteReactionsToUI() {
-        Object.entries(this._anuncioRemoteReactions).forEach(([anuncioId, emojis]) => {
-            Object.entries(emojis).forEach(([emoji, count]) => {
-                this._updateEmojiBtn(anuncioId, emoji, count);
-            });
+        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4f','\ud83d\ude4c','\ud83c\udf1f','\ud83d\udd25'];
+        Object.entries(this._anuncioRemoteReactions || {}).forEach(([anuncioId, emojis]) => {
+            this._rebuildEmojiRow(anuncioId, emojis, EMOJIS);
         });
     },
 
     _updateEmojiBtn(anuncioId, emoji, count) {
-        const row = document.getElementById('emoji-row-' + anuncioId);
-        if (!row) return;
-        const btns = row.querySelectorAll('button[data-emoji]');
-        btns.forEach(btn => {
-            if (btn.dataset.emoji === emoji) {
-                btn.style.background   = count > 0 ? '#fff7ed' : '#f8fafc';
-                btn.style.borderColor  = count > 0 ? '#fed7aa' : '#e2e8f0';
-                btn.innerHTML = `<span>${emoji}</span>${count > 0 ? `<span style="font-size:0.75rem;font-weight:700;color:#f97316;">${count}</span>` : ''}`;
-            }
-        });
+        // Called by Realtime - update single emoji in the row
+        if (!this._anuncioRemoteReactions) this._anuncioRemoteReactions = {};
+        if (!this._anuncioRemoteReactions[anuncioId]) this._anuncioRemoteReactions[anuncioId] = {};
+        this._anuncioRemoteReactions[anuncioId][emoji] = count;
+        const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4f','\ud83d\ude4c','\ud83c\udf1f','\ud83d\udd25'];
+        this._rebuildEmojiRow(anuncioId, this._anuncioRemoteReactions[anuncioId], EMOJIS);
     },
 
+    _rebuildEmojiRow(anuncioId, emojis, EMOJIS) {
+        const rowEl = document.getElementById('emoji-row-' + anuncioId);
+        if (!rowEl) return;
+        rowEl.innerHTML = EMOJIS.map(em => {
+            const cnt = (emojis && emojis[em]) ? Number(emojis[em]) : 0;
+            const active = cnt > 0;
+            return '<button onclick="app._anuncioReact(\'' + anuncioId + '\',\'' + em + '\',this)"'
+                + ' data-emoji="' + em + '"'
+                + ' style="background:' + (active ? '#fff7ed' : '#f8fafc') + ';'
+                + 'border:1.5px solid ' + (active ? '#fed7aa' : '#e2e8f0') + ';'
+                + 'border-radius:20px;padding:5px 11px;cursor:pointer;font-size:0.92rem;'
+                + 'display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;font-family:inherit;">'
+                + '<span>' + em + '</span>'
+                + (active ? '<span style="font-size:0.75rem;font-weight:700;color:#f97316;margin-left:3px;">' + cnt + '</span>' : '')
+                + '</button>';
+        }).join('');
+    },
     _anuncioReact(anuncioId, emoji, btn) {
         // 1. Animate the tapped button immediately
         btn.style.transform = 'scale(1.4)';
