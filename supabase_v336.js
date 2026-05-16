@@ -1,4 +1,4 @@
-// === SUPABASE CONFIG ===
+﻿// === SUPABASE CONFIG ===
 var SUPABASE_URL = 'https://sqimiuwnhecspmugmacu.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxaW1pdXduaGVjc3BtdWdtYWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzODg0NjMsImV4cCI6MjA5Mzk2NDQ2M30.Tq0VRRY7yfiubn6ZrInT_iAEogGr0e3R7oll0EPne_c';
 
@@ -725,6 +725,28 @@ var db = {
                 .eq('emoji', emoji)
                 .single();
             const newCount = (existing?.count || 0) + 1;
+            await sbClient.from('anuncio_reactions').upsert({
+                anuncio_id: anuncioId, emoji, count: newCount, updated_at: new Date().toISOString()
+            }, { onConflict: 'anuncio_id,emoji' });
+            return newCount;
+        }
+        return data;
+    },
+    async unreactAnuncio(anuncioId, emoji) {
+        if (!sbClient) return null;
+        const { data, error } = await sbClient.rpc('decrement_reaction', {
+            p_anuncio_id: anuncioId,
+            p_emoji: emoji
+        });
+        if (error) {
+            console.warn('[Reactions] Decrement RPC error, fallback:', error.message);
+            const { data: existing } = await sbClient
+                .from('anuncio_reactions')
+                .select('count')
+                .eq('anuncio_id', anuncioId)
+                .eq('emoji', emoji)
+                .single();
+            const newCount = Math.max(0, (existing?.count || 1) - 1);
             await sbClient.from('anuncio_reactions').upsert({
                 anuncio_id: anuncioId, emoji, count: newCount, updated_at: new Date().toISOString()
             }, { onConflict: 'anuncio_id,emoji' });

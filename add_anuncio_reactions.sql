@@ -43,3 +43,16 @@ BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE anuncio_reactions;
 EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
+-- Agregar al final de add_anuncio_reactions.sql
+-- Función para decrementar atómicamente (para quitar reacción)
+CREATE OR REPLACE FUNCTION decrement_reaction(p_anuncio_id TEXT, p_emoji TEXT)
+RETURNS INTEGER AS $$
+DECLARE v_count INTEGER;
+BEGIN
+    UPDATE anuncio_reactions
+    SET count = GREATEST(0, count - 1), updated_at = NOW()
+    WHERE anuncio_id = p_anuncio_id AND emoji = p_emoji
+    RETURNING count INTO v_count;
+    RETURN COALESCE(v_count, 0);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

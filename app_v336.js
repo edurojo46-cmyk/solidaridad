@@ -440,18 +440,18 @@
 
     _applyRemoteReactionsToUI() {
         const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
+        let myR = {}; try { myR = JSON.parse(localStorage.getItem('anuncio_my_reactions') || '{}'); } catch(e) {}
         Object.entries(this._anuncioRemoteReactions || {}).forEach(([anuncioId, emojis]) => {
-            this._rebuildEmojiRow(anuncioId, emojis, EMOJIS);
+            this._rebuildEmojiRow(anuncioId, emojis, EMOJIS, myR[anuncioId] || {});
         });
     },
-
     _updateEmojiBtn(anuncioId, emoji, count) {
-        // Called by Realtime - update single emoji in the row
         if (!this._anuncioRemoteReactions) this._anuncioRemoteReactions = {};
         if (!this._anuncioRemoteReactions[anuncioId]) this._anuncioRemoteReactions[anuncioId] = {};
         this._anuncioRemoteReactions[anuncioId][emoji] = count;
         const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
-        this._rebuildEmojiRow(anuncioId, this._anuncioRemoteReactions[anuncioId], EMOJIS);
+        let myR = {}; try { myR = JSON.parse(localStorage.getItem('anuncio_my_reactions') || '{}'); } catch(e) {}
+        this._rebuildEmojiRow(anuncioId, this._anuncioRemoteReactions[anuncioId], EMOJIS, myR[anuncioId] || {});
     },
 
     _rebuildEmojiRow(anuncioId, emojis, EMOJIS) {
@@ -472,73 +472,85 @@
         }).join('');
     },
     _anuncioReact(anuncioId, emoji, btn) {
-        // 1. Animate the tapped button immediately
-        btn.style.transform = 'scale(1.4)';
-        btn.disabled = true;
-        setTimeout(() => { btn.style.transform = ''; btn.disabled = false; }, 700);
+        // -- Load my personal reactions (toggle state) --
+        let myR = {};
+        try { myR = JSON.parse(localStorage.getItem('anuncio_my_reactions') || '{}'); } catch(e) {}
+        if (!myR[anuncioId]) myR[anuncioId] = {};
 
-        // 2. Update count locally
+        const alreadyReacted = !!myR[anuncioId][emoji];
+
+        // -- Animate --
+        btn.style.transform = 'scale(1.35)';
+        btn.disabled = true;
+        setTimeout(() => { btn.style.transform = ''; btn.disabled = false; }, 600);
+
+        // -- Update state --
         if (!this._anuncioRemoteReactions) this._anuncioRemoteReactions = {};
         if (!this._anuncioRemoteReactions[anuncioId]) this._anuncioRemoteReactions[anuncioId] = {};
-        const newCount = (this._anuncioRemoteReactions[anuncioId][emoji] || 0) + 1;
-        this._anuncioRemoteReactions[anuncioId][emoji] = newCount;
 
-        // 3. Update THIS button directly (no DOM search needed)
-        btn.style.background  = '#fff7ed';
-        btn.style.borderColor = '#fed7aa';
-        btn.innerHTML = '<span>' + emoji + '</span><span style="font-size:0.75rem;font-weight:700;color:#f97316;margin-left:3px;">' + newCount + '</span>';
-
-        // 4. Persist to localStorage for offline resilience
-        try { localStorage.setItem('anuncio_reactions', JSON.stringify(this._anuncioRemoteReactions)); } catch(e) {}
-
-        // 5. Non-blocking Supabase sync (real-time for other users)
-        if (typeof db !== 'undefined' && db.reactAnuncio) {
-            db.reactAnuncio(anuncioId, emoji).then(realCount => {
-                if (realCount && realCount !== newCount) {
-                    this._anuncioRemoteReactions[anuncioId][emoji] = realCount;
-                    // Update via DOM lookup as bonus refresh
-                    const row = document.getElementById('emoji-row-' + anuncioId);
-                    if (row) {
-                        const allBtns = row.querySelectorAll('button[data-emoji]');
-                        allBtns.forEach(b => { if (b.dataset.emoji === emoji) {
-                            b.innerHTML = '<span>' + emoji + '</span><span style="font-size:0.75rem;font-weight:700;color:#f97316;margin-left:3px;">' + realCount + '</span>';
-                        }});
-                    }
-                }
-            }).catch(() => {}); // silent fail - localStorage is enough
+        let newCount;
+        if (alreadyReacted) {
+            // TOGGLE OFF: quitar reacción
+            newCount = Math.max(0, (this._anuncioRemoteReactions[anuncioId][emoji] || 1) - 1);
+            this._anuncioRemoteReactions[anuncioId][emoji] = newCount;
+            delete myR[anuncioId][emoji];
+        } else {
+            // TOGGLE ON: agregar reacción
+            newCount = (this._anuncioRemoteReactions[anuncioId][emoji] || 0) + 1;
+            this._anuncioRemoteReactions[anuncioId][emoji] = newCount;
+            myR[anuncioId][emoji] = true;
         }
-    },
-    async shareAnuncio(anuncioId, title, description, photoUrl) {
-        const pageUrl = window.location.href.split('?')[0];
-        const shareData = {
-            title: title || 'Anuncio Solidaridad',
-            text: (description || '').substring(0, 120) + (description && description.length > 120 ? '...' : ''),
-            url: pageUrl
-        };
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-                return;
-            } catch (e) {
-                if (e.name === 'AbortError') return; // usuario canceló
-            }
-        }
-        // Fallback: copiar al portapapeles
-        const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+
+        // -- Persist my reactions & global counts locally --
         try {
-            await navigator.clipboard.writeText(text);
-            this._showShareToast('Enlace copiado al portapapeles \uD83D\uDCCB');
-        } catch(e) {
-            this._showShareToast('Compartí este anuncio: ' + pageUrl);
+            localStorage.setItem('anuncio_my_reactions', JSON.stringify(myR));
+            localStorage.setItem('anuncio_reactions', JSON.stringify(this._anuncioRemoteReactions));
+        } catch(e) {}
+
+        // -- Update button directly (fast, no DOM search) --
+        const active = !alreadyReacted && newCount > 0;
+        const mine   = !alreadyReacted;
+        btn.style.background  = mine && newCount > 0 ? 'linear-gradient(135deg,#f97316,#ea580c)' : (newCount > 0 ? '#fff7ed' : '#f8fafc');
+        btn.style.borderColor = newCount > 0 ? '#f97316' : '#e2e8f0';
+        btn.style.color       = mine && newCount > 0 ? 'white' : '#374151';
+        btn.innerHTML = '<span>' + emoji + '</span>'
+            + (newCount > 0 ? '<span style="font-size:0.75rem;font-weight:800;margin-left:3px;">' + newCount + '</span>' : '');
+
+        // -- Sync to Supabase (non-blocking) --
+        const dbMethod = alreadyReacted ? 'unreactAnuncio' : 'reactAnuncio';
+        if (typeof db !== 'undefined' && db[dbMethod]) {
+            db[dbMethod](anuncioId, emoji).then(realCount => {
+                if (realCount !== null && realCount !== undefined) {
+                    this._anuncioRemoteReactions[anuncioId][emoji] = realCount;
+                    // Reload the full row with corrected count
+                    const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
+                    const myRFresh = (() => { try { return JSON.parse(localStorage.getItem('anuncio_my_reactions') || '{}'); } catch(e) { return {}; } })();
+                    this._rebuildEmojiRow(anuncioId, this._anuncioRemoteReactions[anuncioId], EMOJIS, myRFresh[anuncioId] || {});
+                }
+            }).catch(() => {});
         }
     },
 
-    _showShareToast(msg) {
-        const t = document.createElement('div');
-        t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:20px;font-size:0.88rem;font-weight:600;z-index:999999;box-shadow:0 4px 16px rgba(0,0,0,0.25);white-space:nowrap;animation:scFadeIn 0.2s ease;';
-        t.textContent = msg;
-        document.body.appendChild(t);
-        setTimeout(() => t.remove(), 2800);
+    _rebuildEmojiRow(anuncioId, emojis, EMOJIS, myEmojis) {
+        const rowEl = document.getElementById('emoji-row-' + anuncioId);
+        if (!rowEl) return;
+        myEmojis = myEmojis || {};
+        rowEl.innerHTML = EMOJIS.map(em => {
+            const cnt  = (emojis && emojis[em]) ? Number(emojis[em]) : 0;
+            const mine = !!myEmojis[em];
+            const bg   = mine   ? 'linear-gradient(135deg,#f97316,#ea580c)' : (cnt > 0 ? '#fff7ed' : '#f8fafc');
+            const bc   = cnt > 0 ? '#f97316' : '#e2e8f0';
+            const col  = mine ? 'white' : '#374151';
+            return '<button onclick="app._anuncioReact(\'' + anuncioId + '\',\'' + em + '\',this)"'
+                + ' data-emoji="' + em + '"'
+                + ' title="' + (mine ? 'Toca para quitar tu reacción' : 'Reaccionar') + '"'
+                + ' style="background:' + bg + ';border:1.5px solid ' + bc + ';color:' + col + ';'
+                + 'border-radius:20px;padding:5px 11px;cursor:pointer;font-size:0.92rem;'
+                + 'display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;font-family:inherit;">'
+                + '<span>' + em + '</span>'
+                + (cnt > 0 ? '<span style="font-size:0.75rem;font-weight:800;margin-left:3px;">' + cnt + '</span>' : '')
+                + '</button>';
+        }).join('');
     },
 
     _anuncioAvatarColor(name) {
