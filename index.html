@@ -4422,7 +4422,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     <h4 style="margin:0;font-size:0.9rem;font-weight:900;color:#10b981;display:flex;align-items:center;gap:5px;">
                         <i class="ri-hand-heart-fill"></i> Mis Compromisos
                     </h4>
-                    <button onclick="auth.isAuthenticated() ? app.abrirNuevoCompromiso() : app.navigate('screen-login')"
+                    <button onclick="app.abrirNuevoCompromiso()"
                         style="background:#10b981;border:none;color:white;border-radius:16px;padding:4px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:3px;">
                         <i class="ri-add-line"></i> Nuevo
                     </button>
@@ -4441,7 +4441,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
                     <h4 style="margin:0;font-size:0.9rem;font-weight:900;color:#6366f1;display:flex;align-items:center;gap:5px;">
                         <i class="ri-tools-fill"></i> Habilidades Solidarias
                     </h4>
-                    <button onclick="auth.isAuthenticated() ? app.abrirHabilidades() : app.navigate('screen-login')"
+                    <button onclick="app.abrirHabilidades()"
                         style="background:#6366f1;border:none;color:white;border-radius:16px;padding:4px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;">
                         <i class="ri-pencil-line"></i> Editar
                     </button>
