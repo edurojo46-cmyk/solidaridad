@@ -561,12 +561,14 @@ var db = {
 
     async getUnreadCount(userId) {
         if (!sbClient) return 0;
-        const { count, error } = await sbClient.from('messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('to_id', userId)
-            .eq('read', false);
-        if (error) return 0;
-        return count || 0;
+        try {
+            const { count, error } = await sbClient.from('messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('to_id', userId)
+                .eq('read', false);
+            if (error) return 0;
+            return count || 0;
+        } catch(e) { return 0; }
     },
 
     async getAllUsers() {
