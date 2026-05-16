@@ -985,7 +985,7 @@ var app = {
         if (!this.screens.includes(screenId)) return;
         if (auth.isProtected(screenId) && !auth.isAuthenticated()) screenId = 'screen-login';
         const ac = document.getElementById('app-container');
-        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle'];
+        const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios'];
         const isDash = !single.includes(screenId);
         document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
         if (this.isDesktop() && isDash) {
