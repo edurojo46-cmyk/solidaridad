@@ -563,7 +563,11 @@ var app = {
     },
 
     async shareAnuncio(anuncioId, title, description, photoUrl) {
-        const pageUrl = window.location.href.split('?')[0];
+        let pageUrl = window.location.href.split('?')[0];
+        // Si estamos en localhost, forzamos la URL pública para que el compartido funcione en WhatsApp
+        if (pageUrl.includes('localhost') || pageUrl.includes('127.0.0.1')) {
+            pageUrl = 'https://edurojo46-cmyk.github.io/solidaridad/';
+        }
         const shareData = {
             title: title || 'Anuncio Solidaridad',
             text: (description || '').substring(0, 120) + (description && description.length > 120 ? '...' : ''),
