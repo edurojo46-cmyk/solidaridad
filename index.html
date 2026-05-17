@@ -1404,7 +1404,7 @@ window.CustomUI = {
                 <p style="margin:4px 0 0; font-size:0.85rem; color:#64748b;">Ingresá los datos para coordinar ayuda</p>
             </div>
 
-            <div style="padding:0 24px 30px; display:flex; flex-direction:column; gap:20px;">
+            <div style="padding:0 24px calc(110px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:20px;">
                 
                 <!-- Ubicación -->
                 <div style="background:#f8fafc; padding:16px; border-radius:20px; border:1px solid #e2e8f0;">
@@ -2617,6 +2617,10 @@ function scOpenForm() {
     document.getElementById('sc-submit-btn').innerHTML = '<i class="ri-send-plane-fill"></i> Publicar Alerta';
     document.getElementById('sc-form-modal').style.display = 'block';
     document.getElementById('sc-overlay').style.display = 'block';
+    
+    var mainNav = document.getElementById('main-nav');
+    if (mainNav) mainNav.style.display = 'none';
+
     setTimeout(function() {
         document.getElementById('sc-form-modal').style.transform = 'translateY(0)';
     }, 10);
@@ -2633,6 +2637,10 @@ function scOpenForm() {
 
 function scCloseForm() {
     document.getElementById('sc-form-modal').style.transform = 'translateY(100%)';
+    
+    var mainNav = document.getElementById('main-nav');
+    if (mainNav) mainNav.style.display = '';
+
     setTimeout(function() {
         document.getElementById('sc-form-modal').style.display = 'none';
         document.getElementById('sc-overlay').style.display = 'none';
