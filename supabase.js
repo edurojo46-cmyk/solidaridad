@@ -461,15 +461,55 @@ var db = {
     },
 
     // ==================== MENSAJES (REAL) ====================
-    async sendMessage(fromId, toId, text) {
+        async getMessageById(id) {
         if (!sbClient) return null;
-        const { data, error } = await sbClient.from('messages').insert({
+        const { data } = await sbClient.from('messages').select('*').eq('id', id).single();
+        return data;
+    },
+    async sendMessage(fromId, toId, text, replyTo) {
+        if (!sbClient) return null;
+        
+        // Verificar si alguno de los dos está bloqueado
+        const blocked = await this.isUserBlocked(fromId, toId);
+        if (blocked) {
+            console.warn('[Chat] No se puede enviar: Usuario bloqueado');
+            return null;
+        }
+
+        const payload = {
             from_id: fromId,
             to_id: toId,
             text: text
-        }).select().single();
+        };
+        if (replyTo) payload.reply_to = replyTo;
+        
+        const { data, error } = await sbClient.from('messages').insert(payload).select().single();
         if (error) { console.error('Error sending message:', error); return null; }
         return data;
+    },
+
+    async blockUser(myId, partnerId) {
+        if (!sbClient) return { error: 'No client' };
+        console.log('[DB] Blocking:', myId, '->', partnerId);
+        const { data, error } = await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
+        if (error) console.error('[DB] Block error:', error.message);
+        return { data, error };
+    },
+    async unblockUser(myId, partnerId) {
+        if (!sbClient) return { error: 'No client' };
+        console.log('[DB] Unblocking:', myId, '->', partnerId);
+        const { data, error } = await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
+        if (error) console.error('[DB] Unblock error:', error.message);
+        return { data, error };
+    },
+    async isUserBlocked(myId, partnerId) {
+        if (!sbClient) return false;
+        const { data, error } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
+        if (error) {
+            console.error('[DB] isUserBlocked error:', error.message);
+            return false;
+        }
+        return data && data.length > 0;
     },
 
     async getConversations(userId) {
@@ -519,12 +559,57 @@ var db = {
             .eq('read', false);
     },
 
+    async resolveUserUuid(userId) {
+        if (!userId) return null;
+        var isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+        if (isUUID) return userId;
+        
+        var cacheKey = 'redmaria_sb_uuid_' + userId;
+        var cached = localStorage.getItem(cacheKey);
+        if (cached) return cached;
+        
+        if (typeof auth !== 'undefined' && auth.getCurrentUser) {
+            var cu = auth.getCurrentUser();
+            if (cu && cu.email) {
+                try {
+                    const { data } = await sbClient.from('profiles').select('id').eq('email', cu.email).single();
+                    if (data && data.id) {
+                        localStorage.setItem(cacheKey, data.id);
+                        return data.id;
+                    } else {
+                        // PROFILE MISSING - AUTO CREATE IN SUPABASE!
+                        var newId = crypto.randomUUID ? crypto.randomUUID() : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,function(c){return(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)});
+                        const { error } = await sbClient.from('profiles').insert({
+                            id: newId,
+                            name: cu.name || cu.email.split('@')[0],
+                            email: cu.email,
+                            username: '@' + (cu.name || cu.email.split('@')[0]).toLowerCase().replace(/\s+/g, '_')
+                        });
+                        if (!error) {
+                            localStorage.setItem(cacheKey, newId);
+                            console.log('[DB] Perfil creado automáticamente en Supabase para:', cu.email);
+                            return newId;
+                        } else {
+                            console.error('[DB] Falló auto-creación de perfil:', error.message);
+                        }
+                    }
+                } catch(e) {
+                    console.error('[DB] Error resolviendo UUID:', e);
+                }
+            }
+        }
+        return null;
+    },
+
+
     async getUnreadCount(userId) {
         if (!sbClient) return 0;
         try {
+            var realUuid = await this.resolveUserUuid(userId);
+            if (!realUuid) return 0;
             const { count, error } = await sbClient.from('messages')
                 .select('*', { count: 'exact', head: true })
-                .eq('to_id', userId)
+                .eq('to_id', realUuid)
                 .eq('read', false);
             if (error) return 0;
             return count || 0;
@@ -539,26 +624,42 @@ var db = {
         return data || [];
     },
 
-    subscribeToMessages(userId, callback) {
+    subscribeToMessages(room, callback) {
         if (!sbClient) return null;
-        return sbClient.channel('user-messages-' + userId)
+        // El room viene como "id1_id2" (usamos guión bajo porque los UUID tienen guiones)
+        var ids = room.split('_');
+        var channel = sbClient.channel('chat-room-' + room, {
+            config: {
+                broadcast: { self: true },
+                presence: { key: room }
+            }
+        });
+        
+        console.log('[Realtime] Subscribing to room:', room);
+
+        return channel
             .on('postgres_changes', {
                 event: '*',
                 schema: 'public',
-                table: 'messages',
-                filter: 'to_id=eq.' + userId
+                table: 'messages'
             }, function(payload) {
-                callback(payload.new, payload.eventType);
+                var m = payload.new;
+                if (!m) return;
+                if ((ids.indexOf(m.from_id) !== -1) && (ids.indexOf(m.to_id) !== -1)) {
+                    callback(m, payload.eventType, null);
+                }
             })
-            .on('postgres_changes', {
-                event: 'UPDATE',
-                schema: 'public',
-                table: 'messages',
-                filter: 'from_id=eq.' + userId
-            }, function(payload) {
-                callback(payload.new, payload.eventType);
+            .on('broadcast', { event: 'reaction' }, function(payload) {
+                console.log('[Realtime] Broadcast received in supabase.js:', payload);
+                callback(null, 'BROADCAST', payload);
             })
-            .subscribe();
+            .subscribe(function(status) {
+                console.log('[Realtime] Room', room, 'status:', status);
+                // Notificamos el estado inicial al callback
+                if (status === 'SUBSCRIBED') {
+                    callback(null, 'CONNECTED', null);
+                }
+            });
     },
 
     // ==================== CHAT MEDIA UPLOAD ====================
@@ -612,6 +713,127 @@ var db = {
             return null;
         }
     },
+    // ==================== ANUNCIOS ====================
+    async createAnuncio(anuncio) {
+        if (!sbClient) { saveLocal('anuncios', anuncio); return anuncio; }
+        let payload = Object.assign({}, anuncio);
+        // Remove non-UUID id so Supabase auto-generates
+        if (payload.id && !/^[0-9a-f]{8}-/.test(payload.id)) delete payload.id;
+        // Remove creator_id if not a valid UUID
+        if (payload.creator_id && !/^[0-9a-f]{8}-/.test(payload.creator_id)) delete payload.creator_id;
+        const { data, error } = await sbClient.from('anuncios').insert(payload).select().single();
+        if (error) {
+            console.error('[DB] Error inserting anuncio:', error.message);
+            saveLocal('anuncios', anuncio);
+            return anuncio;
+        }
+        return data;
+    },
+
+    async getAnuncios() {
+        if (!sbClient) return getLocal('anuncios');
+        const { data, error } = await sbClient.from('anuncios')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(50);
+        if (error) {
+            console.error('[DB] Error fetching anuncios:', error.message);
+            return getLocal('anuncios');
+        }
+        return data || [];
+    },
+
+    async uploadAnuncioMedia(file) {
+        if (!sbClient) return null;
+        const ext = file.name.split('.').pop().toLowerCase();
+        const path = 'anuncios/' + Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext;
+        const { error: upErr } = await sbClient.storage.from('chat-media').upload(path, file, {
+            cacheControl: '3600', upsert: false, contentType: file.type
+        });
+        if (upErr) { console.error('[Anuncios] Upload error:', upErr.message); return null; }
+        const { data: urlData } = sbClient.storage.from('chat-media').getPublicUrl(path);
+        return urlData?.publicUrl || null;
+    },
+
+    // Incremento atómico de reacción (usando la función SQL)
+    async reactAnuncio(anuncioId, emoji) {
+        if (!sbClient) return null;
+        const { data, error } = await sbClient.rpc('increment_reaction', {
+            p_anuncio_id: anuncioId,
+            p_emoji: emoji
+        });
+        if (error) {
+            console.warn('[Reactions] RPC error, fallback to upsert:', error.message);
+            // Fallback manual si la función SQL no existe aún
+            const { data: existing } = await sbClient
+                .from('anuncio_reactions')
+                .select('count')
+                .eq('anuncio_id', anuncioId)
+                .eq('emoji', emoji)
+                .single();
+            const newCount = (existing?.count || 0) + 1;
+            await sbClient.from('anuncio_reactions').upsert({
+                anuncio_id: anuncioId, emoji, count: newCount, updated_at: new Date().toISOString()
+            }, { onConflict: 'anuncio_id,emoji' });
+            return newCount;
+        }
+        return data;
+    },
+    async unreactAnuncio(anuncioId, emoji) {
+        if (!sbClient) return null;
+        const { data, error } = await sbClient.rpc('decrement_reaction', {
+            p_anuncio_id: anuncioId,
+            p_emoji: emoji
+        });
+        if (error) {
+            console.warn('[Reactions] Decrement RPC error, fallback:', error.message);
+            const { data: existing } = await sbClient
+                .from('anuncio_reactions')
+                .select('count')
+                .eq('anuncio_id', anuncioId)
+                .eq('emoji', emoji)
+                .single();
+            const newCount = Math.max(0, (existing?.count || 1) - 1);
+            await sbClient.from('anuncio_reactions').upsert({
+                anuncio_id: anuncioId, emoji, count: newCount, updated_at: new Date().toISOString()
+            }, { onConflict: 'anuncio_id,emoji' });
+            return newCount;
+        }
+        return data;
+    },
+
+    // Fetch inicial: devuelve mapa { [anuncioId]: { [emoji]: count } }
+    async getAnuncioReactions(anuncioIds) {
+        if (!sbClient || !anuncioIds || anuncioIds.length === 0) return {};
+        const { data, error } = await sbClient
+            .from('anuncio_reactions')
+            .select('anuncio_id, emoji, count')
+            .in('anuncio_id', anuncioIds);
+        if (error) { console.warn('[Reactions] Fetch error:', error.message); return {}; }
+        const map = {};
+        (data || []).forEach(row => {
+            if (!map[row.anuncio_id]) map[row.anuncio_id] = {};
+            map[row.anuncio_id][row.emoji] = row.count;
+        });
+        return map;
+    },
+
+    // Suscripción Realtime — llama callback({ anuncio_id, emoji, count }) en cada cambio
+    subscribeAnuncioReactions(callback) {
+        if (!sbClient) return null;
+        const channel = sbClient.channel('anuncio-reactions-rt')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'anuncio_reactions'
+            }, payload => {
+                const row = payload.new || payload.old;
+                if (row) callback({ anuncio_id: row.anuncio_id, emoji: row.emoji, count: row.count || 0 });
+            })
+            .subscribe();
+        return channel;
+    },
+
     // ==================== IGLESIAS COMUNIDAD ====================
     async addIglesiaComunidad(iglesia) {
         if (!sbClient) { saveLocal('iglesias_comunidad', iglesia); return iglesia; }
@@ -648,8 +870,117 @@ var db = {
         return sbClient.channel('cenaculo-' + cenaculoId)
             .on('postgres_changes', { event: '*', schema: 'public', table: 'cenaculo_members', filter: 'cenaculo_id=eq.' + cenaculoId }, callback)
             .subscribe();
+    },
+    // ==================== BANCO DE VOLUNTARIOS ====================
+    async saveHabilidades(userId, habilidadesArray) {
+        if (!sbClient) return;
+        var realUuid = await this.resolveUserUuid(userId);
+        if (!realUuid) return;
+        const { error } = await sbClient.from('habilidades_voluntarios').upsert({
+            user_id: realUuid,
+            habilidades: habilidadesArray,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+        if (error) console.error('[DB] Error saving habilidades:', error.message);
+    },
+
+    async getHabilidades(userId) {
+        if (!sbClient) return [];
+        var realUuid = await this.resolveUserUuid(userId);
+        if (!realUuid) return [];
+        const { data, error } = await sbClient.from('habilidades_voluntarios')
+            .select('habilidades')
+            .eq('user_id', realUuid)
+            .single();
+        if (error) return [];
+        return data ? data.habilidades : [];
+    },
+
+    async saveCompromiso(userId, compromisoObj) {
+        if (!sbClient) return;
+        var realUuid = await this.resolveUserUuid(userId);
+        if (!realUuid) return;
+        const payload = {
+            user_id: realUuid,
+            cat_id: compromisoObj.catId,
+            descripcion: compromisoObj.desc || '',
+            hasta: compromisoObj.hasta || null
+        };
+        const { error } = await sbClient.from('compromisos_voluntarios').insert(payload);
+        if (error) console.error('[DB] Error saving compromiso:', error.message);
+    },
+
+    async getCompromisos(userId) {
+        if (!sbClient) return [];
+        var realUuid = await this.resolveUserUuid(userId);
+        if (!realUuid) return [];
+        const { data, error } = await sbClient.from('compromisos_voluntarios')
+            .select('*')
+            .eq('user_id', realUuid)
+            .order('created_at', { ascending: false });
+        if (error) return [];
+        // Map to expected format
+        return (data || []).map(function(row) {
+            return { id: row.id, catId: row.cat_id, desc: row.descripcion, hasta: row.hasta, creado: row.created_at };
+        });
+    },
+
+    async deleteCompromiso(id) {
+        if (!sbClient) return;
+        const { error } = await sbClient.from('compromisos_voluntarios').delete().eq('id', id);
+        if (error) console.error('[DB] Error deleting compromiso:', error.message);
+    },
+
+    async getAllVolunteers() {
+        if (!sbClient) return [];
+        const { data: profiles } = await sbClient.from('profiles').select('id, name, username, email');
+        if (!profiles) return [];
+        
+        const { data: allHabilidades } = await sbClient.from('habilidades_voluntarios').select('user_id, habilidades, updated_at');
+        const { data: allCompromisos } = await sbClient.from('compromisos_voluntarios').select('*');
+        
+        var volunteers = [];
+        profiles.forEach(function(p) {
+            var userHabs = allHabilidades ? allHabilidades.find(function(h){ return h.user_id === p.id; }) : null;
+            var userComps = allCompromisos ? allCompromisos.filter(function(c){ return c.user_id === p.id; }) : [];
+            
+            var habs = userHabs ? userHabs.habilidades : [];
+            var comps = userComps.map(function(c){
+                return { id: c.id, catId: c.cat_id, desc: c.descripcion, hasta: c.hasta, creado: c.created_at };
+            });
+            
+            if (habs.length > 0 || comps.length > 0) {
+                // Calcular última actividad
+                var lastActive = 0;
+                if (userHabs && userHabs.updated_at) {
+                    lastActive = Math.max(lastActive, new Date(userHabs.updated_at).getTime());
+                }
+                userComps.forEach(function(c) {
+                    if (c.created_at) {
+                        lastActive = Math.max(lastActive, new Date(c.created_at).getTime());
+                    }
+                });
+
+                volunteers.push({
+                    id: p.id,
+                    nombre: p.name || p.username || 'Anónimo',
+                    email: p.email,
+                    habs: habs,
+                    comps: comps,
+                    lastActive: lastActive
+                });
+            }
+        });
+
+        // Ordenar de más reciente a menos reciente (últimos activos primero)
+        volunteers.sort(function(a, b) {
+            return b.lastActive - a.lastActive;
+        });
+
+        return volunteers;
     }
 };
+
 
 // === LOCAL STORAGE FALLBACK ===
 function saveLocal(key, item) {
@@ -693,21 +1024,4 @@ document.addEventListener('DOMContentLoaded', function() {
 // Ensure global access for inline onclick handlers
 window.db = db;
 window.sbClient = sbClient;
-
-// ---- BLOCKING SYSTEM ----
-async function blockUser(myId, partnerId) {
-    const { data, error } = await sbClient.from('blocked_users').insert([{ user_id: myId, blocked_id: partnerId }]);
-    return { data, error };
-}
-async function unblockUser(myId, partnerId) {
-    const { data, error } = await sbClient.from('blocked_users').delete().match({ user_id: myId, blocked_id: partnerId });
-    return { data, error };
-}
-async function isUserBlocked(myId, partnerId) {
-    const { data } = await sbClient.from('blocked_users').select('*').or('and(user_id.eq.' + myId + ',blocked_id.eq.' + partnerId + '),and(user_id.eq.' + partnerId + ',blocked_id.eq.' + myId + ')');
-    return data && data.length > 0;
-}
-window.db.blockUser = blockUser;
-window.db.unblockUser = unblockUser;
-window.db.isUserBlocked = isUserBlocked;
 
