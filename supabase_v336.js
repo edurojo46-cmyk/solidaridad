@@ -46,16 +46,20 @@ var db = {
     },
 
     // ==================== PROFILES ====================
-    async upsertProfile(userId, name, email) {
+    async upsertProfile(userId, name, email, avatarUrl) {
         if (!sbClient) return;
         const username = '@' + name.toLowerCase().replace(/\s+/g, '_');
-        await sbClient.from('profiles').upsert({
+        const payload = {
             id: userId,
             name: name,
             email: email,
             username: username,
             updated_at: new Date().toISOString()
-        });
+        };
+        if (avatarUrl) {
+            payload.avatar_url = avatarUrl;
+        }
+        await sbClient.from('profiles').upsert(payload);
     },
 
     async updateProfileBio(userId, bio) {
@@ -931,14 +935,38 @@ var db = {
         if (error) console.error('[DB] Error deleting compromiso:', error.message);
     },
 
+    async deleteCompromisoByCriteria(userId, catId, desc) {
+        if (!sbClient) return;
+        var realUuid = await this.resolveUserUuid(userId);
+        if (!realUuid) return;
+        const { error } = await sbClient.from('compromisos_voluntarios')
+            .delete()
+            .eq('user_id', realUuid)
+            .eq('cat_id', catId)
+            .eq('descripcion', desc || '');
+        if (error) console.error('[DB] Error deleting compromiso by criteria:', error.message);
+    },
+
     async getAllVolunteers() {
         if (!sbClient) return [];
-        const { data: profiles } = await sbClient.from('profiles').select('id, name, username, email');
+        const { data: profiles } = await sbClient.from('profiles').select('id, name, username, email, avatar_url');
         if (!profiles) return [];
         
         const { data: allHabilidades } = await sbClient.from('habilidades_voluntarios').select('user_id, habilidades, updated_at');
         const { data: allCompromisos } = await sbClient.from('compromisos_voluntarios').select('*');
         
+        var currentUserId = null;
+        var currentResolvedId = null;
+        if (typeof auth !== 'undefined' && auth.getCurrentUser) {
+            var cu = auth.getCurrentUser();
+            if (cu) {
+                currentUserId = cu.id;
+                try {
+                    currentResolvedId = localStorage.getItem('redmaria_sb_uuid_' + cu.id);
+                } catch(e) {}
+            }
+        }
+
         var volunteers = [];
         profiles.forEach(function(p) {
             var userHabs = allHabilidades ? allHabilidades.find(function(h){ return h.user_id === p.id; }) : null;
@@ -949,22 +977,24 @@ var db = {
                 return { id: c.id, catId: c.cat_id, desc: c.descripcion, hasta: c.hasta, creado: c.created_at };
             });
             
-            if (habs.length > 0 || comps.length > 0) {
-                // Calcular última actividad
-                var lastActive = 0;
-                if (userHabs && userHabs.updated_at) {
-                    lastActive = Math.max(lastActive, new Date(userHabs.updated_at).getTime());
+            // Calcular última actividad
+            var lastActive = 0;
+            if (userHabs && userHabs.updated_at) {
+                lastActive = Math.max(lastActive, new Date(userHabs.updated_at).getTime());
+            }
+            userComps.forEach(function(c) {
+                if (c.created_at) {
+                    lastActive = Math.max(lastActive, new Date(c.created_at).getTime());
                 }
-                userComps.forEach(function(c) {
-                    if (c.created_at) {
-                        lastActive = Math.max(lastActive, new Date(c.created_at).getTime());
-                    }
-                });
+            });
 
+            // Solo mostrar perfiles con habilidades/compromisos o al propio usuario logueado para pruebas
+            if (habs.length > 0 || comps.length > 0 || p.id === currentUserId || p.id === currentResolvedId) {
                 volunteers.push({
                     id: p.id,
                     nombre: p.name || p.username || 'Anónimo',
                     email: p.email,
+                    avatar: p.avatar_url,
                     habs: habs,
                     comps: comps,
                     lastActive: lastActive

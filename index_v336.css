@@ -9968,3 +9968,18 @@ body {
  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3) !important;
 }
 
+
+/* --- MI CAUSA ACTUAL SECTION --- */
+.causa-card { margin: 16px; padding: 20px; border-radius: 20px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; }
+.causa-card:active { transform: scale(0.98); }
+.causa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.causa-title { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+.causa-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+.causa-badge.active { background: rgba(34, 197, 94, 0.1); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.2); }
+.causa-badge.help { background: rgba(249, 115, 22, 0.1); color: #ea580c; border: 1px solid rgba(249, 115, 22, 0.2); }
+.causa-badge.done { background: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); }
+.causa-content { font-size: 1.05rem; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 8px; }
+.causa-category { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
+.causa-category i { color: var(--clr-primary); font-size: 1rem; }
+.causa-empty { border: 2px dashed #e2e8f0; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; color: #94a3b8; cursor: pointer; }
+.causa-empty i { font-size: 2rem; margin-bottom: 8px; }

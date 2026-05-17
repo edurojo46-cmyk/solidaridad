@@ -1749,13 +1749,29 @@ var app = {
         });
     },
     eliminarCompromiso: async function(id) {
-        if (typeof db !== 'undefined' && db.deleteCompromiso) {
-            await db.deleteCompromiso(id);
-        } else {
-            var k=this.getCompromisosKey(); if(!k)return;
-            var a=JSON.parse(localStorage.getItem(k)||'[]');
-            localStorage.setItem(k,JSON.stringify(a.filter(function(c){return c.id!==id;})));
+        var k = this.getCompromisosKey();
+        var deletedComp = null;
+        if (k) {
+            var a = JSON.parse(localStorage.getItem(k) || '[]');
+            deletedComp = a.find(function(c) { return c.id === id; });
+            localStorage.setItem(k, JSON.stringify(a.filter(function(c) { return c.id !== id; })));
         }
+        
+        if (typeof db !== 'undefined' && db.deleteCompromiso) {
+            try {
+                if (id && id.length > 15) {
+                    await db.deleteCompromiso(id);
+                } else if (deletedComp) {
+                    var u = auth.getCurrentUser();
+                    if (u) {
+                        await db.deleteCompromisoByCriteria(u.id, deletedComp.catId, deletedComp.desc);
+                    }
+                }
+            } catch(e) {
+                console.warn('[DB] Error deleting from Supabase:', e.message);
+            }
+        }
+        
         this.renderCompromisos();
         if (this.renderAnunciosVolProfile) this.renderAnunciosVolProfile();
     },
@@ -2051,20 +2067,55 @@ var app = {
         })();
 
 
-        // ── Intentar Supabase primero ──
         try {
             if (typeof db !== 'undefined' && db.getAllVolunteers) {
                 var sbVols = await db.getAllVolunteers();
                 if (sbVols && sbVols.length > 0) {
                     var u = auth.getCurrentUser();
+                    var resolvedId = null;
+                    if (u) {
+                        try {
+                            resolvedId = localStorage.getItem('redmaria_sb_uuid_' + u.id);
+                        } catch(e) {}
+                    }
                     sbVols.forEach(function(v) {
+                        var isMe = u && (v.id === u.id || v.id === resolvedId);
+                        var searchId = isMe ? u.id : v.id;
+
+                        // Habilidades con fallback
+                        var habs = v.habs || [];
+                        if (habs.length === 0) {
+                            try {
+                                var localHabs = JSON.parse(localStorage.getItem('redmaria_habilidades_' + searchId) || '[]');
+                                if (localHabs && localHabs.length > 0) habs = localHabs;
+                            } catch(e) {}
+                        }
+
+                        // Compromisos con fallback
+                        var comps = v.comps || [];
+                        if (comps.length === 0) {
+                            try {
+                                var localComps = JSON.parse(localStorage.getItem('redmaria_compromisos_' + searchId) || '[]');
+                                if (localComps && localComps.length > 0) comps = localComps;
+                            } catch(e) {}
+                        }
+
+                        // Avatar con fallback local
+                        var avatar = v.avatar || null;
+                        if (!avatar) {
+                            try {
+                                avatar = localStorage.getItem('redmaria_avatar_' + searchId) ||
+                                         (isMe ? localStorage.getItem('redmaria_avatar') : null);
+                            } catch(e) {}
+                        }
+
                         voluntarios.push({
                             id:      v.id,
-                            nombre:  v.nombre,
-                            habs:    v.habs || [],
-                            comps:   v.comps || [],
-                            avatar:  null,
-                            esYo:    u && v.id === u.id
+                            nombre:  v.nombre || 'Voluntario',
+                            habs:    habs,
+                            comps:   comps,
+                            avatar:  avatar,
+                            esYo:    isMe
                         });
                     });
                     console.log('[Voluntarios] Cargados desde Supabase:', voluntarios.length);
@@ -2114,10 +2165,26 @@ var app = {
                 var card = document.createElement('div');
                 card.style.cssText = 'display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:16px;background:white;box-shadow:0 2px 10px rgba(0,0,0,0.07);margin-bottom:12px;';
 
-                var avatarHtml = vol.avatar
-                    ? '<img src="' + vol.avatar + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
-                    : '<div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#0ea5e9);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1.3rem;flex-shrink:0;">'
-                      + (vol.nombre[0] || '?').toUpperCase() + '</div>';
+                var avatarUrl = vol.avatar;
+                if (!avatarUrl) {
+                    var strForHash = vol.id || vol.nombre || "";
+                    var hashVal = 0;
+                    for (var hIdx = 0; hIdx < strForHash.length; hIdx++) {
+                        hashVal = strForHash.charCodeAt(hIdx) + ((hashVal << 5) - hashVal);
+                    }
+                    var premiumVols = [
+                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200"
+                    ];
+                    avatarUrl = premiumVols[Math.abs(hashVal) % premiumVols.length];
+                }
+                var avatarHtml = '<img src="' + avatarUrl + '" style="width:50px;height:50px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 2px solid #fff;">';
 
                 var habsHtml = '';
                 vol.habs.slice(0, 3).forEach(function(hId) {
@@ -2136,8 +2203,14 @@ var app = {
                     });
                 }
 
-                var sub = vol.habs.length + ' habilidad' + (vol.habs.length !== 1 ? 'es' : '');
-                if (vol.comps.length > 0) sub += ' &middot; ' + vol.comps.length + ' compromiso' + (vol.comps.length !== 1 ? 's' : '');
+                var sub = vol.habs.length > 0 
+                    ? vol.habs.length + ' habilidad' + (vol.habs.length !== 1 ? 'es' : '')
+                    : 'Sin habilidades registradas';
+                if (vol.comps.length > 0) {
+                    sub += ' &middot; ' + vol.comps.length + ' compromiso' + (vol.comps.length !== 1 ? 's' : '');
+                } else if (vol.habs.length === 0) {
+                    sub += ' &middot; Sin compromisos';
+                }
 
                 var contactBtn = !vol.esYo
                     ? '<button onclick="if(typeof openMensajesPanel===\'function\') openMensajesPanel()" style="background:#6366f1;color:white;border:none;border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:800;cursor:pointer;flex-shrink:0;">Contactar</button>'
@@ -2219,14 +2292,32 @@ var app = {
                 var sbVols = await db.getAllVolunteers();
                 if (sbVols && sbVols.length > 0) {
                     var u = auth.getCurrentUser();
+                    var resolvedId = null;
+                    if (u) {
+                        try {
+                            resolvedId = localStorage.getItem('redmaria_sb_uuid_' + u.id);
+                        } catch(e) {}
+                    }
                     sbVols.forEach(function(v) {
+                        var isMe = u && (v.id === u.id || v.id === resolvedId);
+                        var searchId = isMe ? u.id : v.id;
+
+                        // Avatar con fallback local
+                        var avatar = v.avatar || null;
+                        if (!avatar) {
+                            try {
+                                avatar = localStorage.getItem('redmaria_avatar_' + searchId) ||
+                                         (isMe ? localStorage.getItem('redmaria_avatar') : null);
+                            } catch(e) {}
+                        }
+
                         voluntarios.push({
                             id:      v.id,
-                            nombre:  v.nombre,
+                            nombre:  v.nombre || 'Voluntario',
                             habs:    v.habs || [],
                             comps:   v.comps || [],
-                            avatar:  null,
-                            esYo:    u && v.id === u.id
+                            avatar:  avatar,
+                            esYo:    isMe
                         });
                     });
                 }
@@ -2251,9 +2342,26 @@ var app = {
             var card = document.createElement('div');
             card.style.cssText = 'text-align:center;min-width:72px;padding:10px 8px;background:white;border-radius:14px;border:1px solid #e2e8f0;cursor:pointer;flex-shrink:0;';
             card.onclick = function(){ app.navigate('screen-voluntarios'); };
-            var avatarHtml = v.avatar
-                ? '<img src="' + v.avatar + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-bottom:5px;">'
-                : '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1rem;margin:0 auto 5px;">' + (v.nombre[0] || '?').toUpperCase() + '</div>';
+            var avatarUrlMini = v.avatar;
+            if (!avatarUrlMini) {
+                var strForHashMini = v.id || v.nombre || "";
+                var hashValMini = 0;
+                for (var hIdxMini = 0; hIdxMini < strForHashMini.length; hIdxMini++) {
+                    hashValMini = strForHashMini.charCodeAt(hIdxMini) + ((hashValMini << 5) - hashValMini);
+                }
+                var premiumVolsMini = [
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200"
+                ];
+                avatarUrlMini = premiumVolsMini[Math.abs(hashValMini) % premiumVolsMini.length];
+            }
+            var avatarHtml = '<img src="' + avatarUrlMini + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;margin-bottom:5px;box-shadow: 0 2px 6px rgba(0,0,0,0.12); border: 1.5px solid #fff;">';
             var topHab = (self.HABILIDADES_LISTA && v.habs.length > 0) ? self.HABILIDADES_LISTA.find(function(h){ return h.id === v.habs[0]; }) : null;
             var habHtml = topHab ? '<div style="font-size:0.85rem;">' + topHab.icon + '</div>' : '';
             card.innerHTML = avatarHtml + habHtml + '<div style="font-size:0.68rem;color:#475569;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px;">' + v.nombre.split(' ')[0] + '</div>';
@@ -2290,6 +2398,13 @@ var app = {
         // ── Sincronizar de forma forzada a Supabase ──
         if (typeof db !== 'undefined' && u) {
             try {
+                var resolvedId = localStorage.getItem('redmaria_sb_uuid_' + u.id) || u.id;
+                
+                // Sincronizar avatar a profiles
+                if (db.upsertProfile) {
+                    await db.upsertProfile(resolvedId, u.name || 'Voluntario', u.email, av).catch(function(){});
+                }
+                
                 if (db.saveHabilidades) {
                     await db.saveHabilidades(u.id, habs).catch(function(){});
                 }
@@ -2528,6 +2643,20 @@ var app = {
             }).catch(function(e) { console.warn('[Profile] Error loading remote details:', e); });
         }
 
+        var self = this;
+        if (typeof db !== 'undefined' && db.getCompromisos && u) {
+            db.getCompromisos(u.id).then(function(remoteComps) {
+                if (remoteComps) {
+                    var k = self.getCompromisosKey();
+                    if (k) {
+                        localStorage.setItem(k, JSON.stringify(remoteComps));
+                        try { self.renderCompromisos(); } catch(err){}
+                        try { if (self.renderAnunciosVolProfile) self.renderAnunciosVolProfile(); } catch(err){}
+                    }
+                }
+            }).catch(function(err) { console.warn('[Profile] Error loading remote commitments:', err); });
+        }
+
         try { this.renderProfileSlots(); } catch(e) {}
         try { this.renderProfileJoined(); } catch(e) {}
         try { this.renderProfileMyRosaries(); } catch(e) {}
@@ -2552,6 +2681,17 @@ var app = {
             self.setUserAvatar(dataUrl);
             localStorage.setItem(self.getAvatarKey(), dataUrl);
             console.log('[Profile] Avatar uploaded and saved');
+            
+            // Sincronizar en el fondo a Supabase
+            var u = auth.getCurrentUser();
+            if (u && typeof db !== 'undefined' && db.upsertProfile) {
+                var resolvedId = localStorage.getItem('redmaria_sb_uuid_' + u.id) || u.id;
+                db.upsertProfile(resolvedId, u.name || 'Voluntario', u.email, dataUrl).then(function() {
+                    console.log('[Profile] Avatar synced successfully to Supabase');
+                }).catch(function(err) {
+                    console.warn('[Profile] Error syncing avatar to Supabase:', err.message);
+                });
+            }
         };
         reader.readAsDataURL(file);
     },
