@@ -1481,6 +1481,17 @@ window.CustomUI = {
                     </div>
                 </div>
 
+                <!-- Aviso privacidad -->
+                <div style="background:linear-gradient(135deg, #fff5f5, #ffe4e4); border:1.5px solid #fca5a5; border-radius:16px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px;">
+                    <div style="background:#ef4444; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                        <i class="ri-camera-off-fill" style="color:white; font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <p style="margin:0 0 3px; font-size:0.82rem; font-weight:800; color:#b91c1c; text-transform:uppercase; letter-spacing:0.3px;">⚠️ Aviso importante</p>
+                        <p style="margin:0; font-size:0.82rem; color:#7f1d1d; line-height:1.45; font-weight:600;">No fotografíes el <strong>rostro</strong> de la persona. La imagen debe mostrar el lugar o la situación, respetando siempre su dignidad.</p>
+                    </div>
+                </div>
+
                 <!-- Submit -->
                 <button onclick="scSubmitAlerta()" id="sc-submit-btn" style="width:100%; background:#1a1a2e; color:white; border:none; padding:16px; border-radius:16px; font-weight:800; font-size:1.05rem; box-shadow:0 8px 20px rgba(26,26,46,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform 0.2s;">
                     <i class="ri-send-plane-fill"></i> Publicar Alerta
@@ -2370,11 +2381,7 @@ function scRenderAlertas() {
         
         var fotoHtml = '';
         if (a.foto_url) {
-            if (isRevealed) {
-                fotoHtml = '<div style="float:left; margin:0 16px 12px 0; width:120px; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05);"><img src="' + a.foto_url + '" style="width:100%; height:auto; max-height:150px; object-fit:contain; display:block; background:#f8fafc; cursor:zoom-in; transition:transform 0.3s;" onclick="this.classList.toggle(\'sc-img-fullscreen\')"></div>';
-            } else {
-                fotoHtml = '<div style="float:left; margin:0 16px 12px 0; width:120px; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05); position:relative;"><img src="' + a.foto_url + '" style="width:100%; height:auto; min-height:80px; max-height:150px; object-fit:cover; display:block; background:#f8fafc; filter:blur(8px);"><div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; background:rgba(255,255,255,0.4); font-size:0.65rem; font-weight:800; color:#1a1a2e; line-height:1.2;">Foto Oculta<br><span style="font-size:0.55rem;font-weight:600;">Ayuda para ver</span></div></div>';
-            }
+            fotoHtml = '<div style="float:left; margin:0 16px 12px 0; width:120px; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; box-shadow:0 4px 10px rgba(0,0,0,0.05);"><img src="' + a.foto_url + '" style="width:100%; height:auto; max-height:150px; object-fit:contain; display:block; background:#f8fafc; cursor:zoom-in; transition:transform 0.3s;" onclick="this.classList.toggle(\'sc-img-fullscreen\')"></div>';
         }
 
         var fecha = a.created_at ? new Date(a.created_at).toLocaleDateString('es-AR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) : '';
@@ -4401,25 +4408,25 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
             </div>
 
 
-            <!-- Ã¢â€¢ÂÃ¢â€¢Â BANCO DE VOLUNTARIOS (mini, público) Ã¢â€¢ÂÃ¢â€¢Â -->
+            <!-- Ã¢â€¢Â Ã¢â€¢Â  BANCO DE VOLUNTARIOS (mini, público) Ã¢â€¢Â Ã¢â€¢Â  -->
             <div style="margin-bottom:24px;background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(139,92,246,0.05));border:1.5px solid rgba(99,102,241,0.2);border-radius:20px;padding:16px 16px 14px;overflow:hidden;position:relative;">
-                <div style="position:absolute;right:-10px;top:-10px;opacity:0.06;font-size:90px;">Ã°Å¸Â¤Â</div>
+                <div style="position:absolute;right:-10px;top:-10px;opacity:0.06;font-size:90px;pointer-events:none;">Ã°Å¸Â¤Â </div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                     <h4 style="margin:0;font-size:0.95rem;font-weight:900;color:#6366f1;display:flex;align-items:center;gap:6px;">
                         <i class="ri-team-fill"></i> Banco de Voluntarios
                     </h4>
-                    <button onclick="app.navigate('screen-voluntarios')" style="background:#6366f1;color:white;border:none;border-radius:12px;padding:4px 12px;font-size:0.75rem;font-weight:800;cursor:pointer;">Ver todos</button>
+                    <button onclick="app._volFiltro = null; app.navigate('screen-voluntarios')" style="background:#6366f1;color:white;border:none;border-radius:12px;padding:4px 12px;font-size:0.75rem;font-weight:800;cursor:pointer;">Ver todos</button>
                 </div>
 
                 <!-- Filtros rápidos scrollables -->
                 <div style="overflow-x:auto;margin-bottom:12px;padding-bottom:2px;">
                     <div style="display:flex;gap:6px;white-space:nowrap;">
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #0ea5e9;background:white;color:#0ea5e9;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🚗 Auto</button>
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #f97316;background:white;color:#f97316;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🍳 Cocina</button>
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #e74c3c;background:white;color:#e74c3c;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🩺 Médico</button>
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #6366f1;background:white;color:#6366f1;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💻 Tech</button>
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #14b8a6;background:white;color:#14b8a6;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">📚 Clases</button>
-                        <button onclick="app.navigate('screen-voluntarios')" style="border:1.5px solid #84cc16;background:white;color:#84cc16;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💪 Físico</button>
+                        <button onclick="app._volFiltro = 'auto'; app.navigate('screen-voluntarios')" style="border:1.5px solid #0ea5e9;background:white;color:#0ea5e9;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🚗 Auto</button>
+                        <button onclick="app._volFiltro = 'cocina'; app.navigate('screen-voluntarios')" style="border:1.5px solid #f97316;background:white;color:#f97316;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🍳 Cocina</button>
+                        <button onclick="app._volFiltro = 'medico'; app.navigate('screen-voluntarios')" style="border:1.5px solid #e74c3c;background:white;color:#e74c3c;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">🩺 Médico</button>
+                        <button onclick="app._volFiltro = 'tech'; app.navigate('screen-voluntarios')" style="border:1.5px solid #6366f1;background:white;color:#6366f1;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💻 Tech</button>
+                        <button onclick="app._volFiltro = 'educacion'; app.navigate('screen-voluntarios')" style="border:1.5px solid #14b8a6;background:white;color:#14b8a6;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">📚 Clases</button>
+                        <button onclick="app._volFiltro = 'fuerza'; app.navigate('screen-voluntarios')" style="border:1.5px solid #84cc16;background:white;color:#84cc16;border-radius:16px;padding:4px 12px;font-size:0.74rem;font-weight:700;cursor:pointer;">💪 Físico</button>
                     </div>
                 </div>
 
