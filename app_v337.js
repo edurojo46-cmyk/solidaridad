@@ -1570,8 +1570,8 @@ var app = {
 
         if (screenId === 'screen-create-rosary') setTimeout(() => this.initPickerMap(), 400);
         if (screenId === 'screen-map') setTimeout(() => this.initBuscarMap(), 400);
-        if (screenId === 'screen-profile') { setTimeout(function() { if(app.renderVolunteerProfile) app.renderVolunteerProfile(); }, 300); }
-        if (screenId === 'screen-voluntarios') { setTimeout(function() { if(app.loadVoluntarios) app.loadVoluntarios(); }, 200); }
+        if (screenId === 'screen-profile') { setTimeout(function() { if(app.renderVolunteerProfile) app.renderVolunteerProfile(); if(app.loadVolMini) app.loadVolMini(); }, 300); }
+        if (screenId === 'screen-voluntarios') { setTimeout(function() { if(app.loadVoluntarios) app.loadVoluntarios(true); }, 200); }
         if (screenId === 'screen-anuncios') {
             this.loadAnuncios();
             setTimeout(function() {
@@ -2037,13 +2037,21 @@ var app = {
         return list;
     },
 
-    loadVoluntarios: async function() {
+    _cachedVoluntarios: null,
+
+    loadVoluntarios: async function(forceRefresh) {
         var self = this;
         var container = document.getElementById('vol-lista');
         var urgentesBox = document.getElementById('vol-urgentes');
         if (!container) return;
 
-        // Mostrar loader
+        // If we have cached list and are not forcing a refresh, filter and render synchronously
+        if (this._cachedVoluntarios && this._cachedVoluntarios.length > 0 && !forceRefresh) {
+            this._renderVoluntariosFiltrados(this._cachedVoluntarios, container, urgentesBox);
+            return;
+        }
+
+        // Mostrar loader on initial load or force refresh
         container.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2rem;margin-bottom:8px;">⏳</div><p style="font-size:0.85rem;margin:0;">Cargando voluntarios...</p></div>';
 
         var voluntarios = [];
@@ -2058,8 +2066,11 @@ var app = {
                         await db.saveHabilidades(u.id, localHabs).catch(function(){});
                     }
                     var localComps = self.getCompromisos ? self.getCompromisos() : [];
-                    if (localComps.length > 0 && db.saveCompromiso) {
-                        for (var c of localComps) {
+                    var unsyncedComps = localComps.filter(function(c) {
+                        return c && c.id && c.id.indexOf('-') === -1;
+                    });
+                    if (unsyncedComps.length > 0 && db.saveCompromiso) {
+                        for (var c of unsyncedComps) {
                             await db.saveCompromiso(u.id, { catId: c.catId, desc: c.desc, hasta: c.hasta }).catch(function(){});
                         }
                     }
@@ -2068,7 +2079,6 @@ var app = {
                 console.warn('[Sync] Falló sync de fondo:', e.message);
             }
         })();
-
 
         try {
             if (typeof db !== 'undefined' && db.getAllVolunteers) {
@@ -2132,6 +2142,28 @@ var app = {
         if (voluntarios.length === 0) {
             voluntarios = this._getVoluntariosLocal();
             console.log('[Voluntarios] Usando localStorage:', voluntarios.length);
+        }
+
+        // Save to cache
+        this._cachedVoluntarios = voluntarios;
+
+        // Render them
+        this._renderVoluntariosFiltrados(voluntarios, container, urgentesBox);
+    },
+
+    _renderVoluntariosFiltrados: function(rawVoluntarios, container, urgentesBox) {
+        var self = this;
+        var voluntarios = [].concat(rawVoluntarios);
+
+        // Sync filter chips UI and search input value
+        document.querySelectorAll('.vol-filtro-btn').forEach(function(btn) {
+            var isActive = btn.dataset.hid === (self._volFiltro || '');
+            btn.style.background = isActive ? btn.dataset.color : 'white';
+            btn.style.color = isActive ? 'white' : btn.dataset.color;
+        });
+        var searchInput = document.getElementById('vol-search');
+        if (searchInput && document.activeElement !== searchInput) {
+            searchInput.value = this._volQuery || '';
         }
 
         // ── Búsqueda ──
@@ -2236,7 +2268,7 @@ var app = {
         // ── Urgentes (compromisos que vencen en 48h) ──
         if (urgentesBox) {
             var urgList = [];
-            voluntarios.forEach(function(vol) {
+            rawVoluntarios.forEach(function(vol) {
                 vol.comps.forEach(function(c) {
                     if (!c.hasta) return;
                     var diff = (new Date(c.hasta) - new Date()) / 3600000;
@@ -2423,7 +2455,7 @@ var app = {
         }
 
         alert('Tu perfil ya esta visible en el Banco de Voluntarios!');
-        this.loadVoluntarios();
+        this.loadVoluntarios(true);
     },
 
     CAUSAS: [

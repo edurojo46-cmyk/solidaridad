@@ -904,6 +904,23 @@ var db = {
         if (!sbClient) return;
         var realUuid = await this.resolveUserUuid(userId);
         if (!realUuid) return;
+
+        // Prevent duplicate insertion of identical commitments
+        try {
+            const { data: existing } = await sbClient.from('compromisos_voluntarios')
+                .select('id')
+                .eq('user_id', realUuid)
+                .eq('cat_id', compromisoObj.catId)
+                .eq('descripcion', compromisoObj.desc || '')
+                .limit(1);
+            if (existing && existing.length > 0) {
+                console.log('[DB] Commitment already exists in Supabase, skipping duplicate insertion.');
+                return;
+            }
+        } catch(e) {
+            console.warn('[DB] Error checking for duplicate commitments:', e.message);
+        }
+
         const payload = {
             user_id: realUuid,
             cat_id: compromisoObj.catId,
