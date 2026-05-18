@@ -964,7 +964,17 @@ var db = {
         if (error) console.error('[DB] Error deleting compromiso by criteria:', error.message);
     },
 
+
+    async deleteAnuncio(id) {
+        if (!sbClient) return false;
+        const { error } = await sbClient.from('anuncios').delete().eq('id', id);
+        if (error) { console.error('[DB] Error deleting anuncio:', error.message); return false; }
+        console.log('[DB] Anuncio deleted:', id);
+        return true;
+    },
+
     async getAllVolunteers() {
+
         if (!sbClient) return [];
         const { data: profiles } = await sbClient.from('profiles').select('id, name, username, email, avatar_url');
         if (!profiles) return [];

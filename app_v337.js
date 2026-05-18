@@ -441,6 +441,8 @@ var app = {
     _renderAnuncioCards(anuncios) {
         const EMOJIS = ['\u2764\ufe0f','\ud83d\udc4d','\ud83d\udc4f','\ud83d\ude4c','\ud83d\ude09'];
         const reactions = this._anuncioRemoteReactions || {};
+        const currentUserId = (typeof auth !== 'undefined' && auth.isAuthenticated() && auth.getCurrentUser())
+            ? (auth.getCurrentUser().id || null) : null;
         const list = document.getElementById('anuncios-list');
         if (!list) return;
         list.innerHTML = '';
@@ -469,6 +471,15 @@ var app = {
 
             // ── FOTO: completa sin recorte, tap para lightbox ──
             let photoHtml = '';
+            const isOwnerAnuncio = currentUserId && anuncio.creator_id && currentUserId === anuncio.creator_id;
+            const deleteBtnHtml = isOwnerAnuncio
+                ? `<button onclick="event.stopPropagation();app.confirmDeleteAnuncio('${id}','${(anuncio.title||'').replace(/'/g,"\\'")}')"
+                    title="Eliminar anuncio"
+                    style="position:absolute;top:10px;right:10px;z-index:10;width:34px;height:34px;border-radius:50%;background:rgba(239,68,68,0.92);border:2px solid rgba(255,255,255,0.6);color:white;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);box-shadow:0 2px 10px rgba(0,0,0,0.3);transition:transform 0.15s,background 0.15s;"
+                    onmouseover="this.style.transform='scale(1.12)';this.style.background='rgba(220,38,38,1)'"
+                    onmouseout="this.style.transform='';this.style.background='rgba(239,68,68,0.92)'"
+                    ><i class="ri-close-line"></i></button>`
+                : '';
             if (anuncio.photo_url) {
                 const safeUrl   = anuncio.photo_url.replace(/'/g, "\\'");
                 const safeTit   = (anuncio.title || '').replace(/'/g, "\\'");
@@ -479,12 +490,14 @@ var app = {
                     <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);color:white;font-size:0.7rem;padding:4px 12px;border-radius:20px;pointer-events:none;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.2);">
                         <i class="ri-zoom-in-line"></i> Pantalla completa
                     </div>
+                    ${deleteBtnHtml}
                 </div>`;
             }
 
             // ── BANNER (sin foto) ──
-            const bannerHtml = !anuncio.photo_url ? `<div style="padding:28px 20px 20px;background:linear-gradient(135deg,#f97316,#dc2626);position:relative;">
+            const bannerHtml = !anuncio.photo_url ? `<div style="position:relative;padding:28px 20px 20px;background:linear-gradient(135deg,#f97316,#dc2626);">
                 <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.22);color:white;font-size:0.62rem;font-weight:900;padding:3px 9px;border-radius:8px;letter-spacing:1px;text-transform:uppercase;">Novedad</div>
+                ${deleteBtnHtml}
                 <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
                     <i class="ri-megaphone-fill" style="font-size:1.5rem;color:white;"></i>
                 </div>
@@ -558,6 +571,60 @@ var app = {
             ${title ? `<p style="color:rgba(255,255,255,0.85);margin-top:14px;font-size:0.95rem;font-weight:600;text-align:center;max-width:340px;">${title}</p>` : ''}`;
         lb.onclick = e => { if (e.target === lb) lb.remove(); };
         document.body.appendChild(lb);
+    },
+
+    confirmDeleteAnuncio(id, title) {
+        const ex = document.getElementById('delete-anuncio-modal');
+        if (ex) ex.remove();
+        const overlay = document.createElement('div');
+        overlay.id = 'delete-anuncio-modal';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;animation:scFadeIn 0.2s ease;';
+        overlay.innerHTML = `
+            <div style="background:white;border-radius:24px;width:100%;max-width:360px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,0.3);animation:waZoomIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275);">
+                <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#fee2e2,#fecaca);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <i class="ri-delete-bin-2-fill" style="font-size:1.7rem;color:#ef4444;"></i>
+                </div>
+                <h3 style="margin:0 0 8px;text-align:center;font-size:1.25rem;font-weight:800;color:#1e293b;">¿Eliminar anuncio?</h3>
+                <p style="margin:0 0 6px;text-align:center;font-size:0.9rem;color:#64748b;line-height:1.5;">
+                    Vas a eliminar <strong style="color:#1e293b;">&ldquo;${title || 'este anuncio'}&rdquo;</strong>
+                </p>
+                <p style="margin:0 0 24px;text-align:center;font-size:0.8rem;color:#ef4444;font-weight:600;">Esta acción no se puede deshacer.</p>
+                <div style="display:flex;gap:12px;">
+                    <button id="del-anuncio-cancel"
+                        style="flex:1;padding:14px;border-radius:14px;border:none;background:#f1f5f9;color:#475569;font-weight:700;font-size:0.95rem;cursor:pointer;transition:background 0.2s;"
+                        onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+                        Cancelar
+                    </button>
+                    <button id="del-anuncio-confirm"
+                        style="flex:1;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;font-weight:700;font-size:0.95rem;cursor:pointer;box-shadow:0 4px 12px rgba(239,68,68,0.35);transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;"
+                        onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 16px rgba(239,68,68,0.45)'"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 4px 12px rgba(239,68,68,0.35)'">
+                        <i class="ri-delete-bin-line"></i> Sí, eliminar
+                    </button>
+                </div>
+            </div>`;
+        overlay.querySelector('#del-anuncio-cancel').onclick = () => overlay.remove();
+        overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+        overlay.querySelector('#del-anuncio-confirm').onclick = async () => {
+            const btn = overlay.querySelector('#del-anuncio-confirm');
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Eliminando...';
+            btn.disabled = true;
+            let ok = false;
+            if (typeof db !== 'undefined' && db.deleteAnuncio) {
+                ok = await db.deleteAnuncio(id);
+            }
+            overlay.remove();
+            if (ok) {
+                this._anuncioCache = this._anuncioCache.filter(a => (a.id || a.created_at) !== id);
+                this._renderAnuncioCards(this._anuncioCache);
+                const t = document.createElement('div');
+                t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 22px;border-radius:20px;font-size:0.88rem;font-weight:600;z-index:999999;box-shadow:0 4px 16px rgba(0,0,0,0.25);white-space:nowrap;animation:scFadeIn 0.2s ease;display:flex;align-items:center;gap:8px;';
+                t.innerHTML = '<i class="ri-check-line" style="color:#22c55e"></i> Anuncio eliminado';
+                document.body.appendChild(t);
+                setTimeout(() => t.remove(), 2800);
+            }
+        };
+        document.body.appendChild(overlay);
     },
 
     _anuncioReactionsChannel: null,
