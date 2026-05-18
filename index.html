@@ -2280,8 +2280,19 @@ function scInitMap() {
     scLoadAlertas();
     
     if (typeof sbClient !== 'undefined' && sbClient) {
+
+        // ── Canal alertas: recarga lista + notifica si está cerca ──
         sbClient.channel('sc-alertas-realtime')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'alertas_calle' }, function() { scLoadAlertas(); })
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alertas_calle' }, function(payload) {
+                scLoadAlertas();
+                scNotificarAlertaCercana(payload.new);
+            })
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'alertas_calle' }, function() {
+                scLoadAlertas();
+            })
+            .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'alertas_calle' }, function() {
+                scLoadAlertas();
+            })
             .subscribe();
             
         sbClient.channel('sc-mensajes-realtime')
@@ -2291,7 +2302,122 @@ function scInitMap() {
             })
             .subscribe();
     }
+
+    // Pedir permiso de notificaciones (no-bloqueante)
+    scIniciarNotificaciones();
 }
+
+// ── Calcular distancia Haversine en km ──
+function scDistanciaKm(lat1, lng1, lat2, lng2) {
+    var R = 6371;
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lng2 - lng1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2)
+          + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180)
+          * Math.sin(dLon/2) * Math.sin(dLon/2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// ── Solicitar permiso de notificaciones ──
+function scIniciarNotificaciones() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'default') {
+        // Mostrar banner amigable antes de pedir permiso nativo
+        var banner = document.createElement('div');
+        banner.id = 'sc-notif-banner';
+        banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);color:white;padding:14px 18px;border-radius:18px;z-index:99999;box-shadow:0 8px 30px rgba(0,0,0,0.3);display:flex;align-items:center;gap:12px;max-width:340px;width:90%;animation:scFadeIn 0.3s ease;';
+        banner.innerHTML = '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#e74c3c,#c0392b);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ri-alarm-warning-fill" style="font-size:1.2rem;"></i></div>'
+            + '<div style="flex:1;"><div style="font-weight:800;font-size:0.9rem;margin-bottom:2px;">¿Alertas cerca tuyo?</div><div style="font-size:0.78rem;color:rgba(255,255,255,0.7);">Activá notificaciones para recibir alertas a menos de 5km</div></div>'
+            + '<button onclick="scActivarNotificaciones(this.closest(\'#sc-notif-banner\'))" style="background:#e74c3c;border:none;color:white;border-radius:12px;padding:8px 14px;font-size:0.8rem;font-weight:800;cursor:pointer;white-space:nowrap;">Activar</button>'
+            + '<button onclick="this.closest(\'#sc-notif-banner\').remove()" style="background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.6);border-radius:8px;padding:8px;cursor:pointer;font-size:1rem;">✕</button>';
+        document.body.appendChild(banner);
+        setTimeout(function() { if (banner.parentNode) banner.remove(); }, 12000);
+    }
+}
+
+async function scActivarNotificaciones(banner) {
+    if (banner) banner.remove();
+    if (!('Notification' in window)) return;
+    var perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:10px 20px;border-radius:20px;font-size:0.88rem;font-weight:700;z-index:999999;box-shadow:0 4px 16px rgba(16,185,129,0.4);animation:scFadeIn 0.3s ease;display:flex;align-items:center;gap:8px;white-space:nowrap;';
+        toast.innerHTML = '<i class="ri-checkbox-circle-fill"></i> ¡Notificaciones activadas!';
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.remove(); }, 3000);
+    }
+}
+
+// ── Notificar si la alerta está a ≤5km ──
+function scNotificarAlertaCercana(alerta) {
+    if (!alerta || !alerta.lat || !alerta.lng) return;
+    if (!alerta.activa) return;
+
+    // Calcular distancia con geo actual
+    var userLat = scGeoLat;
+    var userLng = scGeoLng;
+
+    // Si no tenemos geo aún, intentar obtenerla
+    if (!userLat || !userLng) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                scGeoLat = pos.coords.latitude;
+                scGeoLng = pos.coords.longitude;
+                scNotificarAlertaCercana(alerta); // Reintentar con coords
+            }, null, { timeout: 5000 });
+        }
+        return;
+    }
+
+    var dist = scDistanciaKm(userLat, userLng, alerta.lat, alerta.lng);
+    if (dist > 5) return; // Fuera de rango
+
+    var necs = (alerta.necesidades || '').split(',').filter(Boolean).join(', ');
+    var distText = dist < 1 ? 'a menos de 1km' : 'a ' + dist.toFixed(1) + 'km';
+    var titulo = '🚨 Alerta cerca tuyo (' + distText + ')';
+    var cuerpo = (alerta.direccion || 'Sin dirección')
+        + (necs ? '\nNecesita: ' + necs : '')
+        + (alerta.descripcion ? '\n' + alerta.descripcion.substring(0, 80) : '');
+
+    // Notificación nativa del browser
+    if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+            var notif = new Notification(titulo, {
+                body: cuerpo,
+                icon: 'https://edurojo46-cmyk.github.io/solidaridad/icon-192.png',
+                badge: 'https://edurojo46-cmyk.github.io/solidaridad/icon-192.png',
+                tag: 'alerta-' + (alerta.id || Date.now()),
+                requireInteraction: true
+            });
+            notif.onclick = function() {
+                window.focus();
+                if (typeof app !== 'undefined') app.navigate('screen-situacion-calle');
+                notif.close();
+            };
+        } catch(e) {}
+    }
+
+    // Banner in-app (siempre visible aunque no haya permiso)
+    var existing = document.getElementById('sc-alerta-nearby-toast');
+    if (existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.id = 'sc-alerta-nearby-toast';
+    toast.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;padding:14px 18px;border-radius:18px;z-index:999999;box-shadow:0 8px 30px rgba(231,76,60,0.4);display:flex;align-items:center;gap:12px;max-width:340px;width:90%;animation:scFadeIn 0.3s ease;cursor:pointer;';
+    toast.innerHTML = '<i class="ri-alarm-warning-fill" style="font-size:1.8rem;flex-shrink:0;"></i>'
+        + '<div style="flex:1;"><div style="font-weight:900;font-size:0.95rem;">¡Alerta ' + distText + '!</div>'
+        + '<div style="font-size:0.8rem;opacity:0.9;margin-top:2px;">' + (alerta.direccion || '') + (necs ? ' · ' + necs : '') + '</div></div>'
+        + '<button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:0.9rem;">✕</button>';
+    toast.onclick = function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+            if (typeof app !== 'undefined') app.navigate('screen-situacion-calle');
+            toast.remove();
+        }
+    };
+    document.body.appendChild(toast);
+    setTimeout(function() { if (toast.parentNode) toast.remove(); }, 15000);
+}
+// ────────────────────────────────────────────────────────
+
 
 function scRefresh() {
     scLoadAlertas();
@@ -5130,7 +5256,7 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="auth.js?v=385" charset="utf-8"></script>
 <script src="supabase_v336.js?v=386" charset="utf-8"></script>
-<script src="app_v337.js?v=387" charset="utf-8"></script>
+<script src="app_v337.js?v=388" charset="utf-8"></script>
 <script src="chat-pro.js?v=321" charset="utf-8"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
