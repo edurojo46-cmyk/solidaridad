@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -5058,38 +5058,35 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
 
     <!-- Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â -->
     <!-- BANCO DE VOLUNTARIOS                        -->
-    <!-- Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â -->
+    <!-- BANCO DE VOLUNTARIOS -->
     <section id="screen-voluntarios" class="screen" style="overflow-y: auto;">
         <div class="screen-content" style="padding:0;">
 
             <!-- Header -->
             <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:24px 20px 60px;position:relative;overflow:hidden;">
-                <div style="position:absolute;right:-30px;top:-30px;opacity:0.1;font-size:180px;line-height:1;">Ã°Å¸Â¤Â</div>
                 <button onclick="app.navigate('screen-splash')" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:14px;">
                     <i class="ri-arrow-left-line"></i>
                 </button>
-                <h1 style="margin:0 0 4px;color:white;font-size:1.5rem;font-weight:900;">Ã°Å¸Â¤Â Banco de Voluntarios</h1>
-                <p style="margin:0 0 16px;color:rgba(255,255,255,0.8);font-size:0.88rem;">Encontrá personas dispuestas a ayudar</p>
-                <!-- Barra de búsqueda -->
+                <h1 style="margin:0 0 4px;color:white;font-size:1.5rem;font-weight:900;">🤝 Banco de Compromisos</h1>
+                <p style="margin:0 0 16px;color:rgba(255,255,255,0.8);font-size:0.88rem;">Personas dispuestas a ayudar</p>
                 <div style="background:white;border-radius:14px;display:flex;align-items:center;gap:8px;padding:10px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
                     <i class="ri-search-line" style="color:#94a3b8;"></i>
-                    <input id="vol-search" placeholder="Buscar por nombre o habilidad..." oninput="app.volBuscar(this.value)" style="border:none;outline:none;flex:1;font-size:0.9rem;font-family:inherit;color:#1e293b;" />
+                    <input id="vol-search" placeholder="Buscar por nombre..." oninput="app.volBuscar(this.value)" style="border:none;outline:none;flex:1;font-size:0.9rem;font-family:inherit;color:#1e293b;" />
                 </div>
             </div>
 
             <div style="padding:0 16px 100px;margin-top:-36px;">
 
-                <!-- Filtros por habilidad -->
+                <!-- Filtros por compromiso -->
                 <div style="overflow-x:auto;padding-bottom:4px;margin-bottom:16px;">
-                    <div style="display:flex;gap:8px;white-space:nowrap;padding:4px 0;">
-                        <button class="vol-filtro-btn" data-hid="auto" data-color="#0ea5e9" onclick="app.volFiltrar('auto')" style="border:2px solid #0ea5e9;background:white;color:#0ea5e9;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸Å¡â€” Auto</button>
-                        <button class="vol-filtro-btn" data-hid="cocina" data-color="#f97316" onclick="app.volFiltrar('cocina')" style="border:2px solid #f97316;background:white;color:#f97316;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸ÂÂ³ Cocina</button>
-                        <button class="vol-filtro-btn" data-hid="medico" data-color="#e74c3c" onclick="app.volFiltrar('medico')" style="border:2px solid #e74c3c;background:white;color:#e74c3c;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸Â©Âº Médico</button>
-                        <button class="vol-filtro-btn" data-hid="tech" data-color="#6366f1" onclick="app.volFiltrar('tech')" style="border:2px solid #6366f1;background:white;color:#6366f1;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸â€™Â» Tech</button>
-                        <button class="vol-filtro-btn" data-hid="educacion" data-color="#14b8a6" onclick="app.volFiltrar('educacion')" style="border:2px solid #14b8a6;background:white;color:#14b8a6;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸â€œÅ¡ Clases</button>
-                        <button class="vol-filtro-btn" data-hid="fuerza" data-color="#84cc16" onclick="app.volFiltrar('fuerza')" style="border:2px solid #84cc16;background:white;color:#84cc16;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸â€™Âª Físico</button>
-                        <button class="vol-filtro-btn" data-hid="redes" data-color="#f43f5e" onclick="app.volFiltrar('redes')" style="border:2px solid #f43f5e;background:white;color:#f43f5e;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ã°Å¸â€œÂ¢ Redes</button>
-                    </div>
+                        <button class="vol-filtro-btn" data-hid="comida"     data-color="#f97316" onclick="app.volFiltrar('comida')"     style="border:2px solid #f97316;background:white;color:#f97316;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">🍲 Comida</button>
+                        <button class="vol-filtro-btn" data-hid="ropa"       data-color="#8b5cf6" onclick="app.volFiltrar('ropa')"       style="border:2px solid #8b5cf6;background:white;color:#8b5cf6;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">🧥 Ropa</button>
+                        <button class="vol-filtro-btn" data-hid="transporte" data-color="#0ea5e9" onclick="app.volFiltrar('transporte')" style="border:2px solid #0ea5e9;background:white;color:#0ea5e9;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">🚗 Transporte</button>
+                        <button class="vol-filtro-btn" data-hid="compania"   data-color="#10b981" onclick="app.volFiltrar('compania')"   style="border:2px solid #10b981;background:white;color:#10b981;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">🤝 Compañía</button>
+                        <button class="vol-filtro-btn" data-hid="dinero"     data-color="#f59e0b" onclick="app.volFiltrar('dinero')"     style="border:2px solid #f59e0b;background:white;color:#f59e0b;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">💵 Dinero</button>
+                        <button class="vol-filtro-btn" data-hid="tiempo"     data-color="#e74c3c" onclick="app.volFiltrar('tiempo')"     style="border:2px solid #e74c3c;background:white;color:#e74c3c;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">⏰ Tiempo</button>
+                        <button class="vol-filtro-btn" data-hid="habilidad"  data-color="#6366f1" onclick="app.volFiltrar('habilidad')"  style="border:2px solid #6366f1;background:white;color:#6366f1;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">🛠️ Habilidad</button>
+                        <button class="vol-filtro-btn" data-hid="otro"       data-color="#64748b" onclick="app.volFiltrar('otro')"       style="border:2px solid #64748b;background:white;color:#64748b;border-radius:20px;padding:6px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;">💡 Otro</button>
                 </div>
 
                 <!-- Urgentes -->

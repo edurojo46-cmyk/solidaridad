@@ -2245,9 +2245,11 @@ var app = {
             });
         }
 
-        // ── Filtro por habilidad ──
+        // ── Filtro por compromiso (catId) ──
         var filtrados = this._volFiltro
-            ? voluntarios.filter(function(v){ return v.habs.indexOf(self._volFiltro) !== -1; })
+            ? voluntarios.filter(function(v) {
+                return v.comps && v.comps.some(function(c) { return c.catId === self._volFiltro; });
+              })
             : voluntarios;
 
         // ── Contador ──
