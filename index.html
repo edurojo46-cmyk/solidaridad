@@ -2420,13 +2420,16 @@ function scRenderAlertas() {
 
         // Actions
         var isOwner = (uId && uId === a.user_id) || isAdmin;
-        if (isActiva && isOwner) {
-            html += '<div style="display:flex; gap:10px; margin-top:4px;">';
-            html += '<button onclick="event.stopPropagation(); scEditAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#e0f2fe\'" onmouseout="this.style.background=\'#f0f9ff\'"><i class="ri-edit-2-line"></i> Editar</button>';
-            html += '<button onclick="event.stopPropagation(); scEliminarAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#fee2e2\'" onmouseout="this.style.background=\'#fef2f2\'"><i class="ri-delete-bin-line"></i> Eliminar</button>';
+        if (isActiva) {
+            html += '<div style="display:flex; flex-direction:column; gap:10px; margin-top:4px;">';
+            if (isOwner) {
+                html += '<div style="display:flex; gap:10px;">';
+                html += '<button onclick="event.stopPropagation(); scEditAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#e0f2fe\'" onmouseout="this.style.background=\'#f0f9ff\'"><i class="ri-edit-2-line"></i> Editar</button>';
+                html += '<button onclick="event.stopPropagation(); scEliminarAlerta(\'' + a.id + '\')" style="flex:1; padding:12px; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background=\'#fee2e2\'" onmouseout="this.style.background=\'#fef2f2\'"><i class="ri-delete-bin-line"></i> Eliminar</button>';
+                html += '</div>';
+            }
+            html += '<button onclick="event.stopPropagation(); scCompartir(\'' + scEscape(a.direccion) + '\', \'' + a.id + '\')" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;background:white;color:#475569;border-radius:14px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=\'white\'"><i class="ri-share-forward-line"></i> Compartir Alerta</button>';
             html += '</div>';
-        } else if (isActiva) {
-            html += '<button onclick="event.stopPropagation(); scCompartir(\'' + scEscape(a.direccion) + '\')" style="width:100%;padding:12px;border:1.5px solid #cbd5e1;background:white;color:#475569;border-radius:14px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><i class="ri-share-forward-line"></i> Compartir Alerta</button>';
         }
 
         html += '</div>';
@@ -2934,10 +2937,17 @@ function scEditAlerta(id) {
     setTimeout(function() { document.getElementById('sc-form-modal').style.transform = 'translateY(0)'; }, 10);
 }
 
-function scCompartir(dir) {
-    var txt = '📍 Alerta Solidaria en ' + dir + '\nAyudanos a difundir o asistir en SOLIDARIDAD.';
-    if (navigator.share) { navigator.share({ title: 'Alerta Solidaria', text: txt }).catch(function(){}); }
-    else { navigator.clipboard.writeText(txt).then(function() { alert('Copiado al portapapeles'); }).catch(function(){}); }
+function scCompartir(dir, alertaId) {
+    var pageUrl = 'https://edurojo46-cmyk.github.io/solidaridad/';
+    var shareUrl = pageUrl + '?alerta=' + (alertaId || '');
+    var txt = '📍 Alerta Solidaria en ' + dir + '\nAyudanos a asistir:\n' + shareUrl;
+    if (navigator.share) { 
+        navigator.share({ title: 'Alerta Solidaria', text: txt, url: shareUrl }).catch(function(){}); 
+    } else { 
+        navigator.clipboard.writeText(txt).then(function() { 
+            alert('¡Enlace de alerta copiado al portapapeles!'); 
+        }).catch(function(){}); 
+    }
 }
 
 var scFotoBase64 = null;
@@ -5110,9 +5120,9 @@ if (document.readyState === 'complete') setTimeout(loadAndRenderComedores, 500);
     </nav>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="auth.js?v=368" charset="utf-8"></script>
+<script src="auth.js?v=385" charset="utf-8"></script>
 <script src="supabase_v336.js?v=384" charset="utf-8"></script>
-<script src="app_v337.js?v=384" charset="utf-8"></script>
+<script src="app_v337.js?v=385" charset="utf-8"></script>
 <script src="chat-pro.js?v=321" charset="utf-8"></script>
 <script>
     // Logic to show/hide 'Notificaciones' based on auth state
@@ -5452,7 +5462,7 @@ function initRezandoMap() {
 var origNavigate = app.navigate.bind(app);
     app.navigate = function(screenId) {
     // AUTH GATE: require login for all screens except login/register, splash and anuncios (for sharing)
-    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-anuncios'];
+    var authScreens = ['screen-login', 'screen-register', 'screen-auth', 'screen-splash', 'screen-anuncios', 'screen-situacion-calle'];
     if (authScreens.indexOf(screenId) === -1 && typeof auth !== 'undefined' && !auth.isAuthenticated()) {
         origNavigate('screen-login');
         return;
@@ -5482,8 +5492,38 @@ var origNavigate = app.navigate.bind(app);
 };
 // Force splash screen or allowed public screens on page load if not authenticated
 document.addEventListener('DOMContentLoaded', function() {
-    const isShared = new URLSearchParams(window.location.search).has('anuncio');
-    if (isShared) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isShared = urlParams.has('anuncio');
+    const sharedAlertaId = urlParams.get('alerta');
+    
+    if (sharedAlertaId) {
+        console.log('Shared street alert detected - navigating immediately:', sharedAlertaId);
+        if (typeof app !== 'undefined' && app.navigate) {
+            app.navigate('screen-situacion-calle');
+            
+            var checkInterval = setInterval(function() {
+                if (typeof scAllAlertas !== 'undefined' && scAllAlertas.length > 0) {
+                    clearInterval(checkInterval);
+                    var targetAlerta = scAllAlertas.find(function(a) { return a.id === sharedAlertaId; });
+                    if (targetAlerta) {
+                        console.log('Found shared alert - focusing:', targetAlerta);
+                        setTimeout(function() {
+                            scFocusAlerta(targetAlerta.lat, targetAlerta.lng);
+                            var cards = document.querySelectorAll('.sc-card');
+                            cards.forEach(function(card) {
+                                if (card.innerHTML.indexOf(targetAlerta.direccion) > -1) {
+                                    card.style.border = '2.5px solid #e74c3c';
+                                    card.style.boxShadow = '0 0 20px rgba(231,76,60,0.3)';
+                                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                            });
+                        }, 500);
+                    }
+                }
+            }, 300);
+            setTimeout(function() { clearInterval(checkInterval); }, 8000);
+        }
+    } else if (isShared) {
         console.log('Shared anuncio detected - navigating immediately');
         if (typeof app !== 'undefined' && app.navigate) {
             app.navigate('screen-anuncios');

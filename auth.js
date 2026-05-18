@@ -472,10 +472,24 @@ var auth = {
     },
 
     // ---- Protected Screens ----
-    protectedScreens: ['screen-map', 'screen-create-rosary', 'screen-rosary-detail', 'screen-rezo', 'screen-event', 'screen-live', 'screen-profile'],
-
     isProtected(screenId) {
-        return this.protectedScreens.includes(screenId);
+        const publicScreens = [
+            'screen-splash',
+            'screen-anuncios',
+            'screen-login',
+            'screen-register',
+            'screen-forgot-password',
+            'screen-reset-password'
+        ];
+        
+        if (screenId === 'screen-situacion-calle') {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('alerta')) {
+                return false;
+            }
+        }
+        
+        return !publicScreens.includes(screenId);
     }
 };
 

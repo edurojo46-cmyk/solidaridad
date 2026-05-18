@@ -1550,7 +1550,10 @@ var app = {
 
     navigate(screenId) {
         if (!this.screens.includes(screenId)) return;
-        if (auth.isProtected(screenId) && !auth.isAuthenticated()) screenId = 'screen-login';
+        if (auth.isProtected(screenId) && !auth.isAuthenticated()) {
+            alert('Debes registrarte o iniciar sesión para acceder a esta sección.');
+            screenId = 'screen-register';
+        }
         const ac = document.getElementById('app-container');
         const single = ['screen-splash','screen-live','screen-rezo','screen-register','screen-login','screen-forgot-password','screen-reset-password','screen-map','screen-intenciones','screen-create-rosary','screen-rosary-detail','screen-como-rezar','screen-profile','screen-porque-rezar','screen-notificaciones','screen-mensajes','screen-apariciones','screen-cenaculo','screen-Comedores','screen-situacion-calle','screen-anuncios','screen-voluntarios'];
         const isDash = !single.includes(screenId);
