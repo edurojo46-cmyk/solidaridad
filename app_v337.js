@@ -1776,8 +1776,8 @@ var app = {
         { id:'transporte', icon:'🚗', label:'Dar transporte',    color:'#0ea5e9' },
         { id:'compania',   icon:'🤝', label:'Acompañar',         color:'#10b981' },
         { id:'dinero',     icon:'💵', label:'Donar dinero',      color:'#f59e0b' },
-        { id:'tiempo',     icon:'⏰',       label:'Dar mi tiempo',     color:'#e74c3c' },
-        { id:'habilidad',  icon:'🛠', label:'Ofrecer habilidad', color:'#6366f1' },
+        { id:'tiempo',     icon:'⏰', label:'Dar mi tiempo',     color:'#e74c3c' },
+        { id:'habilidad',  icon:'🛠️', label:'Ofrecer habilidad', color:'#6366f1' },
         { id:'otro',       icon:'💡', label:'Otro',              color:'#64748b' }
     ],
 
