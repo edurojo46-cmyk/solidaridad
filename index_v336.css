@@ -9824,7 +9824,7 @@ body {
 .wa-viewer-action:active { transform: scale(0.92); }
 /* --- HOME SCREEN (SPLASH) REDESIGN --- */
 .splash-bg {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
+    background: linear-gradient(rgba(255, 248, 245, 0.55), rgba(255, 240, 235, 0.60)), url('assets/solidaridad_bg.jpg') no-repeat center center / cover !important;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
