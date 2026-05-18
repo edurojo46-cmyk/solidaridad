@@ -2765,6 +2765,53 @@ var app = {
         try { this.renderProfileJoined(); } catch(e) {}
         try { this.renderProfileMyRosaries(); } catch(e) {}
         try { if(this.renderVolunteerProfile) this.renderVolunteerProfile(); } catch(e) {}
+        try { this.loadAlertasMetric(); } catch(e) {}
+    },
+
+    loadAlertasMetric: async function() {
+        var u = auth && auth.isAuthenticated() ? auth.getCurrentUser() : null;
+        if (!u || !u.id) return;
+        var el = document.getElementById('prof-metric-alertas');
+        if (!el) return;
+
+        try {
+            var total = 0;
+
+            // 1️⃣ Alertas creadas por el usuario
+            if (typeof sbClient !== 'undefined' && sbClient) {
+                var { data: creadas, error: e1 } = await sbClient
+                    .from('alertas_calle')
+                    .select('id', { count: 'exact', head: false })
+                    .eq('user_id', u.id);
+                if (!e1 && creadas) total += creadas.length;
+
+                // 2️⃣ Alertas donde se comprometió a ayudar (pledge en ayudas_alerta)
+                var { data: atendidas, error: e2 } = await sbClient
+                    .from('ayudas_alerta')
+                    .select('alerta_id')
+                    .eq('user_id', u.id)
+                    .neq('necesidad', 'general');
+                if (!e2 && atendidas) {
+                    // Contar alertas únicas donde intervino
+                    var uniq = new Set(atendidas.map(function(r){ return r.alerta_id; }));
+                    total += uniq.size;
+                }
+            }
+
+            // Animación de conteo
+            var start = parseInt(el.textContent) || 0;
+            var end = total;
+            if (start === end) { el.textContent = end; return; }
+            var step = end > start ? 1 : -1;
+            var interval = setInterval(function() {
+                start += step;
+                el.textContent = start;
+                if (start === end) clearInterval(interval);
+            }, 60);
+
+        } catch(err) {
+            console.warn('[Profile] Error loading alertas metric:', err.message);
+        }
     },
 
     getAvatarKey: function() {
